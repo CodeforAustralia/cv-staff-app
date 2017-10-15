@@ -1,0 +1,19 @@
+{
+  "name": "cv-staff-app",
+  "version": "1.0.0",
+  "description": "a web application to assist staff managing clients on Community Correction Orders",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeforAustralia/cv-staff-app.git"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/CodeforAustralia/cv-staff-app/issues"
+  },
+  "homepage": "https://github.com/CodeforAustralia/cv-staff-app#readme"
+}
