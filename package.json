@@ -4,7 +4,9 @@
   "description": "a web application to assist staff managing clients on Community Correction Orders",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+      "build": "bankai build index.js public/dist",
+      "local": "bankai index.js",
+      "test": "standard"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/CodeforAustralia/cv-staff-app/issues"
   },
-  "homepage": "https://github.com/CodeforAustralia/cv-staff-app#readme"
+  "homepage": "https://github.com/CodeforAustralia/cv-staff-app#readme",
+  "dependencies": {
+    "choo": "^6.4.2",
+    "choo-reload": "^1.1.1",
+    "sheetify": "^6.2.0"
+  }
 }
