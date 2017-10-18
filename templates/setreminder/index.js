@@ -70,27 +70,38 @@ module.exports = function (state, emit) {
         </div>
       </div>
     `
+    function updateRecipientList () {
+      var recipients = document.getElementsByClassName('recipient')
+
+      while (recipients[0]) {
+        recipients[0].parentNode.removeChild(recipients[0])
+      }
+
+      (state.region.offenders.filter(function (offender) {
+        return ((offender.location === document.querySelector('#locationSelector').value) && (offender.programs.includes(document.querySelector('#programSelector').value)))
+      })).map(function (offender) {
+        document.querySelector('#recipientList').insertAdjacentHTML('beforeend',`<div class="recipient"><p>${offender.name}</p><p>${offender.phone}</p></div>`)
+      })
+    }
 
     function generateRecipients () {
       return html`
-        <div>
+        <div id="recipientList">
           <div>
             <div>Recipients</div>
             <button>+</button>
           </div>
-          <div>
-            Amin Min
-            04xx xxx xxx
-          </div>
-          <div>
-            Bob Marley
-            04xx xxx xxx
-          </div>
-          <div>
-            Craig Rees
-            04xx xxx xxx
-          </div>
-        </div>
+
+          ${(state.region.offenders.filter(function (offender) {
+            return ((offender.location === state.region.locations[0]) && (offender.programs.includes(state.region.CWprograms[state.region.locations[0]][0])))
+          })).map(function (offender) {
+            return html`
+              <div class="recipient">
+                <p>${offender.name}</p>
+                <p>${offender.phone}</p>
+              </div>
+            `
+          })}
       `
     }
 
@@ -101,7 +112,7 @@ module.exports = function (state, emit) {
             <h4>Location</h4>
             <select name="location" id="locationSelector" onchange=${updateProgramDetails}>
               ${state.region.locations.map(function (location) {
-                  return html`<option value=${location}>${location}</option>`
+                  return html`<option value="${location}">${location}</option>`
               })}
             </select>
           </div>
@@ -117,17 +128,19 @@ module.exports = function (state, emit) {
       }
 
       state.region.CWprograms[document.querySelector('#locationSelector').value].map(function (program) {
-        target.insertAdjacentHTML('beforeend', `<option value=${program}>${program}</option>`)
+        target.insertAdjacentHTML('beforeend', `<option value="${program}" id=${program}>${program}</option>`)
       })
+
+      updateRecipientList()
     }
 
     function generateProgramDetails () {
       return html`
         <div id="program">
           <h4>Community Work Program</h4>
-            <select name="program" id="programSelector">
+            <select name="program" id="programSelector" onchange=${updateRecipientList}>
               ${state.region.CWprograms[state.region.locations[0]].map(function (program) {
-                return html`<option value=${program}>${program}</option>`
+                return html`<option value="${program}" id="${program}">${program}</option>`
               })}
             </select>
         </div>
