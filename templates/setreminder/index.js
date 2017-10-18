@@ -8,6 +8,7 @@ module.exports = function (state, emit) {
     :host {
       display: flex;
       flex-direction: row;
+      font-family: Helvetica;
       justify-content: center;
       margin: auto;
       max-width: 900px;
@@ -25,11 +26,34 @@ module.exports = function (state, emit) {
       width: 65%;
     }
 
+    :host > div:nth-child(2) > div:first-child {
+      background-color: #f4f4f4;
+      padding: 0.5rem;
+    }
+
+    :host > div:nth-child(2) > div:first-child > select {
+      background-color: #fff;
+    }
+
+    :host > div:first-child > div:first-child {
+      padding: 3rem 0.5rem 1rem 0.5rem;
+    }
+
+    :host > div:first-child > div:first-child > div > select {
+      width: 100%;
+    }
+
+    h4 {
+      color: #6f6e75;
+      font-size: 0.75rem;
+    }
+
     select {
       border: none;
       border-radius: 10px;
       height: 2rem;
-      margin: 0 1rem;
+      margin-right: 2rem;
+      max-width: 95%;
       -moz-border-radius: 6px;
       -webkit-border-radius: 6px;
     }
@@ -37,12 +61,79 @@ module.exports = function (state, emit) {
 
   return html`
       <div class=${style}>
-        <div></div>
+        <div>
+          ${generateCWLocationDetails()}
+          ${generateRecipients()}
+        </div>
         <div>
           ${generateMessageOptions()}
         </div>
       </div>
     `
+
+    function generateRecipients () {
+      return html`
+        <div>
+          <div>
+            <div>Recipients</div>
+            <button>+</button>
+          </div>
+          <div>
+            Amin Min
+            04xx xxx xxx
+          </div>
+          <div>
+            Bob Marley
+            04xx xxx xxx
+          </div>
+          <div>
+            Craig Rees
+            04xx xxx xxx
+          </div>
+        </div>
+      `
+    }
+
+    function generateCWLocationDetails () {
+      return html`
+        <div>
+          <div id="location">
+            <h4>Location</h4>
+            <select name="location" id="locationSelector" onchange=${updateProgramDetails}>
+              ${state.region.locations.map(function (location) {
+                  return html`<option value=${location}>${location}</option>`
+              })}
+            </select>
+          </div>
+          ${generateProgramDetails()}
+        </div>
+      `
+    }
+
+    function updateProgramDetails() {
+      var target = document.querySelector('#programSelector')
+      while(target.firstChild) {
+        target.removeChild(target.firstChild)
+      }
+
+      state.region.CWprograms[document.querySelector('#locationSelector').value].map(function (program) {
+        target.insertAdjacentHTML('beforeend', `<option value=${program}>${program}</option>`)
+      })
+    }
+
+    function generateProgramDetails () {
+      return html`
+        <div id="program">
+          <h4>Community Work Program</h4>
+            <select name="program" id="programSelector">
+              ${state.region.CWprograms[state.region.locations[0]].map(function (program) {
+                return html`<option value=${program}>${program}</option>`
+              })}
+            </select>
+        </div>
+      `
+    }
+
     function generateMessageOptions () {
       return html`
         <div>
@@ -61,8 +152,10 @@ module.exports = function (state, emit) {
     }
 
     function updatePage (e) {
-      if (e.target.value === 'Supervision') {
-        console.log('Change to supervision page')
+      if (['Supervision', 'Program'].indexOf(e.target.value) > -1) {
+        document.querySelector('#program').style.display = 'none'
+      } else if (e.target.value === 'Community Work') {
+        var target = document.querySelector('#program').style.display = 'block'
       }
     }
 

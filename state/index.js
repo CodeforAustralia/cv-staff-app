@@ -7,5 +7,14 @@ module.exports = function (state, emitter) {
       appointmentTypes: ['Community Work', 'Supervision', 'Program'],
       messageTypes: ['Reminder', 'Reschedule', 'Missed Appointment', 'Cancellation']
     }
+
+    state.region = {
+      name: 'Grampians',
+      locations: ['Ballarat', 'Horsham'],
+      CWprograms: {
+        'Ballarat': ['St Vincent De Paul Friday InHouse Program', 'Woodwork'],
+        'Horsham': ['Stitch Picking']
+      }
+    }
   }
 }

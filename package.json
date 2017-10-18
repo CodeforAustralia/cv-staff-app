@@ -4,9 +4,9 @@
   "description": "a web application to assist staff managing clients on Community Correction Orders",
   "main": "index.js",
   "scripts": {
-      "build": "bankai build index.js public/dist",
-      "local": "bankai index.js",
-      "test": "standard"
+    "build": "bankai build index.js public/dist",
+    "local": "bankai index.js",
+    "test": "standard"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   "dependencies": {
     "choo": "^6.4.2",
     "choo-reload": "^1.1.1",
-    "sheetify": "^6.2.0"
+    "sheetify": "^6.2.0",
+    "sheetify-nested": "^1.0.2"
   }
 }
