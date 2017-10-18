@@ -78,7 +78,12 @@ module.exports = function (state, emit) {
       }
 
       (state.region.offenders.filter(function (offender) {
-        return ((offender.location === document.querySelector('#locationSelector').value) && (offender.programs.includes(document.querySelector('#programSelector').value)))
+        console.log(document.querySelector('#programSelector').value)
+        if (document.querySelector('#programSelector').value) {
+          return ((offender.location === document.querySelector('#locationSelector').value) && (offender.programs.includes(document.querySelector('#programSelector').value)))
+        } else {
+          return offender.location === document.querySelector('#locationSelector').value
+        }
       })).map(function (offender) {
         document.querySelector('#recipientList').insertAdjacentHTML('beforeend',`<div class="recipient"><p>${offender.name}</p><p>${offender.phone}</p></div>`)
       })
@@ -131,6 +136,10 @@ module.exports = function (state, emit) {
         target.insertAdjacentHTML('beforeend', `<option value="${program}" id=${program}>${program}</option>`)
       })
 
+      if(document.querySelector('#appointmentType').value !== 'Community Work') {
+        target.value = null
+      }
+
       updateRecipientList()
     }
 
@@ -150,7 +159,7 @@ module.exports = function (state, emit) {
     function generateMessageOptions () {
       return html`
         <div>
-          <select name="appointmentType" onchange=${updatePage}>
+          <select name="appointmentType" id="appointmentType" onchange=${updatePage}>
             ${state.static.appointmentTypes.map(function (appointmentType) {
               return html`<option value=${appointmentType}>${appointmentType}</option>`
             })}
@@ -167,9 +176,12 @@ module.exports = function (state, emit) {
     function updatePage (e) {
       if (['Supervision', 'Program'].indexOf(e.target.value) > -1) {
         document.querySelector('#program').style.display = 'none'
+        document.querySelector('#programSelector').value = null
       } else if (e.target.value === 'Community Work') {
         var target = document.querySelector('#program').style.display = 'block'
+        document.querySelector('#programSelector').value = state.region.CWprograms[document.querySelector('#locationSelector').value][0]
       }
+      updateRecipientList()
     }
 
     // <div class=${style}>
