@@ -49,6 +49,7 @@ module.exports = function (state, emit) {
     h4 {
       color: #6f6e75;
       font-size: 0.75rem;
+      margin: 1rem 0;
     }
 
     select {
@@ -59,6 +60,22 @@ module.exports = function (state, emit) {
       max-width: 95%;
       -moz-border-radius: 6px;
       -webkit-border-radius: 6px;
+    }
+
+    #recipientList > div:first-child {
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 0.5rem;
+    }
+
+    button {
+      background: none;
+      border: 1px #6f6e75 solid;
+      border-radius: 3px;
+      box-shadow: none;
+      height: 1.5rem;
     }
 
     .lightbox {
@@ -73,7 +90,7 @@ module.exports = function (state, emit) {
       width: 100vw;
     }
 
-    .addRecipient {
+    #addRecipientScreen {
       align-items: center;
       background: #f5f5f5;
       border-radius: 2px;
@@ -82,6 +99,52 @@ module.exports = function (state, emit) {
       flex-direction: column;
       font-size: 20px;
       padding: 2rem;
+    }
+
+    #addRecipientScreen > input {
+      margin-bottom: 1rem;
+    }
+
+    #addRecipientScreen > div {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    #addRecipientScreen > div > button {
+      background: #fff;
+      height: 2rem;
+      margin: 0rem 0.5rem;
+    }
+
+    .recipient {
+      border: 1px #f4f4f4 solid;
+      border-radius: 3px;
+      padding: 0.5rem;
+    }
+
+    .recipient > p {
+      margin: 0.3rem;
+    }
+
+    .recipient > p:nth-child(2) {
+      color: #6f6e75;
+    }
+
+    #addNewRecipient {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    #addNewRecipient > button {
+      color: #6f6e75;
+      margin: .5rem 1rem 0 0;
+    }
+
+    h3 {
+      color: #6f6e75;
+      margin: 1rem 0;
     }
   `
 
@@ -184,10 +247,10 @@ module.exports = function (state, emit) {
                 </div>
               `
             })}
-            <div id="addRecipient">
+            <div id="addNewRecipient">
               <button onclick=${toggleLightbox}>+</button>
               ${state.lightbox ? html`<div class="lightbox">${addRecipientScreen()}</div>` : null }
-              <h4>Add another person to this group</h4>
+              <h4 onclick=${toggleLightbox}>Add another person to this group</h4>
             </div>` : null}
 
         </div>
@@ -204,14 +267,14 @@ module.exports = function (state, emit) {
       var phone = state.newRecipient.phone
 
       return html`
-        <div class="addRecipient">
+        <div id="addRecipientScreen">
           <h3>Add to Group</h3>
-          <h4>Name</h4>
-          <input type="text" id="name" value=${name} oninput=${updateInput} />
-          <h4>Mobile Number</h4>
-          <input type="text" id="phone" value=${phone} oninput=${updateInput} />
-          <button onclick=${submitNewRecipient}>Submit</button>
-          <button onclick=${close}>Close</button>
+          <input type="text" id="name" value=${name} oninput=${updateInput} placeholder="name" />
+          <input type="text" id="phone" value=${phone} oninput=${updateInput} placeholder="phone" />
+          <div>
+            <button onclick=${submitNewRecipient}>Submit</button>
+            <button onclick=${close}>Close</button>
+          </div>
         </div>
       `
     }
