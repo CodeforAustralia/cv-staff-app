@@ -78,9 +78,6 @@ module.exports = function (state, emitter) {
   emitter.on('updateSelected', function (data) {
     state.selected[data.id] = data.value
 
-    // console.log(data.id)
-    // console.log(data.value)
-
     if ((data.id === 'appointmentType') && (['Supervision', 'Program'].includes(data.value))) {
       state.selected.program = null
     } else if (data.id === 'appointmentType') {
@@ -94,8 +91,6 @@ module.exports = function (state, emitter) {
 
     // hacky AF
     setTimeout(function() {emitter.emit('render')}, 10)
-
-  //  console.log(state.selected)
   })
 
   emitter.on('toggleLightbox', function () {
@@ -109,7 +104,19 @@ module.exports = function (state, emitter) {
   })
 
   emitter.on('submitNewRecipient', function (data) {
-    // console.log(data.location)
-    // console.log(data.program)
+    state.newRecipient.location = state.selected.location
+    state.newRecipient.programs = [state.selected.program]
+
+    state.region.offenders.push(state.newRecipient)
+    state.newRecipient = {
+      name: '',
+      phone: '',
+      location: '',
+      programs: []
+    }
+
+    emitter.emit('toggleLightbox')
+
+    console.log(state.region.offenders)
   })
 }

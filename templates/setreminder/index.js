@@ -185,26 +185,6 @@ module.exports = function (state, emit) {
       `
     }
 
-
-
-    function updateRecipientList () {
-      var recipients = document.getElementsByClassName('recipient')
-
-      while (recipients[0]) {
-        recipients[0].parentNode.removeChild(recipients[0])
-      }
-
-      (state.region.offenders.filter(function (offender) {
-        if (document.querySelector('#programSelector').value) {
-          return ((offender.location === document.querySelector('#locationSelector').value) && (offender.programs.includes(document.querySelector('#programSelector').value)))
-        } else {
-          return offender.location === document.querySelector('#locationSelector').value
-        }
-      })).map(function (offender) {
-        document.querySelector('#recipientList').insertAdjacentHTML('beforeend',`<div class="recipient"><p>${offender.name}</p><p>${offender.phone}</p></div>`)
-      })
-    }
-
     function addRecipientScreen () {
       var name = state.newRecipient.name
       var phone = state.newRecipient.phone
@@ -223,7 +203,7 @@ module.exports = function (state, emit) {
     }
 
     function submitNewRecipient () {
-      emit('submitNewRecipient', {location: document.querySelector('#locationSelector').value, program: document.querySelector('#programSelector').value})
+      emit('submitNewRecipient')
     }
 
     function updateInput (e) {
@@ -231,40 +211,12 @@ module.exports = function (state, emit) {
     }
 
     function close () {
-      var lightbox = document.querySelector('.lightbox')
-      lightbox.parentNode.removeChild(lightbox)
+      emit('toggleLightbox')
     }
 
     function toggleLightbox () {
       emit('toggleLightbox')
     }
-
-
-
-
-
-    function updateProgramDetails() {
-      var target = document.querySelector('#programSelector')
-      while(target.firstChild) {
-        target.removeChild(target.firstChild)
-      }
-
-      state.region.CWprograms[document.querySelector('#locationSelector').value].map(function (program) {
-        target.insertAdjacentHTML('beforeend', `<option value="${program}" id=${program}>${program}</option>`)
-      })
-
-      if(document.querySelector('#appointmentType').value !== 'Community Work') {
-        target.value = null
-      }
-
-      updateRecipientList()
-    }
-
-
-
-
-
-
 
     // <div class=${style}>
     //   <div>
