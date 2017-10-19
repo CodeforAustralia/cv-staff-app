@@ -308,7 +308,7 @@ module.exports = function (state, emit) {
           ${state.static.templates[state.selected.messageType]}
           <h6>Work program</h6>
           <p>
-            <select name="reminder program">
+            <select name="reminder program" id="program" onchange=${updatePage}>
             ${state.region.CWprograms[location].map(function (program) {
               if (program.name === state.selected.program)
                 return html`<option value="${program.name}" selected>${program.name}</option>`
@@ -319,7 +319,7 @@ module.exports = function (state, emit) {
           </p>
 
           <h6>Location</h6>
-          <p>${selectedProgram.address} <a href="#">Edit</a></p>
+          <p>${selectedProgram ? selectedProgram.address : null} <a href="#">Edit</a></p>
 
           on
 
@@ -348,7 +348,7 @@ module.exports = function (state, emit) {
           </div>
 
           <h6>Additional Information</h6>
-          ${selectedProgram.info} <br />
+          ${selectedProgram ? selectedProgram.info : null} <br />
           ${state.static.rescheduleText} <a href="#">Edit</a>
         </div>
       `
