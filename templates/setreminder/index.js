@@ -167,22 +167,36 @@ module.exports = function (state, emit) {
         <div id="recipientList">
           <div>
             <div>Recipients</div>
-            <button onclick=${toggleLightbox}>+</button>
-            ${state.lightbox ? html`<div class="lightbox">${addRecipientScreen()}</div>` : null }
+            <button onclick=${toggleRecipientListDisplay}>
+              ${state.selected.showRecipients ? '-' : '+'}
+            </button>
           </div>
 
-          ${(state.region.offenders.filter(function (offender) {
-            // look at this again
-            return ((offender.location === location) && (((program) && (offender.programs.includes(program))) || !program))
-          })).map(function (offender) {
-            return html`
-              <div class="recipient">
-                <p>${offender.name}</p>
-                <p>${offender.phone}</p>
-              </div>
-            `
-          })}
+          ${state.selected.showRecipients ? html`<div>
+            ${(state.region.offenders.filter(function (offender) {
+              // look at this again
+              return ((offender.location === location) && (((program) && (offender.programs.includes(program))) || !program))
+            })).map(function (offender) {
+              return html`
+                <div class="recipient">
+                  <p>${offender.name}</p>
+                  <p>${offender.phone}</p>
+                </div>
+              `
+            })}
+            <div id="addRecipient">
+              <button onclick=${toggleLightbox}>+</button>
+              ${state.lightbox ? html`<div class="lightbox">${addRecipientScreen()}</div>` : null }
+              <h4>Add another person to this group</h4>
+            </div>` : null}
+
+        </div>
+
       `
+    }
+
+    function toggleRecipientListDisplay () {
+      emit('toggleRecipientListDisplay')
     }
 
     function addRecipientScreen () {

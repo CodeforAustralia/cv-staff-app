@@ -69,7 +69,8 @@ module.exports = function (state, emitter) {
      appointmentType: state.static.appointmentTypes[0],
      messageType: state.static.messageTypes[0],
      location: state.region.locations[0],
-     program: state.region.CWprograms[state.region.locations[0]][0]
+     program: state.region.CWprograms[state.region.locations[0]][0],
+     showRecipients: true
     }
 
     emitter.emit('render')
@@ -98,6 +99,11 @@ module.exports = function (state, emitter) {
     emitter.emit('render')
   })
 
+  emitter.on('toggleRecipientListDisplay', function () {
+    state.selected.showRecipients = !state.selected.showRecipients
+    emitter.emit('render')
+  })
+
   emitter.on('updateInput', function (data) {
     state.newRecipient[data.id] = data.text
     emitter.emit('render')
@@ -116,7 +122,5 @@ module.exports = function (state, emitter) {
     }
 
     emitter.emit('toggleLightbox')
-
-    console.log(state.region.offenders)
   })
 }
