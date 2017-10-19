@@ -156,6 +156,7 @@ module.exports = function (state, emit) {
         </div>
         <div>
           ${generateMessageOptions()}
+          ${generateMessage()}
         </div>
       </div>
     `
@@ -211,10 +212,10 @@ module.exports = function (state, emit) {
               <h4>Community Work Program</h4>
               <select name="program" id="program" onchange=${updatePage}>
                 ${state.region.CWprograms[location].map(function (program) {
-                  if (program === state.selected.program) {
-                    return html`<option value="${program}" id="${program}" selected>${program}</option>`
+                  if (program.name === state.selected.program) {
+                    return html`<option value="${program.name}" id="${program.name}" selected>${program.name}</option>`
                   } else
-                    return html`<option value="${program}" id="${program}">${program}</option>`
+                    return html`<option value="${program.name}" id="${program.name}">${program.name}</option>`
                 })}
               </select>
             </div>` : null}
@@ -224,7 +225,7 @@ module.exports = function (state, emit) {
 
     function generateRecipients () {
       var location = state.selected.location ? state.selected.location : state.region.locations[0]
-      var program = state.selected.program !== 'init' ? state.selected.program : state.region.CWprograms[location][0]
+      var program = state.selected.program !== 'init' ? state.selected.program : state.region.CWprograms[location][0].name
 
       return html`
         <div id="recipientList">
@@ -293,6 +294,64 @@ module.exports = function (state, emit) {
 
     function toggleLightbox () {
       emit('toggleLightbox')
+    }
+
+    function generateMessage() {
+      var location = state.selected.location ? state.selected.location : state.region.locations[0]
+      var selectedProgram = state.selected.program === 'init' ? state.region.CWprograms[location][0] : state.region.CWprograms[location].filter(function (obj) {
+        return obj.name === state.selected.program
+      })[0]
+
+      return html`
+        <div>
+          <h3>Community Work Reminder</h3>
+          ${state.static.templates[state.selected.messageType]}
+          <h6>Work program</h6>
+          <p>
+            <select name="reminder program">
+            ${state.region.CWprograms[location].map(function (program) {
+              if (program.name === state.selected.program)
+                return html`<option value="${program.name}" selected>${program.name}</option>`
+              else
+                return html`<option value="${program.name}">${program.name}</option>`
+            })}
+            </select>
+          </p>
+
+          <h6>Location</h6>
+          <p>${selectedProgram.address} <a href="#">Edit</a></p>
+
+          on
+
+          <div id="reminderdate">
+            <div>
+              Date
+              <select name="day">
+                <option value="Friday 14 Sept">Friday 14 Sept</option>
+                <option value="Friday 21 Sept">Friday 21 Sept</option>
+              </select>
+            </div>
+            <div>
+              Start time
+              <select name="start time">
+                <option value="9.30am">9.30am</option>
+                <option value="10.00am">10.00am</option>
+              </select>
+            </div>
+            <div>
+              End time
+              <select name="end time">
+                <option value="3.00pm">3.00pm</option>
+                <option value="3.30pm">3.30pm</option>
+              </select>
+            </div>
+          </div>
+
+          <h6>Additional Information</h6>
+          ${selectedProgram.info} <br />
+          ${state.static.rescheduleText} <a href="#">Edit</a>
+        </div>
+      `
     }
 
     // <div class=${style}>

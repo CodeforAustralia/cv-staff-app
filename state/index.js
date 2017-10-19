@@ -5,7 +5,11 @@ module.exports = function (state, emitter) {
   function initialise () {
     state.static = {
       appointmentTypes: ['Community Work', 'Supervision', 'Program'],
-      messageTypes: ['Reminder', 'Reschedule', 'Missed Appointment', 'Cancellation']
+      messageTypes: ['Reminder', 'Reschedule', 'Missed Appointment', 'Cancellation'],
+      templates: {
+        'Reminder': 'You are required to attend work at'
+      },
+      rescheduleText: 'Please text N if you need to reschedule.'
     }
 
     state.lightbox = false
@@ -21,8 +25,20 @@ module.exports = function (state, emitter) {
       name: 'Grampians',
       locations: ['Ballarat', 'Horsham'],
       CWprograms: {
-        'Ballarat': ['St Vincent De Paul Friday InHouse Program', 'Woodwork'],
-        'Horsham': ['Stitch Picking']
+        'Ballarat': [{
+          name: 'St Vincent De Paul Friday InHouse Program',
+          address: '17 Goodyear Drive, Thomastown',
+          info: 'Please bring your lunch with you.'
+        }, {
+          name: 'Woodwork',
+          address: '206 Mair Street, Ballarat Central',
+          info: 'Please bring your lunch with you. Enclosed shoes must be worn.'
+        }],
+        'Horsham': [{
+          name: 'Stitch Picking',
+          address: '21 McLachlan Street, Horsham',
+          info: 'Please bring your lunch with you.'
+        }]
       },
       offenders: [
         {
@@ -69,7 +85,7 @@ module.exports = function (state, emitter) {
      appointmentType: state.static.appointmentTypes[0],
      messageType: state.static.messageTypes[0],
      location: state.region.locations[0],
-     program: state.region.CWprograms[state.region.locations[0]][0],
+     program: state.region.CWprograms[state.region.locations[0]][0].name,
      showRecipients: true
     }
 
@@ -82,11 +98,11 @@ module.exports = function (state, emitter) {
     if ((data.id === 'appointmentType') && (['Supervision', 'Program'].includes(data.value))) {
       state.selected.program = null
     } else if (data.id === 'appointmentType') {
-      state.selected.program = state.region.CWprograms[state.selected.location][0]
+      state.selected.program = state.region.CWprograms[state.selected.location][0].name
     }
 
     if ((data.id === 'location') && (state.selected.appointmentType === 'Community Work')) {
-      state.selected.program = state.region.CWprograms[data.value][0]
+      state.selected.program = state.region.CWprograms[data.value][0].name
     }
     emitter.emit('render')
 
