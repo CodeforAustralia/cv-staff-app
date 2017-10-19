@@ -1,3 +1,6 @@
+//TODO
+// fix if-else selected attribute nonsense
+
 // require dependencies
 var html = require('choo/html')
 var css = require('sheetify')
@@ -57,12 +60,35 @@ module.exports = function (state, emit) {
       -moz-border-radius: 6px;
       -webkit-border-radius: 6px;
     }
+
+    .lightbox {
+      align-items: center;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      left: 0;
+      position: fixed;
+      top: 0;
+      width: 100vw;
+    }
+
+    .addRecipient {
+      align-items: center;
+      background: #f5f5f5;
+      border-radius: 2px;
+      color: #ff3b3f;
+      display: flex;
+      flex-direction: column;
+      font-size: 20px;
+      padding: 2rem;
+    }
   `
 
   return html`
       <div class=${style}>
-        <div>
-          ${generateCWLocationDetails()}
+        <div onload=${fillSelected}>
+          ${generateAppointmentDetails()}
           ${generateRecipients()}
         </div>
         <div>
@@ -70,35 +96,84 @@ module.exports = function (state, emit) {
         </div>
       </div>
     `
-    function updateRecipientList () {
-      var recipients = document.getElementsByClassName('recipient')
+    function generateMessageOptions () {
+      return html`
+        <div>
+          <select name="appointmentType" id="appointmentType" onchange=${updatePage}>
+            ${state.static.appointmentTypes.map(function (appointmentType) {
+              if (appointmentType === state.selected.appointmentType)
+                return html`<option value=${appointmentType} selected>${appointmentType}</option>`
+              else
+                return html`<option value=${appointmentType}>${appointmentType}</option>`
+            })}
+          </select>
+          <select name="messageType" id="messageType" onchange=${updatePage}>
+            ${state.static.messageTypes.map(function (messageType) {
+              if (messageType === state.selected.messageType)
+                return html`<option value=${messageType} selected>${messageType}</option>`
+              else
+                return html`<option value=${messageType}>${messageType}</option>`
+            })}
+          </select>
+        </div>
+      `
+    }
 
-      while (recipients[0]) {
-        recipients[0].parentNode.removeChild(recipients[0])
-      }
+    function fillSelected () {
+      emit('defaultSelected')
+    }
 
-      (state.region.offenders.filter(function (offender) {
-        console.log(document.querySelector('#programSelector').value)
-        if (document.querySelector('#programSelector').value) {
-          return ((offender.location === document.querySelector('#locationSelector').value) && (offender.programs.includes(document.querySelector('#programSelector').value)))
-        } else {
-          return offender.location === document.querySelector('#locationSelector').value
-        }
-      })).map(function (offender) {
-        document.querySelector('#recipientList').insertAdjacentHTML('beforeend',`<div class="recipient"><p>${offender.name}</p><p>${offender.phone}</p></div>`)
-      })
+    function updatePage (e) {
+      emit('updateSelected', {id: e.target.id, value: e.target.value})
+    }
+
+    function generateAppointmentDetails () {
+      var location = state.selected.location ? state.selected.location : state.region.locations[0]
+
+      return html`
+        <div>
+          <div id="location">
+            <h4>Location</h4>
+            <select name="location" id="location" onchange=${updatePage}>
+              ${state.region.locations.map(function (location) {
+                  if (location === state.selected.location)
+                    return html`<option value=${location} selected>${location}</option>`
+                  else
+                    return html`<option value="${location}">${location}</option>`
+              })}
+            </select>
+          </div>
+          ${state.selected.program ? html`
+            <div>
+              <h4>Community Work Program</h4>
+              <select name="program" id="program" onchange=${updatePage}>
+                ${state.region.CWprograms[location].map(function (program) {
+                  if (program === state.selected.program) {
+                    return html`<option value="${program}" id="${program}" selected>${program}</option>`
+                  } else
+                    return html`<option value="${program}" id="${program}">${program}</option>`
+                })}
+              </select>
+            </div>` : null}
+        </div>
+      `
     }
 
     function generateRecipients () {
+      var location = state.selected.location ? state.selected.location : state.region.locations[0]
+      var program = state.selected.program !== 'init' ? state.selected.program : state.region.CWprograms[location][0]
+
       return html`
         <div id="recipientList">
           <div>
             <div>Recipients</div>
-            <button>+</button>
+            <button onclick=${toggleLightbox}>+</button>
+            ${state.lightbox ? html`<div class="lightbox">${addRecipientScreen()}</div>` : null }
           </div>
 
           ${(state.region.offenders.filter(function (offender) {
-            return ((offender.location === state.region.locations[0]) && (offender.programs.includes(state.region.CWprograms[state.region.locations[0]][0])))
+            // look at this again
+            return ((offender.location === location) && (((program) && (offender.programs.includes(program))) || !program))
           })).map(function (offender) {
             return html`
               <div class="recipient">
@@ -110,21 +185,63 @@ module.exports = function (state, emit) {
       `
     }
 
-    function generateCWLocationDetails () {
+
+
+    function updateRecipientList () {
+      var recipients = document.getElementsByClassName('recipient')
+
+      while (recipients[0]) {
+        recipients[0].parentNode.removeChild(recipients[0])
+      }
+
+      (state.region.offenders.filter(function (offender) {
+        if (document.querySelector('#programSelector').value) {
+          return ((offender.location === document.querySelector('#locationSelector').value) && (offender.programs.includes(document.querySelector('#programSelector').value)))
+        } else {
+          return offender.location === document.querySelector('#locationSelector').value
+        }
+      })).map(function (offender) {
+        document.querySelector('#recipientList').insertAdjacentHTML('beforeend',`<div class="recipient"><p>${offender.name}</p><p>${offender.phone}</p></div>`)
+      })
+    }
+
+    function addRecipientScreen () {
+      var name = state.newRecipient.name
+      var phone = state.newRecipient.phone
+
       return html`
-        <div>
-          <div id="location">
-            <h4>Location</h4>
-            <select name="location" id="locationSelector" onchange=${updateProgramDetails}>
-              ${state.region.locations.map(function (location) {
-                  return html`<option value="${location}">${location}</option>`
-              })}
-            </select>
-          </div>
-          ${generateProgramDetails()}
+        <div class="addRecipient">
+          <h3>Add to Group</h3>
+          <h4>Name</h4>
+          <input type="text" id="name" value=${name} oninput=${updateInput} />
+          <h4>Mobile Number</h4>
+          <input type="text" id="phone" value=${phone} oninput=${updateInput} />
+          <button onclick=${submitNewRecipient}>Submit</button>
+          <button onclick=${close}>Close</button>
         </div>
       `
     }
+
+    function submitNewRecipient () {
+      emit('submitNewRecipient', {location: document.querySelector('#locationSelector').value, program: document.querySelector('#programSelector').value})
+    }
+
+    function updateInput (e) {
+      emit('updateInput', {id: e.target.id, text: e.target.value})
+    }
+
+    function close () {
+      var lightbox = document.querySelector('.lightbox')
+      lightbox.parentNode.removeChild(lightbox)
+    }
+
+    function toggleLightbox () {
+      emit('toggleLightbox')
+    }
+
+
+
+
 
     function updateProgramDetails() {
       var target = document.querySelector('#programSelector')
@@ -143,46 +260,11 @@ module.exports = function (state, emit) {
       updateRecipientList()
     }
 
-    function generateProgramDetails () {
-      return html`
-        <div id="program">
-          <h4>Community Work Program</h4>
-            <select name="program" id="programSelector" onchange=${updateRecipientList}>
-              ${state.region.CWprograms[state.region.locations[0]].map(function (program) {
-                return html`<option value="${program}" id="${program}">${program}</option>`
-              })}
-            </select>
-        </div>
-      `
-    }
 
-    function generateMessageOptions () {
-      return html`
-        <div>
-          <select name="appointmentType" id="appointmentType" onchange=${updatePage}>
-            ${state.static.appointmentTypes.map(function (appointmentType) {
-              return html`<option value=${appointmentType}>${appointmentType}</option>`
-            })}
-          </select>
-          <select name="message">
-            ${state.static.messageTypes.map(function (messageType) {
-              return html`<option value=${messageType}>${messageType}</option>`
-            })}
-          </select>
-        </div>
-      `
-    }
 
-    function updatePage (e) {
-      if (['Supervision', 'Program'].indexOf(e.target.value) > -1) {
-        document.querySelector('#program').style.display = 'none'
-        document.querySelector('#programSelector').value = null
-      } else if (e.target.value === 'Community Work') {
-        var target = document.querySelector('#program').style.display = 'block'
-        document.querySelector('#programSelector').value = state.region.CWprograms[document.querySelector('#locationSelector').value][0]
-      }
-      updateRecipientList()
-    }
+
+
+
 
     // <div class=${style}>
     //   <div>

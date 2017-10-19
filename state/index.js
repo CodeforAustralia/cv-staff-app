@@ -8,6 +8,15 @@ module.exports = function (state, emitter) {
       messageTypes: ['Reminder', 'Reschedule', 'Missed Appointment', 'Cancellation']
     }
 
+    state.lightbox = false
+
+    state.newRecipient = {
+      name: '',
+      phone: '',
+      location: '',
+      programs: []
+    }
+
     state.region = {
       name: 'Grampians',
       locations: ['Ballarat', 'Horsham'],
@@ -49,5 +58,58 @@ module.exports = function (state, emitter) {
         }
       ]
     }
+
+    state.selected = {
+      program: 'init'
+    }
   }
+
+  emitter.on('defaultSelected', function () {
+    state.selected = {
+     appointmentType: state.static.appointmentTypes[0],
+     messageType: state.static.messageTypes[0],
+     location: state.region.locations[0],
+     program: state.region.CWprograms[state.region.locations[0]][0]
+    }
+
+    emitter.emit('render')
+  })
+
+  emitter.on('updateSelected', function (data) {
+    state.selected[data.id] = data.value
+
+    // console.log(data.id)
+    // console.log(data.value)
+
+    if ((data.id === 'appointmentType') && (['Supervision', 'Program'].includes(data.value))) {
+      state.selected.program = null
+    } else if (data.id === 'appointmentType') {
+      state.selected.program = state.region.CWprograms[state.selected.location][0]
+    }
+
+    if ((data.id === 'location') && (state.selected.appointmentType === 'Community Work')) {
+      state.selected.program = state.region.CWprograms[data.value][0]
+    }
+    emitter.emit('render')
+
+    // hacky AF
+    setTimeout(function() {emitter.emit('render')}, 10)
+
+  //  console.log(state.selected)
+  })
+
+  emitter.on('toggleLightbox', function () {
+    state.lightbox = !state.lightbox
+    emitter.emit('render')
+  })
+
+  emitter.on('updateInput', function (data) {
+    state.newRecipient[data.id] = data.text
+    emitter.emit('render')
+  })
+
+  emitter.on('submitNewRecipient', function (data) {
+    // console.log(data.location)
+    // console.log(data.program)
+  })
 }
