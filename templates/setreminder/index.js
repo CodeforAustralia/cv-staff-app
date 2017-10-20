@@ -179,6 +179,11 @@ module.exports = function (state, emit) {
       background-color: #f4f4f4;
       padding: 2rem;
     }
+
+    #preview > a {
+      color: blue;
+      text-decoration: none;
+    }
   `
 
   return html`
@@ -412,9 +417,9 @@ module.exports = function (state, emit) {
         <div>
           <h4>This is the SMS you will send</h4>
           <div id="preview">
-            ${state.static.templates[state.selected.messageType]} at
+            ${state.static.templates[state.selected.messageType]} 
             ${state.selected.program} at
-            ${state.message.address}
+            <a target="_blank" href="https://www.google.com.au/maps/place/${state.message.address.split(' ').join('+')}">${state.message.address}</a>
             on Friday, 14 September at 9.30am until 3.00pm.
             <br />
             ${state.message.additionalInfo}

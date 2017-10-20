@@ -7,7 +7,7 @@ module.exports = function (state, emitter) {
       appointmentTypes: ['Community Work', 'Supervision', 'Program'],
       messageTypes: ['Reminder', 'Reschedule', 'Missed Appointment', 'Cancellation'],
       templates: {
-        'Reminder': 'You are required to attend work at'
+        'Reminder': 'You are required to attend work at '
       },
       rescheduleText: 'Please text N if you need to reschedule.'
     }
@@ -28,7 +28,7 @@ module.exports = function (state, emitter) {
         'address': 'CCS 206 Mair Street, Ballarat Central'
       }, {
         'name': 'Horsham',
-        'address': 'CCS 21 McLachlan Street, Horhsam'
+        'address': 'CCS 21 McLachlan Street, Horsham'
       }],
       CWprograms: {
         'Ballarat': [{
