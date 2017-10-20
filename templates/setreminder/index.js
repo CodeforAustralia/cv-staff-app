@@ -174,6 +174,11 @@ module.exports = function (state, emit) {
       flex-direction: column;
       justify-content: flex-start;
     }
+
+    #preview {
+      background-color: #f4f4f4;
+      padding: 2rem;
+    }
   `
 
   return html`
@@ -185,6 +190,7 @@ module.exports = function (state, emit) {
         <div>
           ${generateMessageOptions()}
           ${generateMessage()}
+          ${generatePreview()}
         </div>
       </div>
     `
@@ -385,6 +391,8 @@ module.exports = function (state, emit) {
             ${state.message.additionalInfo}
           </textarea>
           <span onclick=${editInfo}>Edit</span>
+
+          <button>Schedule SMS</button>
         </div>
       `
     }
@@ -397,6 +405,22 @@ module.exports = function (state, emit) {
     function editAddress () {
       document.querySelector('#address').disabled = false
       document.querySelector('#address').focus()
+    }
+
+    function generatePreview () {
+      return html`
+        <div>
+          <h4>This is the SMS you will send</h4>
+          <div id="preview">
+            ${state.static.templates[state.selected.messageType]} at
+            ${state.selected.program} at
+            ${state.message.address}
+            on Friday, 14 September at 9.30am until 3.00pm.
+            <br />
+            ${state.message.additionalInfo}
+          </div>
+        </div>
+      `
     }
 
     // <div class=${style}>
