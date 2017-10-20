@@ -155,6 +155,11 @@ module.exports = function (state, emitter) {
     emitter.emit('render')
   })
 
+  emitter.on('updateMessage', function (data) {
+    state.message[data.id] = data.text
+    console.log(state.message)
+  })
+
   emitter.on('updateInput', function (data) {
     state.newRecipient[data.id] = data.text
     emitter.emit('render')

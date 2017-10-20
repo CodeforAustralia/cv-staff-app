@@ -301,13 +301,15 @@ module.exports = function (state, emit) {
       emit('toggleLightbox')
     }
 
+    function updateMessage(e) {
+      emit('updateMessage', {id: e.target.id, text: e.target.value})
+    }
+
     function generateMessage() {
       var location = state.selected.location ? state.selected.location : state.region.locations[0].name
       var selectedProgram = state.selected.program === 'init' ? state.region.CWprograms[location][0] : state.region.CWprograms[location].filter(function (obj) {
         return obj.name === state.selected.program
       })[0]
-
-    //  var address = selectedProgram ? selectedProgram.address : null
 
       return html`
         <div id="messageContent">
@@ -326,7 +328,7 @@ module.exports = function (state, emit) {
           </p>
 
           <h4>Location</h4>
-          <input type="text" id="messageAddress" value="${state.message.address}" disabled />
+          <input type="text" id="address" value="${state.message.address}" oninput=${updateMessage} disabled />
           <p onclick=${editAddress}>Edit</p>
 
           on
@@ -363,7 +365,7 @@ module.exports = function (state, emit) {
     }
 
     function editAddress () {
-      document.querySelector('#messageAddress').disabled = false
+      document.querySelector('#address').disabled = false
     }
 
     // <div class=${style}>
