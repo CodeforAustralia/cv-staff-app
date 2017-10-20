@@ -86,7 +86,8 @@ module.exports = function (state, emitter) {
     }
 
     state.message = {
-      address: ''
+      address: '',
+      additionalInfo: ''
     }
   }
 
@@ -100,6 +101,7 @@ module.exports = function (state, emitter) {
     }
 
     state.message.address = state.region.CWprograms[state.region.locations[0].name][0].address
+    state.message.additionalInfo = state.region.CWprograms[state.region.locations[0].name][0].info + '\n' + state.static.rescheduleText
 
     emitter.emit('render')
   })
@@ -112,24 +114,30 @@ module.exports = function (state, emitter) {
       state.message.address = (state.region.locations.filter(function (obj) {
         return obj.name === state.selected.location
       }))[0].address
+      state.message.additionalInfo = ''
     } else if (data.id === 'appointmentType') {
-      state.selected.program = state.region.CWprograms[state.selected.location][0].name
-      updateMessageAddress(state.selected.program)
+      var program = state.region.CWprograms[state.selected.location][0]
+      state.selected.program = program.name
+      updateMessage(program)
     }
 
     if (data.id === 'location') {
       if (state.selected.appointmentType === 'Community Work') {
         state.selected.program = state.region.CWprograms[data.value][0].name
-        updateMessageAddress(state.selected.program)
+        var program = state.region.CWprograms[data.value][0]
+        updateMessage(program)
       } else {
-        state.message.address = (state.region.locations.filter(function (obj) {
+        var program = (state.region.locations.filter(function (obj) {
           return obj.name === data.value
-        }))[0].address
+        }))[0]
+        state.message.address = program.address
+        state.message.additionalInfo = program.info + '\n' + state.static.rescheduleText
       }
     }
 
     if (data.id === 'program') {
-      updateMessageAddress(data.value)
+      updateMessage(state.region.CWprograms[state.selected.location].filter(function (obj) {
+        return obj.name === data.value})[0])
     }
 
     emitter.emit('render')
@@ -137,10 +145,9 @@ module.exports = function (state, emitter) {
     // hacky AF
     setTimeout(function() {emitter.emit('render')}, 10)
 
-    function updateMessageAddress (programName) {
-      state.message.address = (state.region.CWprograms[state.selected.location].filter(function (obj) {
-        return obj.name === programName
-      }))[0].address
+    function updateMessage (program) {
+      state.message.address = program.address
+      state.message.additionalInfo = program.info + '\n' + state.static.rescheduleText
     }
   })
 
@@ -157,7 +164,6 @@ module.exports = function (state, emitter) {
 
   emitter.on('updateMessage', function (data) {
     state.message[data.id] = data.text
-    console.log(state.message)
   })
 
   emitter.on('updateInput', function (data) {

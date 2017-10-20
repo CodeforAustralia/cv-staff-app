@@ -151,6 +151,29 @@ module.exports = function (state, emit) {
       border: 0;
       width: 80%;
     }
+
+    #messageContent > span {
+      color: blue;
+      cursor: pointer;
+    }
+
+    textarea {
+      border: 0;
+      height: 5rem;
+      width: 80%;
+    }
+
+    #reminderdate {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+
+    #reminderdate > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
   `
 
   return html`
@@ -329,9 +352,9 @@ module.exports = function (state, emit) {
 
           <h4>Location</h4>
           <input type="text" id="address" value="${state.message.address}" oninput=${updateMessage} disabled />
-          <p onclick=${editAddress}>Edit</p>
+          <span onclick=${editAddress}>Edit</span>
 
-          on
+          <p>on</p>
 
           <div id="reminderdate">
             <div>
@@ -357,15 +380,23 @@ module.exports = function (state, emit) {
             </div>
           </div>
 
-          <h6>Additional Information</h6>
-          ${selectedProgram ? selectedProgram.info : null} <br />
-          ${state.static.rescheduleText} <a href="#">Edit</a>
+          <h4>Additional Information</h4>
+          <textarea type="text" id="additionalInfo" oninput=${updateMessage} placeholder="${state.message.additionalInfo}" disabled>
+            ${state.message.additionalInfo}
+          </textarea>
+          <span onclick=${editInfo}>Edit</span>
         </div>
       `
     }
 
+    function editInfo () {
+      document.querySelector('#additionalInfo').disabled = false
+      document.querySelector('#additionalInfo').focus()
+    }
+
     function editAddress () {
       document.querySelector('#address').disabled = false
+      document.querySelector('#address').focus()
     }
 
     // <div class=${style}>
