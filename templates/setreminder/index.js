@@ -146,6 +146,11 @@ module.exports = function (state, emit) {
       color: #6f6e75;
       margin: 1rem 0;
     }
+
+    #messageContent > input {
+      border: 0;
+      width: 80%;
+    }
   `
 
   return html`
@@ -192,7 +197,7 @@ module.exports = function (state, emit) {
     }
 
     function generateAppointmentDetails () {
-      var location = state.selected.location ? state.selected.location : state.region.locations[0]
+      var location = state.selected.location ? state.selected.location : state.region.locations[0].name
 
       return html`
         <div>
@@ -200,10 +205,10 @@ module.exports = function (state, emit) {
             <h4>Location</h4>
             <select name="location" id="location" onchange=${updatePage}>
               ${state.region.locations.map(function (location) {
-                  if (location === state.selected.location)
-                    return html`<option value=${location} selected>${location}</option>`
+                  if (location.name === state.selected.location)
+                    return html`<option value=${location.name} selected>${location.name}</option>`
                   else
-                    return html`<option value="${location}">${location}</option>`
+                    return html`<option value="${location.name}">${location.name}</option>`
               })}
             </select>
           </div>
@@ -224,7 +229,7 @@ module.exports = function (state, emit) {
     }
 
     function generateRecipients () {
-      var location = state.selected.location ? state.selected.location : state.region.locations[0]
+      var location = state.selected.location ? state.selected.location : state.region.locations[0].name
       var program = state.selected.program !== 'init' ? state.selected.program : state.region.CWprograms[location][0].name
 
       return html`
@@ -297,16 +302,18 @@ module.exports = function (state, emit) {
     }
 
     function generateMessage() {
-      var location = state.selected.location ? state.selected.location : state.region.locations[0]
+      var location = state.selected.location ? state.selected.location : state.region.locations[0].name
       var selectedProgram = state.selected.program === 'init' ? state.region.CWprograms[location][0] : state.region.CWprograms[location].filter(function (obj) {
         return obj.name === state.selected.program
       })[0]
 
+    //  var address = selectedProgram ? selectedProgram.address : null
+
       return html`
-        <div>
+        <div id="messageContent">
           <h3>Community Work Reminder</h3>
           ${state.static.templates[state.selected.messageType]}
-          <h6>Work program</h6>
+          <h4>Work program</h4>
           <p>
             <select name="reminder program" id="program" onchange=${updatePage}>
             ${state.region.CWprograms[location].map(function (program) {
@@ -318,8 +325,9 @@ module.exports = function (state, emit) {
             </select>
           </p>
 
-          <h6>Location</h6>
-          <p>${selectedProgram ? selectedProgram.address : null} <a href="#">Edit</a></p>
+          <h4>Location</h4>
+          <input type="text" id="messageAddress" value="${state.message.address}" disabled />
+          <p onclick=${editAddress}>Edit</p>
 
           on
 
@@ -352,6 +360,10 @@ module.exports = function (state, emit) {
           ${state.static.rescheduleText} <a href="#">Edit</a>
         </div>
       `
+    }
+
+    function editAddress () {
+      document.querySelector('#messageAddress').disabled = false
     }
 
     // <div class=${style}>

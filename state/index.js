@@ -23,7 +23,13 @@ module.exports = function (state, emitter) {
 
     state.region = {
       name: 'Grampians',
-      locations: ['Ballarat', 'Horsham'],
+      locations: [{
+        'name': 'Ballarat',
+        'address': 'CCS 206 Mair Street, Ballarat Central'
+      }, {
+        'name': 'Horsham',
+        'address': 'CCS 21 McLachlan Street, Horhsam'
+      }],
       CWprograms: {
         'Ballarat': [{
           name: 'St Vincent De Paul Friday InHouse Program',
@@ -78,16 +84,22 @@ module.exports = function (state, emitter) {
     state.selected = {
       program: 'init'
     }
+
+    state.message = {
+      address: ''
+    }
   }
 
   emitter.on('defaultSelected', function () {
     state.selected = {
      appointmentType: state.static.appointmentTypes[0],
      messageType: state.static.messageTypes[0],
-     location: state.region.locations[0],
-     program: state.region.CWprograms[state.region.locations[0]][0].name,
+     location: state.region.locations[0].name,
+     program: state.region.CWprograms[state.region.locations[0].name][0].name,
      showRecipients: true
     }
+
+    state.message.address = state.region.CWprograms[state.region.locations[0].name][0].address
 
     emitter.emit('render')
   })
@@ -97,18 +109,41 @@ module.exports = function (state, emitter) {
 
     if ((data.id === 'appointmentType') && (['Supervision', 'Program'].includes(data.value))) {
       state.selected.program = null
+      state.message.address = (state.region.locations.filter(function (obj) {
+        return obj.name === state.selected.location
+      }))[0].address
     } else if (data.id === 'appointmentType') {
       state.selected.program = state.region.CWprograms[state.selected.location][0].name
+      updateMessageAddress(state.selected.program)
     }
 
-    if ((data.id === 'location') && (state.selected.appointmentType === 'Community Work')) {
-      state.selected.program = state.region.CWprograms[data.value][0].name
+    if (data.id === 'location') {
+      if (state.selected.appointmentType === 'Community Work') {
+        state.selected.program = state.region.CWprograms[data.value][0].name
+        updateMessageAddress(state.selected.program)
+      } else {
+        state.message.address = (state.region.locations.filter(function (obj) {
+          return obj.name === data.value
+        }))[0].address
+      }
     }
+
+    if (data.id === 'program') {
+      updateMessageAddress(data.value)
+    }
+
     emitter.emit('render')
 
     // hacky AF
     setTimeout(function() {emitter.emit('render')}, 10)
+
+    function updateMessageAddress (programName) {
+      state.message.address = (state.region.CWprograms[state.selected.location].filter(function (obj) {
+        return obj.name === programName
+      }))[0].address
+    }
   })
+
 
   emitter.on('toggleLightbox', function () {
     state.lightbox = !state.lightbox
