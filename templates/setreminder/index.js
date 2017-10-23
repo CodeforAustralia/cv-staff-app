@@ -250,7 +250,7 @@ module.exports = function (state, emit) {
             <div>
               <h4>Community Work Program</h4>
               <select name="program" id="program" onchange=${updatePage}>
-                ${state.region.CWprograms[location].map(function (program) {
+                ${state.region.CWprograms.map(function (program) {
                   if (program.name === state.selected.program) {
                     return html`<option value="${program.name}" id="${program.name}" selected>${program.name}</option>`
                   } else
@@ -264,7 +264,7 @@ module.exports = function (state, emit) {
 
     function generateRecipients () {
       var location = state.selected.location ? state.selected.location : state.region.locations[0].name
-      var program = state.selected.program !== 'init' ? state.selected.program : state.region.CWprograms[location][0].name
+      var program = state.selected.program !== 'init' ? state.selected.program : state.region.CWprograms[0].name
 
       return html`
         <div id="recipientList">
@@ -341,25 +341,31 @@ module.exports = function (state, emit) {
 
     function generateMessage() {
       var location = state.selected.location ? state.selected.location : state.region.locations[0].name
-      var selectedProgram = state.selected.program === 'init' ? state.region.CWprograms[location][0] : state.region.CWprograms[location].filter(function (obj) {
+      var selectedProgram = state.selected.program === 'init' ? state.region.CWprograms[location][0] : state.region.CWprograms.filter(function (obj) {
         return obj.name === state.selected.program
       })[0]
 
+      var template = state.selected.messageType ? state.static.templates[state.selected.messageType][state.selected.appointmentType] : state.static.templates[state.static.messageTypes[0]][state.static.appointmentTypes[0]]
       return html`
         <div id="messageContent">
           <h3>Community Work Reminder</h3>
-          ${state.static.templates[state.selected.messageType]}
-          <h4>Work program</h4>
-          <p>
-            <select name="reminder program" id="program" onchange=${updatePage}>
-            ${state.region.CWprograms[location].map(function (program) {
-              if (program.name === state.selected.program)
-                return html`<option value="${program.name}" selected>${program.name}</option>`
-              else
-                return html`<option value="${program.name}">${program.name}</option>`
-            })}
-            </select>
-          </p>
+
+          ${template}
+          ${state.selected.program ? html`
+            <div>
+              <h4>Work program</h4>
+              <p>
+                <select name="reminder program" id="program" onchange=${updatePage}>
+                  ${state.region.CWprograms.map(function (program) {
+                    if (program.name === state.selected.program)
+                      return html`<option value="${program.name}" selected>${program.name}</option>`
+                    else
+                      return html`<option value="${program.name}">${program.name}</option>`
+                  })}
+                </select>
+              </p>
+            </div>
+          ` : null}
 
           <h4>Location</h4>
           <input type="text" id="address" value="${state.message.address}" oninput=${updateMessage} disabled />
@@ -417,7 +423,7 @@ module.exports = function (state, emit) {
         <div>
           <h4>This is the SMS you will send</h4>
           <div id="preview">
-            ${state.static.templates[state.selected.messageType]} 
+            ${state.static.templates[state.selected.messageType]}
             ${state.selected.program} at
             <a target="_blank" href="https://www.google.com.au/maps/place/${state.message.address.split(' ').join('+')}">${state.message.address}</a>
             on Friday, 14 September at 9.30am until 3.00pm.

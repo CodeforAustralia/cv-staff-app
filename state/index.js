@@ -7,7 +7,11 @@ module.exports = function (state, emitter) {
       appointmentTypes: ['Community Work', 'Supervision', 'Program'],
       messageTypes: ['Reminder', 'Reschedule', 'Missed Appointment', 'Cancellation'],
       templates: {
-        'Reminder': 'You are required to attend work at '
+        'Reminder': {
+          'Community Work': 'You are required to attend work at ',
+          'Supervision': 'You are required to meet with your supervisor at ',
+          'Program': 'You are required to attend an appointment at '
+        }
       },
       rescheduleText: 'Please text N if you need to reschedule.'
     }
@@ -30,8 +34,7 @@ module.exports = function (state, emitter) {
         'name': 'Horsham',
         'address': 'CCS 21 McLachlan Street, Horsham'
       }],
-      CWprograms: {
-        'Ballarat': [{
+      CWprograms: [{
           name: 'St Vincent De Paul Friday InHouse Program',
           address: '17 Goodyear Drive, Thomastown',
           info: 'Please bring your lunch with you.'
@@ -39,13 +42,11 @@ module.exports = function (state, emitter) {
           name: 'Woodwork',
           address: '206 Mair Street, Ballarat Central',
           info: 'Please bring your lunch with you. Enclosed shoes must be worn.'
-        }],
-        'Horsham': [{
+        }, {
           name: 'Stitch Picking',
           address: '21 McLachlan Street, Horsham',
           info: 'Please bring your lunch with you.'
-        }]
-      },
+        }],
       offenders: [
         {
           name: 'Amin Min',
@@ -96,12 +97,12 @@ module.exports = function (state, emitter) {
      appointmentType: state.static.appointmentTypes[0],
      messageType: state.static.messageTypes[0],
      location: state.region.locations[0].name,
-     program: state.region.CWprograms[state.region.locations[0].name][0].name,
+     program: state.region.CWprograms[0].name,
      showRecipients: true
     }
 
-    state.message.address = state.region.CWprograms[state.region.locations[0].name][0].address
-    state.message.additionalInfo = state.region.CWprograms[state.region.locations[0].name][0].info + '\n' + state.static.rescheduleText
+    state.message.address = state.region.CWprograms[0].address
+    state.message.additionalInfo = state.region.CWprograms[0].info + '\n' + state.static.rescheduleText
 
     emitter.emit('render')
   })
@@ -109,34 +110,32 @@ module.exports = function (state, emitter) {
   emitter.on('updateSelected', function (data) {
     state.selected[data.id] = data.value
 
-    if ((data.id === 'appointmentType') && (['Supervision', 'Program'].includes(data.value))) {
-      state.selected.program = null
-      state.message.address = (state.region.locations.filter(function (obj) {
-        return obj.name === state.selected.location
-      }))[0].address
-      state.message.additionalInfo = ''
-    } else if (data.id === 'appointmentType') {
-      var program = state.region.CWprograms[state.selected.location][0]
-      state.selected.program = program.name
-      updateMessage(program)
+    if (data.id === 'appointmentType') {
+      state.message.appointmentType = data.value
+      if (['Supervision', 'Program'].includes(data.value)) {
+        state.selected.program = null
+        state.message.address = (state.region.locations.filter(function (obj) {
+          return obj.name === state.selected.location
+        }))[0].address
+        state.message.additionalInfo = ''
+        state.message.appointmentType = data.value
+      } else {
+        var program = state.region.CWprograms[0]
+        state.selected.program = program.name
+        updateMessage(program)
+      }
     }
 
     if (data.id === 'location') {
-      if (state.selected.appointmentType === 'Community Work') {
-        state.selected.program = state.region.CWprograms[data.value][0].name
-        var program = state.region.CWprograms[data.value][0]
-        updateMessage(program)
-      } else {
-        var program = (state.region.locations.filter(function (obj) {
+      var program = (state.region.locations.filter(function (obj) {
           return obj.name === data.value
         }))[0]
         state.message.address = program.address
         state.message.additionalInfo = program.info + '\n' + state.static.rescheduleText
-      }
     }
 
     if (data.id === 'program') {
-      updateMessage(state.region.CWprograms[state.selected.location].filter(function (obj) {
+      updateMessage(state.region.CWprograms.filter(function (obj) {
         return obj.name === data.value})[0])
     }
 
