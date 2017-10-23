@@ -419,12 +419,14 @@ module.exports = function (state, emit) {
     }
 
     function generatePreview () {
+      var template = state.selected.messageType ? state.static.templates[state.selected.messageType][state.selected.appointmentType] : state.static.templates[state.static.messageTypes[0]][state.static.appointmentTypes[0]]
+
       return html`
         <div>
           <h4>This is the SMS you will send</h4>
           <div id="preview">
-            ${state.static.templates[state.selected.messageType]}
-            ${state.selected.program} at
+            ${template}
+            ${state.selected.program ? state.selected.program + ' ' : null}
             <a target="_blank" href="https://www.google.com.au/maps/place/${state.message.address.split(' ').join('+')}">${state.message.address}</a>
             on Friday, 14 September at 9.30am until 3.00pm.
             <br />

@@ -9,8 +9,23 @@ module.exports = function (state, emitter) {
       templates: {
         'Reminder': {
           'Community Work': 'You are required to attend work at ',
-          'Supervision': 'You are required to meet with your supervisor at ',
+          'Supervision': 'You are required to attend an appointment at ',
           'Program': 'You are required to attend an appointment at '
+        },
+        'Reschedule': {
+          'Community Work': 'We need to reschedule your community work. You are now required to attend work at ',
+          'Supervision': 'We need to reschedule your appointment. You are now required to attend an appointment at ',
+          'Program': 'We need to reschedule your appointment. You are now required to attend an appointment at '
+        },
+        'Missed Appointment': {
+          'Community Work': `You didn't attend community work at `,
+          'Supervision': `You didn't attend your appointment at `,
+          'Program': `You didn't attend your appointment at `
+        },
+        'Cancellation': {
+          'Community Work': 'Your community work at ',
+          'Supervision': 'Your appointment at ',
+          'Program': 'Your appointment at '
         }
       },
       rescheduleText: 'Please text N if you need to reschedule.'
