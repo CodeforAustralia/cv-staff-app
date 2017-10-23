@@ -141,6 +141,12 @@ module.exports = function (state, emitter) {
       }
     }
 
+    if (data.id === 'messageType') {
+      if (['Missed Appointment', 'Cancellation'].includes(data.value)) {
+        state.message.additionalInfo = ''
+      }
+    }
+
     if (data.id === 'location') {
       var program = (state.region.locations.filter(function (obj) {
           return obj.name === data.value
