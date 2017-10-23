@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd /var/www/html
-rm -rf app-playground
+rm -rf cv-staff-app
