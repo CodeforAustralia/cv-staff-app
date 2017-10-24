@@ -98,13 +98,16 @@ module.exports = function (state, emitter) {
     }
 
     state.selected = {
-      program: 'init'
+      program: 'init',
+      showRecipients: true
     }
 
     state.message = {
       address: '',
       additionalInfo: ''
     }
+
+    state.loaded = false
   }
 
   emitter.on('defaultSelected', function () {
@@ -119,7 +122,9 @@ module.exports = function (state, emitter) {
     state.message.address = state.region.CWprograms[0].address
     state.message.additionalInfo = state.region.CWprograms[0].info + '\n' + state.static.rescheduleText
 
-    emitter.emit('render')
+    state.loaded = true
+
+    setTimeout(function () { emitter.emit('render') }, 10)
   })
 
   emitter.on('updateSelected', function (data) {

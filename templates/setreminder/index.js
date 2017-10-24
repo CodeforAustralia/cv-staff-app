@@ -192,7 +192,8 @@ module.exports = function (state, emit) {
 
   return html`
       <div class=${style}>
-        <div onload=${fillSelected}>
+        ${state.loaded ? null : fillSelected()}
+        <div>
           ${generateAppointmentDetails()}
           ${generateRecipients()}
         </div>
@@ -227,6 +228,7 @@ module.exports = function (state, emit) {
     }
 
     function fillSelected () {
+      console.log('fillSelected')
       emit('defaultSelected')
     }
 

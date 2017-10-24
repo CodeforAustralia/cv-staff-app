@@ -17,4 +17,6 @@ css('./assets/normalize.css')
 app.route('/setreminder', require('./templates/setreminder'))
 
 // start app
-document.body.appendChild(app.start())
+if (typeof window !== 'undefined') {
+  document.body.appendChild(app.start())
+}
