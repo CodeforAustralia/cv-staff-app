@@ -345,7 +345,7 @@ module.exports = function (state, emit) {
 
     function generateMessage() {
       var location = state.selected.location ? state.selected.location : state.region.locations[0].name
-      var selectedProgram = state.selected.program === 'init' ? state.region.CWprograms[location][0] : state.region.CWprograms.filter(function (obj) {
+      var selectedProgram = state.selected.program === 'init' ? state.region.CWprograms[0] : state.region.CWprograms.filter(function (obj) {
         return obj.name === state.selected.program
       })[0]
 
