@@ -228,7 +228,6 @@ module.exports = function (state, emit) {
     }
 
     function fillSelected () {
-      console.log('fillSelected')
       emit('defaultSelected')
     }
 
