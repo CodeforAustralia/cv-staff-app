@@ -1,0 +1,180 @@
+:host {
+  display: flex;
+  flex-direction: row;
+  font-family: Helvetica;
+  justify-content: center;
+  margin: auto;
+  max-width: 900px;
+}
+
+:host > div > div {
+  margin: 0.5rem;
+}
+
+:host > div:first-child {
+  width: 35%;
+}
+
+:host > div:nth-child(2) {
+  width: 65%;
+}
+
+:host > div:nth-child(2) > div:first-child {
+  background-color: #f4f4f4;
+  padding: 0.5rem;
+}
+
+:host > div:nth-child(2) > div:first-child > select {
+  background-color: #fff;
+}
+
+:host > div:first-child > div:first-child {
+  padding: 3rem 0.5rem 1rem 0.5rem;
+}
+
+:host > div:first-child > div:first-child > div > select {
+  width: 100%;
+}
+
+h4 {
+  color: #6f6e75;
+  font-size: 0.75rem;
+  margin: 1rem 0;
+}
+
+select {
+  border: none;
+  border-radius: 10px;
+  height: 2rem;
+  margin-right: 2rem;
+  max-width: 95%;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+}
+
+#recipientList > div:first-child {
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0.5rem;
+}
+
+button {
+  background: none;
+  border: 1px #6f6e75 solid;
+  border-radius: 3px;
+  box-shadow: none;
+  height: 1.5rem;
+}
+
+.lightbox {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+}
+
+#addRecipientScreen {
+  align-items: center;
+  background: #f5f5f5;
+  border-radius: 2px;
+  color: #ff3b3f;
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+  padding: 2rem;
+}
+
+#addRecipientScreen > input {
+  margin-bottom: 1rem;
+}
+
+#addRecipientScreen > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#addRecipientScreen > div > button {
+  background: #fff;
+  height: 2rem;
+  margin: 0rem 0.5rem;
+}
+
+.recipient {
+  border: 1px #f4f4f4 solid;
+  border-radius: 3px;
+  padding: 0.5rem;
+}
+
+.recipient > p {
+  margin: 0.3rem;
+}
+
+.recipient > p:nth-child(2) {
+  color: #6f6e75;
+}
+
+#addNewRecipient {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#addNewRecipient > button {
+  color: #6f6e75;
+  margin: .5rem 1rem 0 0;
+}
+
+h3 {
+  color: #6f6e75;
+  margin: 1rem 0;
+}
+
+#messageContent > input {
+  border: 0;
+  width: 80%;
+}
+
+#messageContent > span {
+  color: blue;
+  cursor: pointer;
+}
+
+textarea {
+  border: 0;
+  height: 5rem;
+  width: 80%;
+}
+
+#messageContent > button {
+  margin: 1rem 0;
+}
+
+#reminderdate {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+#reminderdate > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+#preview {
+  background-color: #f4f4f4;
+  padding: 2rem;
+}
+
+#preview > a {
+  color: blue;
+  text-decoration: none;
+}
