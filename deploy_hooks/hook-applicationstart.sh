@@ -1,4 +1,7 @@
 #!/bin/bash
 
 cd /var/www/html/cv-staff-app
-screen -S brian -d -m npm start
+npm start > stdout.txt 2 > stderr.txt &
+
+cd /var/www/html/app-playground
+npm start > stdout.txt 2 > stderr.txt &
