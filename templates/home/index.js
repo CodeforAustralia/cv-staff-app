@@ -2,6 +2,9 @@
 // Help and Login divs don't do anything yet
 // Placeholder images
 // Administrator link doesn't do anything
+// Form validation
+// Display list of locations
+// Request access button doesn't do anything
 
 // require dependencies
 var html = require('choo/html')
@@ -20,7 +23,10 @@ module.exports = function (state, emit) {
         flex-direction: row;
         justify-content: space-between;
         #logo {
+          display: flex;
+          flex-direction: column;
           font-size: 0.65rem;
+          justify-content: center;
           margin: 0.5rem 1rem;
           img {  height: 1rem;  }
           p {  margin: 0;  }
@@ -36,23 +42,13 @@ module.exports = function (state, emit) {
             justify-content: center;
             margin: 0.5rem;
           }
-          #login {
-            background-color: #498fe1;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            margin: 0.5rem;
-            padding: 0 1.5rem;
-          }
         }
       }
       #content {
         display: flex;
         flex-direction: row;
         justify-content: center;
-        max-width: 1000px;
+        max-width: 1100px;
         margin: auto;
         #content-left {
           margin: 3rem 0 0 1rem;
@@ -63,6 +59,7 @@ module.exports = function (state, emit) {
             justify-content: flex-start;
             .feature {
               font-size: 0.75rem;
+              font-weight: bold;
               margin-right: 1rem;
               width: 33%;
               .placeholder {
@@ -77,14 +74,66 @@ module.exports = function (state, emit) {
             width: 60%;
             a, a:visited {
               color: #498fe1;
+              font-weight: bold;
               text-decoration: none;
             }
           }
         }
         #content-right {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding-left: 1rem;
           width: 50%;
+          #create-account {
+            border: 1px solid black;
+            padding: 1rem 2rem;
+            input {  width: 100%;  }
+            p {
+              font-size: 0.75rem;
+              font-weight: bold;
+              margin-bottom: 0.5rem;
+            }
+            select {  width: 100%;  }
+            #name-input {
+              display: flex;
+              flex-direction: row;
+              justify-content: flex-start;
+              div:first-child {  margin-right: 1rem;  }
+              div {  width: 50%;  }
+            }
+            #multiple-locations {
+              display: flex;
+              flex-direction: row;
+              justify-content: flex-start;
+              margin-top: 1rem;
+              img {  height: 1rem;  }
+              p {
+                font-weight: normal;
+                margin: 0 0 0 0.5rem;
+              }
+            }
+            #button-container {
+              display: flex;
+              flex-direction: row;
+              justify-content: flex-end;
+              margin-top: 1rem;
+            }
+          }
         }
       }
+    }
+
+    .button {
+      background-color: #498fe1;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 0.5rem;
+      padding: 0.5rem 1.5rem;
+      width: max-content;
     }
   `
   return html`
@@ -98,7 +147,7 @@ module.exports = function (state, emit) {
           <div id="help">
             Help
           </div>
-          <div id="login">
+          <div class="button">
             Log in
           </div>
         </div>
@@ -131,6 +180,32 @@ module.exports = function (state, emit) {
           <p id="contact">You can also contact <a href="#">the administrator</a> for your office directly. They'll be the one who sets up your account.</p>
         </div>
         <div id="content-right">
+          <h2>Get started - Create an account</h2>
+          <div id="create-account">
+            <div id="name-input">
+              <div>
+                <p>Your given name</p>
+                <input type="text" />
+              </div>
+              <div>
+                <p>Your family name</p>
+                <input type="text" />
+              </div>
+            </div>
+            <p>Your work email address</p>
+            <input type="text" placeholder="Use your justice.vic.gov.au email address" />
+            <p>Your office</p>
+            <select></select>
+            <div id="multiple-locations">
+              <img src="../../assets/information.png" />
+              <p> If you work in more than one office in a region, just choose one.</p>
+            </div>
+            <div id="button-container">
+              <div class="button">
+              Request access
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
