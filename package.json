@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "bankai build index.js",
-    "local": "bankai start index.js -p 3000",
+    "local": "bankai index.js -p 3000 --css [ -u sheetify-nested ]",
     "start": "bankai index.js -p 8080 -A 172.31.10.240",
     "test": "standard"
   },

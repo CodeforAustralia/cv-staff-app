@@ -32,10 +32,12 @@ module.exports = function (state, emitter) {
       name: 'Grampians',
       locations: [{
         'name': 'Ballarat',
-        'address': 'CCS 206 Mair Street, Ballarat Central'
+        'address': 'CCS 206 Mair Street, Ballarat Central',
+        'staff': ['Loretta Moe', 'Elisha Brasier', 'Gema Houseknecht', 'Amiee Sedlacek', 'Boyd Greeson', 'Myles Tezeno', 'Magaly Aldana']
       }, {
         'name': 'Horsham',
-        'address': 'CCS 21 McLachlan Street, Horsham'
+        'address': 'CCS 21 McLachlan Street, Horsham',
+        'staff': ['Jeromy Seawell', 'Anh Kelsch', 'Regine Roque']
       }],
       CWprograms: [{
           name: 'St Vincent De Paul Friday InHouse Program',

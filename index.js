@@ -15,6 +15,7 @@ css('./assets/normalize.css')
 
 // declare routes
 app.route('/setreminder', require('./templates/setreminder'))
+app.route('/offendersearch', require('./templates/offendersearch'))
 
 // start app
 if (typeof window !== 'undefined') {
