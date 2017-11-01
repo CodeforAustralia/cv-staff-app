@@ -111,6 +111,10 @@ module.exports = function (state, emitter) {
         email: '',
         location: '',
         error: ''
+      },
+      administrators: {
+        loaded: false,
+        administrators: ['John Doe', 'Jane Smith', 'Jesse Miller', 'Zara Black']
       }
     }
   }
