@@ -10,6 +10,9 @@
 var html = require('choo/html')
 var css = require('sheetify')
 
+// import modules
+var api = require('../../lib/api')
+
 // export module
 module.exports = function (state, emit) {
   var style = css`
@@ -136,8 +139,9 @@ module.exports = function (state, emit) {
       width: max-content;
     }
   `
+
   return html`
-    <div class=${style}>
+    <div class=${style} onload=${state.ui.home.loaded ? null : emit('loadLocations')}>
       <div id="navbar">
         <div id="logo">
           <img src="../../assets/logo.png" />
@@ -152,62 +156,78 @@ module.exports = function (state, emit) {
           </div>
         </div>
       </div>
-      <div id="content">
-        <div id="content-left">
-          <h1>Communicate with your clients</h1>
-          <p>Another line summarising the benefits of <strong>Orion for CCS staff.</strong></p>
-          <div id="features">
-            <div class="feature">
-              <div class="placeholder"></div>
-              <p>Easily schedule reminders for supervision appointments in advance.</p>
+      ${state.ui.home.loaded ? html`
+        <div id="content">
+          <div id="content-left">
+            <h1>Communicate with your clients</h1>
+            <p>Another line summarising the benefits of <strong>Orion for CCS staff.</strong></p>
+            <div id="features">
+              <div class="feature">
+                <div class="placeholder"></div>
+                <p>Easily schedule reminders for supervision appointments in advance.</p>
+              </div>
+              <div class="feature">
+                <div class="placeholder"></div>
+                <p>Set up community work reminders to be sent automatically.</p>
+              </div>
+              <div class="feature">
+                <div class="placeholder"></div>
+                <p>Communicate with clients via SMS or web app.</p>
+              </div>
             </div>
-            <div class="feature">
-              <div class="placeholder"></div>
-              <p>Set up community work reminders to be sent automatically.</p>
-            </div>
-            <div class="feature">
-              <div class="placeholder"></div>
-              <p>Communicate with clients via SMS or web app.</p>
+            <h2>How can I get access?</h2>
+            <p>
+              If you have a:<br />
+              - login to eJustice, and <br />
+              - a justice.vic.gov.au email address <br />
+              we can set you up with an account.
+            </p>
+            <p id="contact">You can also contact <a href="#">the administrator</a> for your office directly. They'll be the one who sets up your account.</p>
+          </div>
+          <div id="content-right">
+            <h2>Get started - Create an account</h2>
+            <div id="create-account">
+              <div id="name-input">
+                <div>
+                  <p>Your given name</p>
+                  <input type="text" />
+                </div>
+                <div>
+                  <p>Your family name</p>
+                  <input type="text" />
+                </div>
+              </div>
+              <p>Your work email address</p>
+              <input type="text" placeholder="Use your justice.vic.gov.au email address" />
+              <p>Your office</p>
+              ${printLocations()}
+              <div id="multiple-locations">
+                <img src="../../assets/information.png" />
+                <p> If you work in more than one office in a region, just choose one.</p>
+              </div>
+              <div id="button-container">
+                <div class="button">
+                Request access
+                </div>
+              </div>
             </div>
           </div>
-          <h2>How can I get access?</h2>
-          <p>
-            If you have a:<br />
-            - login to eJustice, and <br />
-            - a justice.vic.gov.au email address <br />
-            we can set you up with an account.
-          </p>
-          <p id="contact">You can also contact <a href="#">the administrator</a> for your office directly. They'll be the one who sets up your account.</p>
         </div>
-        <div id="content-right">
-          <h2>Get started - Create an account</h2>
-          <div id="create-account">
-            <div id="name-input">
-              <div>
-                <p>Your given name</p>
-                <input type="text" />
-              </div>
-              <div>
-                <p>Your family name</p>
-                <input type="text" />
-              </div>
-            </div>
-            <p>Your work email address</p>
-            <input type="text" placeholder="Use your justice.vic.gov.au email address" />
-            <p>Your office</p>
-            <select></select>
-            <div id="multiple-locations">
-              <img src="../../assets/information.png" />
-              <p> If you work in more than one office in a region, just choose one.</p>
-            </div>
-            <div id="button-container">
-              <div class="button">
-              Request access
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      ` : null}
     </div>
   `
+
+  function printLocations() {
+    if (state.ui.home.loaded) {
+      return html`
+        <select name="location">
+          ${state.locations.map(function (el) {
+            return html`
+              <option value="${el}">${el}</option>
+            `
+          })}
+        </select>
+      `
+    }
+  }
 }

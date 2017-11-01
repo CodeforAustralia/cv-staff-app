@@ -1,3 +1,5 @@
+var api = require('../lib/api')
+
 module.exports = function (state, emitter) {
   // run on app start
   initialise()
@@ -98,7 +100,24 @@ module.exports = function (state, emitter) {
     }
 
     state.loaded = false
+
+    state.locations = null
+
+    state.ui = {
+      home: {
+        loaded: false
+      }
+    }
   }
+
+  emitter.on('loadLocations', function () {
+    api.getLocations(function (data) {
+      state.locations = data
+      state.ui.home.loaded = true
+    })
+
+    setTimeout(function () { emitter.emit('render') }, 0)
+  })
 
   emitter.on('defaultSelected', function () {
     state.selected = {
