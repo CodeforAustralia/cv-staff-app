@@ -50,7 +50,7 @@ module.exports = function (state, emit) {
             th {
               background-color: #f8f8f8;
               color: #616069;
-              padding: 0 3rem;
+              padding-left: 3rem;
               text-align: left;
               div {
                 display: flex;
@@ -60,6 +60,7 @@ module.exports = function (state, emit) {
               img {
                 height: 1rem;
                 margin: auto;
+                margin-left: 1rem;
               }
             }
             td {
@@ -98,6 +99,15 @@ module.exports = function (state, emit) {
     </div>
   `
 
+  function updateSortCategory (e) {
+    console.log(e.target.id)
+    if (e.target.id === state.ui.administrators.sort.on) {
+      emit('reverseSort', {template: 'administrators'})
+    } else {
+      emit('updateSort', {template: 'administrators', target: e.target.id})
+    }
+  }
+
   function displayTable() {
     var sortedArray = state.ui.administrators.administrators
     var category = state.ui.administrators.sort.on
@@ -113,10 +123,10 @@ module.exports = function (state, emit) {
         <tr id="headings">
           ${state.ui.administrators.tableFields.map(function (el) {
             return html`
-              <th id="${el}">
+              <th>
                 <div>
-                  ${el.charAt(0).toUpperCase() + el.slice(1)}
-                  ${category === el ? html`<img id="caret" src="../../assets/sort-${state.ui.administrators.sort.direction}.png" />` : null}
+                  <span id="${el}" onclick=${updateSortCategory}>${el.charAt(0).toUpperCase() + el.slice(1)}</span>
+                  ${category === el ? html`<img src="../../assets/sort-${state.ui.administrators.sort.direction}.png" />` : null}
                 </div>
               </th>
             `
@@ -131,7 +141,5 @@ module.exports = function (state, emit) {
         })}
       </table>
     `
-
-
   }
 }

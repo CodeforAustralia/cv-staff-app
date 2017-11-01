@@ -144,6 +144,18 @@ module.exports = function (state, emitter) {
     }
   }
 
+  emitter.on('reverseSort', function(data) {
+    state.ui[data.template].sort.direction = state.ui[data.template].sort.direction === 'asc' ? 'desc' : 'asc'
+    emitter.emit('render')
+  })
+
+  emitter.on('updateSort', function(data) {
+    console.log(data.target)
+    state.ui[data.template].sort.on = data.target
+    state.ui[data.template].sort.direction = 'asc'
+    emitter.emit('render')
+  })
+
   emitter.on('updateError', function (data) {
     state.ui[data.template].error = data.error;
     emitter.emit('render')
