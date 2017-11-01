@@ -2,15 +2,15 @@
 // Help and Login divs don't do anything yet
 // Placeholder images
 // Administrator link doesn't do anything
-// Form validation
+// Form validation - user already exists
 // Request access button doesn't do anything
 
 // require dependencies
 var html = require('choo/html')
 var css = require('sheetify')
 
-// import modules
-var api = require('../../lib/api')
+// require modules
+var navbar = require('../navbar')
 
 // export module
 module.exports = function (state, emit) {
@@ -18,34 +18,6 @@ module.exports = function (state, emit) {
     :host {
       font-family: Helvetica;
       line-height: 1.5;
-      #navbar {
-        background-color: #191934;
-        color: #fff;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        #logo {
-          display: flex;
-          flex-direction: column;
-          font-size: 0.65rem;
-          justify-content: center;
-          margin: 0.5rem 1rem;
-          img {  height: 1rem;  }
-          p {  margin: 0;  }
-        }
-        #navbar-right {
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-          #help {
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            margin: 0.5rem;
-          }
-        }
-      }
       #content {
         display: flex;
         flex-direction: row;
@@ -154,20 +126,7 @@ module.exports = function (state, emit) {
 
   return html`
     <div class=${style} onload=${state.ui.home.loaded ? null : emit('loadLocations')}>
-      <div id="navbar">
-        <div id="logo">
-          <img src="../../assets/logo.png" />
-          <p>for CCS staff</p>
-        </div>
-        <div id="navbar-right">
-          <div id="help">
-            Help
-          </div>
-          <div class="button">
-            Log in
-          </div>
-        </div>
-      </div>
+      ${navbar()}
       ${state.ui.home.loaded ? html`
         <div id="content">
           <div id="content-left">
