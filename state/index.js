@@ -150,7 +150,6 @@ module.exports = function (state, emitter) {
   })
 
   emitter.on('updateSort', function(data) {
-    console.log(data.target)
     state.ui[data.template].sort.on = data.target
     state.ui[data.template].sort.direction = 'asc'
     emitter.emit('render')
