@@ -105,10 +105,25 @@ module.exports = function (state, emitter) {
 
     state.ui = {
       home: {
-        loaded: false
+        loaded: false,
+        givenName: '',
+        lastName: '',
+        email: '',
+        location: '',
+        error: ''
       }
     }
   }
+
+  emitter.on('updateError', function (data) {
+    state.ui[data.template].error = data.error;
+    emitter.emit('render')
+  })
+
+  emitter.on('updateInput', function (data) {
+    state.ui[data.template][data.target] = data.text
+    emitter.emit('render')
+  })
 
   emitter.on('loadLocations', function () {
     api.getLocations(function (data) {

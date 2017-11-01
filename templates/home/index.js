@@ -3,7 +3,6 @@
 // Placeholder images
 // Administrator link doesn't do anything
 // Form validation
-// Display list of locations
 // Request access button doesn't do anything
 
 // require dependencies
@@ -116,6 +115,13 @@ module.exports = function (state, emit) {
                 margin: 0 0 0 0.5rem;
               }
             }
+            #error {
+              background-color: #d7d7d7;
+              font-size: 0.8rem;
+              margin-top: 1rem;
+              padding: 1rem 0.5rem;
+              text-align: center;
+            }
             #button-container {
               display: flex;
               flex-direction: row;
@@ -139,6 +145,12 @@ module.exports = function (state, emit) {
       width: max-content;
     }
   `
+
+  var givenName = state.ui.home.givenName
+  var lastName = state.ui.home.lastName
+  var email = state.ui.home.email
+  var location = state.ui.home.location
+  var error = state.ui.home.error
 
   return html`
     <div class=${style} onload=${state.ui.home.loaded ? null : emit('loadLocations')}>
@@ -190,23 +202,24 @@ module.exports = function (state, emit) {
               <div id="name-input">
                 <div>
                   <p>Your given name</p>
-                  <input type="text" />
+                  <input type="text" id="givenName" value=${givenName} oninput=${updateInput} required />
                 </div>
                 <div>
                   <p>Your family name</p>
-                  <input type="text" />
+                  <input type="text" id="lastName" value=${lastName} oninput=${updateInput} />
                 </div>
               </div>
               <p>Your work email address</p>
-              <input type="text" placeholder="Use your justice.vic.gov.au email address" />
+              <input type="text" id="email" value=${email} oninput=${updateInput} placeholder="Use your justice.vic.gov.au email address" required />
               <p>Your office</p>
               ${printLocations()}
               <div id="multiple-locations">
                 <img src="../../assets/information.png" />
                 <p> If you work in more than one office in a region, just choose one.</p>
               </div>
+              ${error ? displayError() : null}
               <div id="button-container">
-                <div class="button">
+                <div class="button" onclick=${validateInput}>
                 Request access
                 </div>
               </div>
@@ -217,13 +230,39 @@ module.exports = function (state, emit) {
     </div>
   `
 
+  function displayError() {
+    return html`
+      <div id="error">
+        ${error}
+      </div>
+    `
+  }
+
+  function updateInput (e) {
+    emit('updateInput', {template: 'home', target: e.target.id, text: e.target.value})
+  }
+
+  function validateInput () {
+    var errorMessage
+    if (!givenName) {
+      errorMessage = 'Please enter your given name'
+    } else if (!email.endsWith('@justice.vic.gov.au')) {
+      errorMessage = 'Please try again using your @justice.vic.gov.au email address'
+    } else if (!location) {
+      errorMessage = 'Please select a location'
+    }
+
+    emit('updateError', {template: 'home', error: errorMessage})
+  }
+
   function printLocations() {
     if (state.ui.home.loaded) {
       return html`
-        <select name="location">
+        <select name="location" id="location" onchange=${updateInput} required>
+          <option disabled ${state.ui.home.location ? null : 'selected'} value></option>
           ${state.locations.map(function (el) {
             return html`
-              <option value="${el}">${el}</option>
+              <option value="${el}" ${state.ui.home.location === el ? 'selected' : null}>${el}</option>
             `
           })}
         </select>
