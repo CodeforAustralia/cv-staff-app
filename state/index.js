@@ -114,7 +114,32 @@ module.exports = function (state, emitter) {
       },
       administrators: {
         loaded: false,
-        administrators: ['John Doe', 'Jane Smith', 'Jesse Miller', 'Zara Black']
+        sort: {
+          on: 'office',
+          direction: 'asc'
+        },
+        tableFields: ['administrator', 'office', 'region', 'email'],
+        administrators: [{
+          administrator: 'John Doe',
+          office: 'Ararat',
+          region: 'Grampians',
+          email: 'John.Doe@justice.vic.gov.au'
+        }, {
+          administrator: 'Jane Smith',
+          office: 'Bairnsdale',
+          region: 'Gippsland',
+          email: 'Jane.L.Smith@justice.vic.gov.au'
+        }, {
+          administrator: 'Jesse Miller',
+          office: 'Ballarat',
+          region: 'Grampians',
+          email: 'Jesse.Miller@justice.vic.gov.au'
+        }, {
+          administrator: 'Mary Jo Black',
+          office: 'Benalla',
+          region: 'Hume',
+          email: 'Mary.Jo.Black@justice.vic.gov.au'
+        }]
       }
     }
   }
