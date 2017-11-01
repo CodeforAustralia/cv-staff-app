@@ -12,39 +12,21 @@ module.exports = function (state, emit) {
       font-family: Helvetica;
       line-height: 1.5;
       #content {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
         margin: auto;
         max-width: 1100px;
         #content-top {
-          display: flex;
-          flex-direction: row;
-          justify-content: center;
-          margin: 6rem 0;
-          #content-top-left {
-            margin-right: 2rem;
-            width: 50%;
-            p { margin-bottom: 0; }
-          }
-          #content-top-right {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            width: 30%;
-            #help {
-              background-color: #f8f8f8;
-              border: 1px #d7d7d7 solid;
-              color: #616069;
-              padding: 0.5rem 0.75rem;
-              h3 {
-                color: #616069;
-                margin-bottom: 0;
-              }
-            }
-          }
+          margin: 6rem;
+          width: 50%;
+          p { margin-bottom: 0; }
         }
         #content-bottom {
           display: flex;
           flex-direction: row;
-          justify-content: center;
+          justify-content: flex-start;
+          margin-left: 6rem;
           table {
             border-spacing: 0px;
             th {
@@ -81,16 +63,8 @@ module.exports = function (state, emit) {
       ${navbar()}
       <div id="content">
         <div id="content-top">
-          <div id="content-top-left">
-              <h1>Find your Orion administrator</h1>
-              <p>Need help logging in? Forgot your password? Need to access files from another region? Contact the Orion administrator in the relevant location.</p>
-          </div>
-          <div id="content-top-right">
-            <div id="help">
-              <h3>Need help?</h3>
-              <p>Your administrator in the Ballarat Office is John Jennings</p>
-            </div>
-          </div>
+          <h1>Find your Orion administrator</h1>
+          <p>Need help logging in? Forgot your password? Need to access files from another region? Contact the Orion administrator in the relevant location.</p>
         </div>
         <div id="content-bottom">
           ${displayTable()}
