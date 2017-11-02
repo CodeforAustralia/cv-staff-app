@@ -146,7 +146,43 @@ module.exports = function (state, emitter) {
         }]
       },
       manageUsers: {
-        newRequests: 2
+        newRequests: [{
+          name: 'Roffe Ventimiglia',
+          email: 'Roffe.Ventimiglia@justice.vic.gov.au',
+          location: 'Sunshine',
+          region: 'North West Metro'
+        }, {
+          name: 'Sheamus Feldt',
+          email: 'Sheamus.Feldt@justice.vic.gov.au',
+          location: 'Sunshine',
+          region: 'North West Metro'
+        }],
+        users: [{
+          name: 'Ljubica Ellery',
+          email: 'Ljubica.Ellery@justice.vic.gov.au',
+          location: 'Sunshine',
+          region: 'North West Metro'
+        }, {
+          name: 'Viola Boels',
+          email: 'Viola.Boels@justice.vic.gov.au',
+          location: 'Sunshine',
+          region: 'North West Metro'
+        }, {
+          name: 'Caius Fairburn',
+          email: 'Caius.L.Fairburn@justice.vic.gov.au',
+          location: 'Sunshine',
+          region: 'North West Metro'
+        }, {
+          name: 'Asklepios Marchegiano',
+          email: 'Asklepios.Marchegiano@justice.vic.gov.au',
+          location: 'Sunshine',
+          region: 'North West Metro'
+        }, {
+          name: 'Sivan Puig',
+          email: 'Sivan.Puig@justice.vic.gov.au',
+          location: 'Sunshine',
+          region: 'North West Metro'
+        }]
       }
     }
   }

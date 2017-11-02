@@ -52,6 +52,7 @@ module.exports = function (username, numRequests) {
     }
 
     ul > li {
+      background-color: #fff;
       display: none;
       list-style: none;
     }

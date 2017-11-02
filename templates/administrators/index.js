@@ -32,7 +32,7 @@ module.exports = function (state, emit) {
             th {
               background-color: #f8f8f8;
               color: #616069;
-              padding-left: 3rem;
+              padding: 0.5rem 2rem;
               text-align: left;
               span {
                 cursor: pointer;
@@ -47,7 +47,7 @@ module.exports = function (state, emit) {
               }
             }
             td {
-              padding: 0 3rem;
+              padding: 0.5rem 2rem;
               a, a:visited {
                 color: #498fe1;
                 text-decoration: none;
