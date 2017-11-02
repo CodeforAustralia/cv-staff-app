@@ -16,6 +16,7 @@ css('./assets/normalize.css')
 // declare routes
 app.route('/', require('./templates/home'))
 app.route('/administrators', require('./templates/administrators'))
+app.route('/admin/manageusers', require('./templates/admin/manageusers'))
 app.route('/setreminder', require('./templates/setreminder'))
 app.route('/offendersearch', require('./templates/offendersearch'))
 

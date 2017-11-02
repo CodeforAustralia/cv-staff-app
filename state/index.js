@@ -103,6 +103,10 @@ module.exports = function (state, emitter) {
 
     state.locations = null
 
+    state.user = {
+      name: 'John Jansen'
+    }
+
     state.ui = {
       home: {
         loaded: false,

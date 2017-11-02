@@ -5,15 +5,13 @@ var css = require('sheetify')
 module.exports = function () {
   var style = css`
     :host {
-      font-family: Helvetica;
-      line-height: 1.5;
-    }
-    #navbar {
       background-color: #191934;
       color: #fff;
       display: flex;
       flex-direction: row;
+      font-family: Helvetica;
       justify-content: space-between;
+      line-height: 1.5;
       #logo {
         display: flex;
         flex-direction: column;
@@ -39,7 +37,7 @@ module.exports = function () {
   `
 
   return html`
-    <div id="navbar" class=${style}>
+    <div class=${style}>
       <div id="logo">
         <img src="../../assets/logo.png" />
         <p>for CCS staff</p>
