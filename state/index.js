@@ -146,42 +146,54 @@ module.exports = function (state, emitter) {
         }]
       },
       manageUsers: {
+        sort: {
+          on: 'name',
+          direction: 'asc'
+        },
+        tableFields: ['name', 'email', 'location', 'region', 'role', 'manage this account'],
         newRequests: [{
           name: 'Roffe Ventimiglia',
           email: 'Roffe.Ventimiglia@justice.vic.gov.au',
           location: 'Sunshine',
-          region: 'North West Metro'
+          region: 'North West Metro',
+          role: ''
         }, {
           name: 'Sheamus Feldt',
           email: 'Sheamus.Feldt@justice.vic.gov.au',
           location: 'Sunshine',
-          region: 'North West Metro'
+          region: 'North West Metro',
+          role: ''
         }],
         users: [{
-          name: 'Ljubica Ellery',
-          email: 'Ljubica.Ellery@justice.vic.gov.au',
+          name: 'Asklepios Marchegiano',
+          email: 'Asklepios.Marchegiano@justice.vic.gov.au',
           location: 'Sunshine',
-          region: 'North West Metro'
-        }, {
-          name: 'Viola Boels',
-          email: 'Viola.Boels@justice.vic.gov.au',
-          location: 'Sunshine',
-          region: 'North West Metro'
+          region: 'North West Metro',
+          role: 'user'
         }, {
           name: 'Caius Fairburn',
           email: 'Caius.L.Fairburn@justice.vic.gov.au',
           location: 'Sunshine',
-          region: 'North West Metro'
+          region: 'North West Metro',
+          role: 'user'
         }, {
-          name: 'Asklepios Marchegiano',
-          email: 'Asklepios.Marchegiano@justice.vic.gov.au',
+          name: 'Ljubica Ellery',
+          email: 'Ljubica.Ellery@justice.vic.gov.au',
           location: 'Sunshine',
-          region: 'North West Metro'
+          region: 'North West Metro',
+          role: 'admin'
         }, {
           name: 'Sivan Puig',
           email: 'Sivan.Puig@justice.vic.gov.au',
           location: 'Sunshine',
-          region: 'North West Metro'
+          region: 'North West Metro',
+          role: 'user'
+        }, {
+          name: 'Viola Boels',
+          email: 'Viola.Boels@justice.vic.gov.au',
+          location: 'Sunshine',
+          region: 'North West Metro',
+          role: 'user'
         }]
       }
     }
