@@ -9,7 +9,7 @@ var navbar = require('../../navbar/admin.js')
 module.exports = function (state, emit) {
   return html`
     <div>
-      ${navbar(state.user.name)}
+      ${navbar(state.user.name, state.ui.manageUsers.newRequests)}
     </div>
   `
 }

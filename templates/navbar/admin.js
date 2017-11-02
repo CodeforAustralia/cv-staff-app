@@ -2,7 +2,7 @@
 var html = require('choo/html')
 var css = require('sheetify')
 
-module.exports = function (username) {
+module.exports = function (username, numRequests) {
   var style = css`
     :host {
       background-color: #191934;
@@ -57,6 +57,7 @@ module.exports = function (username) {
     }
 
     ul {
+      border-radius: 3px;
       cursor: pointer;
       display: flex;
       flex-direction: column;
@@ -76,6 +77,12 @@ module.exports = function (username) {
           font-family: Helvetica;
           font-weight: bold;
           text-decoration: none;
+          span {
+            background-color: #e9e9e9;
+            border-radius: 10px;
+            color: #969696;
+            padding: 0.25rem 0.5rem;
+          }
         }
       }
       li:hover {
@@ -120,7 +127,11 @@ module.exports = function (username) {
       </div>
       <ul onmouseleave=${update}>
         <li><a href="#">Your profile</a></li>
-        <li><a href="#">Manage users</a></li>
+        <li>
+          <a href="#">Manage users
+            ${numRequests === 0 ? null : html`<span id="newRequests">${numRequests}</span>`}
+          </a>
+        </li>
         <li><a href="#">Templates</a></li>
         <li><a href="#">Help</a></li>
         <li><a href="#">Log out</a></li>
@@ -129,7 +140,6 @@ module.exports = function (username) {
   `
 
   function update() {
-    console.log('mouseout')
     var elList = document.querySelectorAll('li')
     var list = document.querySelector('ul')
 

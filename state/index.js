@@ -144,6 +144,9 @@ module.exports = function (state, emitter) {
           region: 'Hume',
           email: 'Mary.Jo.Black@justice.vic.gov.au'
         }]
+      },
+      manageUsers: {
+        newRequests: 2
       }
     }
   }
