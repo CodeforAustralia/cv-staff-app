@@ -169,31 +169,31 @@ module.exports = function (state, emitter) {
           email: 'Asklepios.Marchegiano@justice.vic.gov.au',
           location: 'Sunshine',
           region: 'North West Metro',
-          role: 'user'
+          role: 'User'
         }, {
           name: 'Caius Fairburn',
           email: 'Caius.L.Fairburn@justice.vic.gov.au',
           location: 'Sunshine',
           region: 'North West Metro',
-          role: 'user'
+          role: 'User'
         }, {
           name: 'Ljubica Ellery',
           email: 'Ljubica.Ellery@justice.vic.gov.au',
           location: 'Sunshine',
           region: 'North West Metro',
-          role: 'admin'
+          role: 'Admin'
         }, {
           name: 'Sivan Puig',
           email: 'Sivan.Puig@justice.vic.gov.au',
           location: 'Sunshine',
           region: 'North West Metro',
-          role: 'user'
+          role: 'User'
         }, {
           name: 'Viola Boels',
           email: 'Viola.Boels@justice.vic.gov.au',
           location: 'Sunshine',
           region: 'North West Metro',
-          role: 'user'
+          role: 'User'
         }]
       },
       addUser: {
@@ -206,6 +206,29 @@ module.exports = function (state, emitter) {
       }
     }
   }
+
+  emitter.on('addNewUser', function () {
+    state.ui.addUser = {
+      name: '',
+      email: '',
+      region: '',
+      location: '',
+      role: 'User',
+      error: ''
+    }
+    emitter.emit('pushState', '/admin/adduser')
+  })
+
+  emitter.on('updateNewUser', function (data) {
+    var user = state.ui.manageUsers.newRequests[data.index]
+    console.log(user)
+    state.ui.addUser.name = user.name
+    state.ui.addUser.email = user.email
+    state.ui.addUser.region = user.region
+    state.ui.addUser.location = user.location
+    console.log(state.ui.addUser)
+    emitter.emit('pushState', '/admin/adduser')
+  })
 
   emitter.on('reverseSort', function(data) {
     state.ui[data.template].sort.direction = state.ui[data.template].sort.direction === 'asc' ? 'desc' : 'asc'

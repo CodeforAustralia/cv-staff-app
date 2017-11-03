@@ -158,7 +158,7 @@ module.exports = function (state, emit) {
         </thead>
         <tbody>
           ${sortedNewRequests.map(function (el, index) {
-            return html`<tr id="new"><td><span>${index + 1}</span>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role}</td><td class="manage-cell"><div class="button">Requested Access</div></td></tr>`
+            return html`<tr id="new"><td><span>${index + 1}</span>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role}</td><td class="manage-cell"><div id="${index}" onclick=${newUser} class="button">Requested Access</div></td></tr>`
           })}
           ${sortedUsers.map(function (el) {
             return html`<tr><td>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role.charAt(0).toUpperCase() + el.role.slice(1)}</td><td class="manage-cell"><div class="edit-button">Edit</div></td></tr>`
@@ -168,8 +168,12 @@ module.exports = function (state, emit) {
     `
   }
 
+  function newUser (e) {
+    emit('updateNewUser', {index: e.target.id})
+  }
+
   function addUser () {
-    emit('pushState', '/admin/adduser')
+    emit('addNewUser')
   }
 
   function updateSortCategory (e) {
