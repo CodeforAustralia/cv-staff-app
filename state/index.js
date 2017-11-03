@@ -195,6 +195,14 @@ module.exports = function (state, emitter) {
           region: 'North West Metro',
           role: 'user'
         }]
+      },
+      addUser: {
+        name: '',
+        email: '',
+        region: '',
+        location: '',
+        role: 'User',
+        error: ''
       }
     }
   }
@@ -313,10 +321,10 @@ module.exports = function (state, emitter) {
     state.message[data.id] = data.text
   })
 
-  emitter.on('updateInput', function (data) {
-    state.newRecipient[data.id] = data.text
-    emitter.emit('render')
-  })
+  // emitter.on('updateInput', function (data) {
+  //   state.newRecipient[data.id] = data.text
+  //   emitter.emit('render')
+  // })
 
   emitter.on('submitNewRecipient', function (data) {
     state.newRecipient.location = state.selected.location

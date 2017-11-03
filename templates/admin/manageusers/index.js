@@ -113,7 +113,7 @@ module.exports = function (state, emit) {
       <div id="content">
         <h1>Manage CCS staff accounts</h1>
         <p>Case Managers, Justice Officers, Community Work Officers, and any other CCS staff who need to send SMS/web reminders to clients.</p>
-        <div class="button">Add new user</div>
+        <div class="button" onclick=${addUser}>Add new user</div>
         ${generateTable()}
       </div>
     </div>
@@ -164,9 +164,12 @@ module.exports = function (state, emit) {
             return html`<tr><td>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role.charAt(0).toUpperCase() + el.role.slice(1)}</td><td class="manage-cell"><div class="edit-button">Edit</div></td></tr>`
           })}
         </tbody>
-        ${console.log(state.ui.manageUsers.newRequests)}
       </table>
     `
+  }
+
+  function addUser () {
+    emit('pushState', '/admin/adduser')
   }
 
   function updateSortCategory (e) {
