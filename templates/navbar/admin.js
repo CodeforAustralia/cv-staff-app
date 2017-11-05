@@ -129,7 +129,7 @@ module.exports = function (username, numRequests) {
       <ul onmouseleave=${update}>
         <li><a href="#">Your profile</a></li>
         <li>
-          <a href="#">Manage users
+          <a href="/admin/manageusers">Manage users
             ${numRequests === 0 ? null : html`<span id="newRequests">${numRequests}</span>`}
           </a>
         </li>

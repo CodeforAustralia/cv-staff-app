@@ -217,6 +217,7 @@ module.exports = function (state, emit) {
       var complete = document.getElementById('complete')
       submit.style.display = 'none'
       complete.style.display = 'flex'
+      emit('grantAccess')
     }
   }
 

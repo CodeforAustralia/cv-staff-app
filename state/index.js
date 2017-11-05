@@ -202,10 +202,33 @@ module.exports = function (state, emitter) {
         region: '',
         location: '',
         role: 'User',
-        error: ''
+        error: '',
+        requested: ''
       }
     }
   }
+
+  emitter.on('grantAccess', function () {
+    state.ui.manageUsers.users.push({
+      name: state.ui.addUser.name,
+      email: state.ui.addUser.email,
+      region: state.ui.addUser.region,
+      location: state.ui.addUser.location,
+      role: state.ui.addUser.role
+    })
+    if (state.ui.addUser.requested) {
+      state.ui.manageUsers.newRequests.splice(state.ui.addUser.requested, 1)
+    }
+    state.ui.addUser = {
+      name: '',
+      email: '',
+      region: '',
+      location: '',
+      role: 'User',
+      error: '',
+      requested: ''
+    }
+  })
 
   emitter.on('addNewUser', function () {
     state.ui.addUser = {
@@ -214,19 +237,19 @@ module.exports = function (state, emitter) {
       region: '',
       location: '',
       role: 'User',
-      error: ''
+      error: '',
+      requested: false
     }
     emitter.emit('pushState', '/admin/adduser')
   })
 
   emitter.on('updateNewUser', function (data) {
     var user = state.ui.manageUsers.newRequests[data.index]
-    console.log(user)
     state.ui.addUser.name = user.name
     state.ui.addUser.email = user.email
     state.ui.addUser.region = user.region
     state.ui.addUser.location = user.location
-    console.log(state.ui.addUser)
+    state.ui.addUser.requested = data.index
     emitter.emit('pushState', '/admin/adduser')
   })
 
