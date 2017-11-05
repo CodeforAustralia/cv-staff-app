@@ -88,7 +88,9 @@ module.exports = function (state, emit) {
     var comparison
 
     sortedArray.sort(function (a, b) {
-      comparison = (a[category] > b[category]) - (a[category] < b[category])
+      a = a[category].toLowerCase()
+      b = b[category].toLowerCase()
+      comparison = (a > b) - (a < b)
       return (state.ui.administrators.sort.direction === 'asc' ? comparison : (-comparison))
     })
 

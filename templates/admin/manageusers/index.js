@@ -24,6 +24,7 @@ module.exports = function (state, emit) {
         justify-content: flex-start;
         margin: auto;
         margin-top: 6rem;
+        margin-bottom: 6rem;
         max-width: 1100px;
         .button {
           align-self: flex-end;
@@ -121,15 +122,19 @@ module.exports = function (state, emit) {
 
   function generateTable() {
     var category = state.ui.manageUsers.sort.on
-
     var sortedNewRequests = state.ui.manageUsers.newRequests
 
     sortedNewRequests = sortedNewRequests.sort(function (a, b) {
-      comparison = (a[category] > b[category]) - (a[category] < b[category])
+      a = a[category].toLowerCase()
+      b = b[category].toLowerCase()
+
+      comparison = (a > b) - (a < b)
       return (state.ui.manageUsers.sort.direction === 'asc' ? comparison : (-comparison))
     })
     var sortedUsers = state.ui.manageUsers.users.sort(function (a, b) {
-      comparison = (a[category] > b[category]) - (a[category] < b[category])
+      a = a[category].toLowerCase()
+      b = b[category].toLowerCase()
+      comparison = (a > b) - (a < b)
       return (state.ui.manageUsers.sort.direction === 'asc' ? comparison : (-comparison))
     })
 
