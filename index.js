@@ -18,6 +18,7 @@ app.route('/', require('./templates/home'))
 app.route('/administrators', require('./templates/administrators'))
 app.route('/admin/manageusers', require('./templates/admin/manageusers'))
 app.route('/admin/adduser', require('./templates/admin/adduser'))
+app.route('/admin/edituser', require('./templates/admin/edituser'))
 app.route('/setreminder', require('./templates/setreminder'))
 app.route('/offendersearch', require('./templates/offendersearch'))
 

@@ -163,18 +163,24 @@ module.exports = function (state, emit) {
         </thead>
         <tbody>
           ${sortedNewRequests.map(function (el, index) {
-            return html`<tr id="new"><td><span>${index + 1}</span>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role}</td><td class="manage-cell"><div id="${index}" onclick=${newUser} class="button">Requested Access</div></td></tr>`
+            return html`<tr id="new"><td><span>${index + 1}</span>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role}</td><td class="manage-cell"><div id="newUser-${index}" onclick=${newUser} class="button">Requested Access</div></td></tr>`
           })}
-          ${sortedUsers.map(function (el) {
-            return html`<tr><td>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role.charAt(0).toUpperCase() + el.role.slice(1)}</td><td class="manage-cell"><div class="edit-button">Edit</div></td></tr>`
+          ${sortedUsers.map(function (el, index) {
+            return html`<tr><td>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role.charAt(0).toUpperCase() + el.role.slice(1)}</td><td class="manage-cell"><div id="user-${index}" onclick=${editUser} class="edit-button">Edit</div></td></tr>`
           })}
         </tbody>
       </table>
     `
   }
 
+  function editUser (e) {
+    index = e.target.id.slice(5)
+    emit('editUser', {index: index})
+  }
+
   function newUser (e) {
-    emit('updateNewUser', {index: e.target.id})
+    index = e.target.id.slice(8)
+    emit('updateNewUser', {index: index})
   }
 
   function addUser () {

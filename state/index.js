@@ -204,6 +204,13 @@ module.exports = function (state, emitter) {
         role: 'User',
         error: '',
         requested: ''
+      },
+      editUser: {
+        name: '',
+        email: '',
+        region: '',
+        location: '',
+        role: ''
       }
     }
   }
@@ -243,6 +250,17 @@ module.exports = function (state, emitter) {
     emitter.emit('pushState', '/admin/adduser')
   })
 
+  emitter.on('editUser', function (data) {
+    var user = state.ui.manageUsers.users[data.index]
+    state.ui.editUser.name = user.name
+    state.ui.editUser.email = user.email
+    state.ui.editUser.region = user.region
+    state.ui.editUser.location = user.location
+    state.ui.editUser.role = user.role
+    console.log(state.ui.editUser)
+    emitter.emit('pushState', '/admin/edituser')
+  })
+
   emitter.on('updateNewUser', function (data) {
     var user = state.ui.manageUsers.newRequests[data.index]
     state.ui.addUser.name = user.name
@@ -277,6 +295,7 @@ module.exports = function (state, emitter) {
   emitter.on('loadLocations', function () {
     api.getLocations(function (data) {
       state.locations = data
+      console.log(state.ui.home.loaded)
       state.ui.home.loaded = true
     })
 
