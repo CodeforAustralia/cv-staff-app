@@ -26,16 +26,6 @@ module.exports = function (state, emit) {
         margin-top: 6rem;
         margin-bottom: 6rem;
         max-width: 1100px;
-        .button {
-          align-self: flex-end;
-          background-color: #498fe1;
-          border-radius: 5px;
-          color: #fff;
-          cursor: pointer;
-          margin: 0.5rem 0 0.5rem 0.5rem;
-          padding: 0.5rem 1.5rem;
-          width: max-content;
-        }
         table {
           align-self: center;
           border-collapse: collapse;
@@ -96,16 +86,6 @@ module.exports = function (state, emit) {
         }
       }
     }
-
-    .edit-button {
-      border: 2px #e0e0e0 solid;
-      border-radius: 5px;
-      color: #616069;
-      cursor: pointer;
-      margin: 0.5rem;
-      padding: 0.5rem 1.5rem;
-      width: max-content;
-    }
   `
 
   return html`
@@ -114,7 +94,7 @@ module.exports = function (state, emit) {
       <div id="content">
         <h1>Manage CCS staff accounts</h1>
         <p>Case Managers, Justice Officers, Community Work Officers, and any other CCS staff who need to send SMS/web reminders to clients.</p>
-        <div class="button" onclick=${addUser}>Add new user</div>
+        <button class="blue-button" style="align-self:flex-end" onclick=${addUser}>Add new user</button>
         ${generateTable()}
       </div>
     </div>
@@ -163,10 +143,10 @@ module.exports = function (state, emit) {
         </thead>
         <tbody>
           ${sortedNewRequests.map(function (el, index) {
-            return html`<tr id="new"><td><span>${index + 1}</span>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role}</td><td class="manage-cell"><div id="newUser-${index}" onclick=${newUser} class="button">Requested Access</div></td></tr>`
+            return html`<tr id="new"><td><span>${index + 1}</span>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role}</td><td class="manage-cell"><button class="blue-button" id="newUser-${index}" onclick=${newUser}>Requested Access</button></td></tr>`
           })}
           ${sortedUsers.map(function (el, index) {
-            return html`<tr><td>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role.charAt(0).toUpperCase() + el.role.slice(1)}</td><td class="manage-cell"><div id="user-${index}" onclick=${editUser} class="edit-button">Edit</div></td></tr>`
+            return html`<tr><td>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role.charAt(0).toUpperCase() + el.role.slice(1)}</td><td class="manage-cell"><button class="white-button" id="user-${index}" onclick=${editUser}>Edit</button></td></tr>`
           })}
         </tbody>
       </table>

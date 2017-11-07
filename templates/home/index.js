@@ -16,8 +16,6 @@ var navbar = require('../navbar')
 module.exports = function (state, emit) {
   var style = css`
     :host {
-      font-family: Helvetica;
-      line-height: 1.5;
       #content {
         display: flex;
         flex-direction: row;
@@ -104,18 +102,6 @@ module.exports = function (state, emit) {
         }
       }
     }
-
-    .button {
-      background-color: #498fe1;
-      color: #fff;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      margin: 0.5rem;
-      padding: 0.5rem 1.5rem;
-      width: max-content;
-    }
   `
 
   var givenName = state.ui.home.givenName
@@ -178,9 +164,9 @@ module.exports = function (state, emit) {
               </div>
               ${error ? displayError() : null}
               <div id="button-container">
-                <div class="button" onclick=${validateInput}>
+                <button onclick=${validateInput}>
                 Request access
-                </div>
+                </button>
               </div>
             </div>
           </div>

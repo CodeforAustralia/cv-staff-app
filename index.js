@@ -12,6 +12,7 @@ app.use(require('./state'))
 
 // import stylesheets
 css('./assets/normalize.css')
+css('./assets/style.css')
 
 // declare routes
 app.route('/', require('./templates/home'))

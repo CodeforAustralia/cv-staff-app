@@ -60,14 +60,6 @@ select {
   padding: 0.5rem;
 }
 
-button {
-  background: none;
-  border: 1px #6f6e75 solid;
-  border-radius: 3px;
-  box-shadow: none;
-  height: 1.5rem;
-}
-
 .lightbox {
   align-items: center;
   background: rgba(0, 0, 0, 0.5);

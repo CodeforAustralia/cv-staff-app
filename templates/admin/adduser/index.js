@@ -28,20 +28,7 @@ module.exports = function (state, emit) {
         margin: auto;
         margin-top: 4rem;
         max-width: 1100px;
-        #content-top {
-          width: 70%;
-          button {
-            border: 2px #e0e0e0 solid;
-            border-radius: 5px;
-            color: #616069;
-            cursor: pointer;
-            font-weight: bold;
-            height: auto;
-            padding: 0.5rem 2rem;
-            margin: 0.5rem;
-            width: max-content;
-          }
-        }
+        #content-top { width: 70%; }
         #add-user {
           border: 2px #e0e0e0 solid;
           display: flex;
@@ -98,18 +85,6 @@ module.exports = function (state, emit) {
                 color: #498fe1;
                 text-decoration: none;
               }
-              button {
-                align-self: flex-end;
-                background-color: #498fe1;
-                border: none;
-                border-radius: 5px;
-                color: #fff;
-                cursor: pointer;
-                height: auto;
-                padding: 0.5rem 2rem;
-                margin: 0.5rem;
-                width: max-content;
-              }
             }
             #complete {
               display: none;
@@ -141,7 +116,7 @@ module.exports = function (state, emit) {
       ${navbar(state.user.name, state.ui.manageUsers.newRequests.length)}
       <section id="content">
         <section id="content-top">
-          <button onclick=${back}>Back to user list</button>
+          <button class="white-button" onclick=${back}>Back to user list</button>
           <h1>Add new user</h1>
           <p>Create an account for Case Managers, Justice Officers, Community Work Officers, and any other CCS staff who need to send SMS/web reminders to clients.</p>
         </section>
@@ -177,7 +152,7 @@ module.exports = function (state, emit) {
             ${error ? displayError() : null}
             <div id="submit">
               <a href="#">Cancel</a>
-              <button onclick=${validateInput}>Create account</button>
+              <button class="blue-button" style="align-self:flex-end" onclick=${validateInput}>Create account</button>
             </div>
             <div id="complete">
               <h3>${name}'s access granted</h3>

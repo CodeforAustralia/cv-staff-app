@@ -1,0 +1,24 @@
+* {
+  font-family: Helvetica;
+  line-height: 1.5;
+}
+
+button {
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  width: max-content;
+}
+
+.blue-button {
+  background-color: #498fe1;
+  border: none;
+  color: #fff;
+}
+
+.white-button {
+  background-color: #fff;
+  border: 2px #e0e0e0 solid;
+  color: #616069;
+}
