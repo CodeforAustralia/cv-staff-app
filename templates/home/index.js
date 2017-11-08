@@ -11,6 +11,7 @@ var css = require('sheetify')
 
 // require modules
 var navbar = require('../navbar')
+var api = require('../../lib/api')
 
 // export module
 module.exports = function (state, emit) {
@@ -164,7 +165,7 @@ module.exports = function (state, emit) {
               </div>
               ${error ? displayError() : null}
               <div id="button-container">
-                <button onclick=${validateInput}>
+                <button class="white-button" onclick=${validateInput}>
                 Request access
                 </button>
               </div>
@@ -188,7 +189,8 @@ module.exports = function (state, emit) {
   }
 
   function validateInput () {
-    var errorMessage
+    var errorMessage = ''
+
     if (!givenName) {
       errorMessage = 'Please enter your given name'
     } else if (!email.endsWith('@justice.vic.gov.au')) {
@@ -197,7 +199,20 @@ module.exports = function (state, emit) {
       errorMessage = 'Please select a location'
     }
 
-    emit('updateError', {template: 'home', error: errorMessage})
+    if (errorMessage) {
+      emit('updateError', {template: 'home', error: errorMessage})
+    } else {
+      validateUser(email)
+    }
+  }
+
+  function validateUser (email) {
+    api.findUser(function (data) {
+      if (data !== null) {
+        console.log('here')
+        emit('updateError', {template: 'home', error: 'Another user with this username already exists'})
+      }
+    }, {email: email})
   }
 
   function printLocations() {
