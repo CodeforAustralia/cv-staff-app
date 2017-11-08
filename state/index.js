@@ -293,7 +293,7 @@ module.exports = function (state, emitter) {
   })
 
   emitter.on('loadLocations', function () {
-    api.getLocations(function (response) {
+    api.getLocations(function (data) {
       state.locations = data
       state.ui.home.loaded = true
     })
