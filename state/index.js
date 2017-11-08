@@ -294,15 +294,11 @@ module.exports = function (state, emitter) {
 
   emitter.on('loadLocations', function () {
     api.getLocations(function (response) {
-      if (response.code === '200') {
-        state.locations = response.data
-        state.ui.home.loaded = true
-      }
-      else {
-        state.locations = []
-      }
+      state.locations = data
+      state.ui.home.loaded = true
     })
 
+    // RACE CONDITION - without timeout, document renders before data is loaded. If having 403 errors, try increasing timeout time
     setTimeout(function () { emitter.emit('render') }, 0)
   })
 

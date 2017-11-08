@@ -6,7 +6,8 @@
   "scripts": {
     "build": "bankai build index.js --css [ -u sheetify-nested ]",
     "local": "bankai index.js -p 3000 --css [ -u sheetify-nested ]",
-    "start": "bankai index.js -p 8080 -A 172.31.10.240 --css [ -u sheetify-nested ]",
+    "serve": "bankai index.js -p 8080 -A 172.31.10.240 --css [ -u sheetify-nested]",
+    "start": "sudo npm run serve > logs/stdout.txt 2 > logs/stderr.txt &",
     "test": "standard"
   },
   "repository": {
