@@ -2,7 +2,9 @@
 // what does the cancel button do?
 // need to pull locations and regions
 // what's displayed over the information hover?
-// need to add user to database
+// need to add changes to database
+// need to be able to delete user
+// need to be able to do password reset
 
 // require dependencies
 var html = require('choo/html')
@@ -13,12 +15,11 @@ var navbar = require('../../navbar/admin.js')
 
 // export module
 module.exports = function (state, emit) {
-  var name = state.ui.addUser.name
-  var email = state.ui.addUser.email
-  var region = state.ui.addUser.region
-  var location = state.ui.addUser.location
-  var role = state.ui.addUser.role
-  var error = state.ui.addUser.error
+  var name = state.ui.editUser.name
+  var email = state.ui.editUser.email
+  var region = state.ui.editUser.region
+  var location = state.ui.editUser.location
+  var role = state.ui.editUser.role
 
   var style = css`
     :host {
@@ -26,7 +27,12 @@ module.exports = function (state, emit) {
         margin: auto;
         margin-top: 4rem;
         max-width: 1100px;
-        #content-top { width: 70%; }
+        #content-top {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          width: 70%;
+        }
         #add-user {
           border: 2px #e0e0e0 solid;
           display: flex;
@@ -35,6 +41,10 @@ module.exports = function (state, emit) {
           width: 70%;
           h3 {
             color: #000;
+          }
+          select {
+            margin-right: 0;
+            max-width: 100%;
           }
           #user-details {
             display: flex;
@@ -51,25 +61,21 @@ module.exports = function (state, emit) {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            padding: 1.5rem;
             width: 50%;
             #user-role {
               display: flex;
               flex-direction: column;
               justify-content: flex-start;
-              padding: 1.5rem;
-              img {
-                height: 1rem;
-              }
-              select {
+              input, select {
                 background-color: #fff;
+                margin-bottom: 1rem;
+                padding-left: 0.5rem;
               }
-            }
-            #error {
-              background-color: #d7d7d7;
-              font-size: 1rem;
-              margin: 0 2rem;
-              padding: 1rem 0.5rem;
-              text-align: center;
+              #password { color: #616069; }
+              #password-reset {
+                margin: auto;
+              }
             }
             #submit {
               align-self: center;
@@ -78,10 +84,6 @@ module.exports = function (state, emit) {
               padding: 1.5rem;
               * {
                 margin: 0.5rem;
-              }
-              a, a:visited {
-                color: #498fe1;
-                text-decoration: none;
               }
             }
             #complete {
@@ -106,6 +108,28 @@ module.exports = function (state, emit) {
         position: absolute;
         width: 200px;
       }
+      img {
+        height: 1rem;
+      }
+      #delete-prompt {
+        align-items: center;
+        background: #f5f5f5;
+        border-radius: 2px;
+        color: #000;
+        display: flex;
+        flex-direction: column;
+        font-size: 20px;
+        padding: 2rem;
+        div {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+        }
+      }
+      a, a:visited {
+        color: #498fe1;
+        text-decoration: none;
+      }
     }
   `
 
@@ -115,8 +139,18 @@ module.exports = function (state, emit) {
       <section id="content">
         <section id="content-top">
           <button class="white-button" onclick=${back}>Back to user list</button>
-          <h1>Add new user</h1>
+          <h1>Edit ${name}'s user account</h1>
           <p>Create an account for Case Managers, Justice Officers, Community Work Officers, and any other CCS staff who need to send SMS/web reminders to clients.</p>
+          <button style="align-self:flex-end" class="white-button" onclick=${toggleLightbox}>Delete this user</button>
+          ${state.ui.editUser.lightbox ? html`<div class="lightbox">
+                                                <div id="delete-prompt">
+                                                  Are you sure you want to remove this person's access from Orion?
+                                                  <div>
+                                                    <button class="white-button" onclick=${toggleLightbox}>Cancel</button>
+                                                    <button class="blue-button">Delete user</button>
+                                                  </div>
+                                                </div>
+                                              </div>` : null}
         </section>
         <section id="add-user">
           <div id="user-details">
@@ -135,7 +169,6 @@ module.exports = function (state, emit) {
               <option disabled ${location ? null : 'selected'}></option>
               <option ${location ? 'selected' : null}>Sunshine</option>
             </select>
-            <p>If the CCS staff member works at more than one office, just choose one.</p>
           </div>
           <div id="account-settings">
             <div id="user-role">
@@ -145,12 +178,16 @@ module.exports = function (state, emit) {
                 <option ${role === 'User' ? 'selected' : null}>User</option>
                 <option ${role === 'Admin' ? 'selected' : null}>Admin</option>
               </select>
-              <p>Most CCS staff who use Orion will be Users.</p>
+              <label id="password">Password</label>
+              <input type="password" value="notarealpw" disabled />
+              <button class="white-button" id="password-reset">
+                <img src="../../assets/padlock.png" />
+                Reset password
+              </button>
             </div>
-            ${error ? displayError() : null}
             <div id="submit">
               <a href="#">Cancel</a>
-              <button class="blue-button" style="align-self:flex-end" onclick=${validateInput}>Create account</button>
+              <button class="blue-button">Create account</button>
             </div>
             <div id="complete">
               <h3>${name}'s access granted</h3>
@@ -163,39 +200,12 @@ module.exports = function (state, emit) {
     </div>
   `
 
-  function displayError() {
-    return html`
-      <div id="error">
-        ${error}
-      </div>
-    `
-  }
-
-  function validateInput () {
-    var errorMessage = ''
-    if (!name) {
-      errorMessage = 'Please enter a name'
-    } else if (!email.endsWith('@justice.vic.gov.au')) {
-      errorMessage = 'Please use a @justice.vic.gov.au email address'
-    } else if (!region) {
-      errorMessage = 'Please select a region'
-    } else if (!location) {
-      errorMessage = 'Please select a location'
-    }
-
-    if (errorMessage) {
-      emit('updateError', {template: 'addUser', error: errorMessage})
-    } else {
-      var submit = document.getElementById('submit')
-      var complete = document.getElementById('complete')
-      submit.style.display = 'none'
-      complete.style.display = 'flex'
-      emit('grantAccess')
-    }
+  function toggleLightbox () {
+    emit('toggleLightbox', 'editUser')
   }
 
   function updateInput (e) {
-    emit('updateInput', {template: 'addUser', target: e.target.id, text: e.target.value})
+    emit('updateInput', {template: 'editUser', target: e.target.id, text: e.target.value})
   }
 
   function toggleDisplayInfo (e) {

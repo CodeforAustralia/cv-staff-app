@@ -6,7 +6,6 @@ var css = require('sheetify')
 module.exports = function (state, emit) {
   var style = css`
     :host {
-      font-family: Helvetica;
       margin: auto;
       max-width: 900px;
       div {

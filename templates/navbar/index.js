@@ -16,9 +16,9 @@ module.exports = function () {
         <div id="help">
           Help
         </div>
-        <div class="button">
+        <button class="blue-button">
           Log in
-        </div>
+        </button>
       </div>
     </div>
   `

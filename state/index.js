@@ -210,7 +210,8 @@ module.exports = function (state, emitter) {
         email: '',
         region: '',
         location: '',
-        role: ''
+        role: '',
+        lightbox: false
       }
     }
   }
@@ -257,7 +258,6 @@ module.exports = function (state, emitter) {
     state.ui.editUser.region = user.region
     state.ui.editUser.location = user.location
     state.ui.editUser.role = user.role
-    console.log(state.ui.editUser)
     emitter.emit('pushState', '/admin/edituser')
   })
 
@@ -293,10 +293,14 @@ module.exports = function (state, emitter) {
   })
 
   emitter.on('loadLocations', function () {
-    api.getLocations(function (data) {
-      state.locations = data
-      console.log(state.ui.home.loaded)
-      state.ui.home.loaded = true
+    api.getLocations(function (response) {
+      if (response.code === '200') {
+        state.locations = response.data
+        state.ui.home.loaded = true
+      }
+      else {
+        state.locations = []
+      }
     })
 
     setTimeout(function () { emitter.emit('render') }, 0)
@@ -372,8 +376,9 @@ module.exports = function (state, emitter) {
   })
 
 
-  emitter.on('toggleLightbox', function () {
+  emitter.on('toggleLightbox', function (template) {
     state.lightbox = !state.lightbox
+    state.ui[template].lightbox = !state.ui[template].lightbox
     emitter.emit('render')
   })
 

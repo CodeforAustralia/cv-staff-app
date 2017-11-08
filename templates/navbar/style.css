@@ -3,9 +3,7 @@
   color: #fff;
   display: flex;
   flex-direction: row;
-  font-family: Helvetica;
   justify-content: space-between;
-  line-height: 1.5;
   #navbar-left {
     display: flex;
     flex-direction: row;

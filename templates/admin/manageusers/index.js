@@ -16,8 +16,6 @@ var navbar = require('../../navbar/admin.js')
 module.exports = function (state, emit) {
   var style = css`
     :host {
-      font-family: Helvetica;
-      line-height: 1.5;
       #content {
         display: flex;
         flex-direction: column;
