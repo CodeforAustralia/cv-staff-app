@@ -119,31 +119,11 @@ module.exports = function (state, emitter) {
       administrators: {
         loaded: false,
         sort: {
-          on: 'office',
+          on: 'location',
           direction: 'asc'
         },
-        tableFields: ['administrator', 'office', 'region', 'email'],
-        administrators: [{
-          administrator: 'John Doe',
-          office: 'Ararat',
-          region: 'Grampians',
-          email: 'John.Doe@justice.vic.gov.au'
-        }, {
-          administrator: 'Jane Smith',
-          office: 'Bairnsdale',
-          region: 'Gippsland',
-          email: 'Jane.L.Smith@justice.vic.gov.au'
-        }, {
-          administrator: 'Jesse Miller',
-          office: 'Ballarat',
-          region: 'Grampians',
-          email: 'Jesse.Miller@justice.vic.gov.au'
-        }, {
-          administrator: 'Mary Jo Black',
-          office: 'Benalla',
-          region: 'Hume',
-          email: 'Mary.Jo.Black@justice.vic.gov.au'
-        }]
+        tableFields: ['administrator', 'location', 'region', 'email'],
+        administrators: []
       },
       manageUsers: {
         sort: {
@@ -290,6 +270,15 @@ module.exports = function (state, emitter) {
   emitter.on('updateInput', function (data) {
     state.ui[data.template][data.target] = data.text
     emitter.emit('render')
+  })
+
+  emitter.on('loadAdministrators', function (data) {
+    api.getAdministrators(function (data) {
+      state.ui.administrators.administrators = data
+      state.ui.administrators.loaded = true
+
+      emitter.emit('render')
+    })
   })
 
   emitter.on('loadLocations', function () {

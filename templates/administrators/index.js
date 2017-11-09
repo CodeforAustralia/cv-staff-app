@@ -58,7 +58,7 @@ module.exports = function (state, emit) {
   `
 
   return html`
-    <div class=${style}>
+    <div class=${style} onload=${state.ui.administrators.loaded ? null : emit('loadAdministrators')}>
       ${navbar()}
       <div id="content">
         <div id="content-top">
@@ -110,7 +110,7 @@ module.exports = function (state, emit) {
         ${sortedArray.map(function (el) {
           return html`
             <tr>
-              <td>${el.administrator}</td><td>${el.office}</td><td>${el.region}</td><td><a href="mailto:${el.email}?subject=Orion%20Access%20Request">${el.email}</a></td>
+              <td>${el.administrator}</td><td>${el.location}</td><td>${el.region}</td><td><a href="mailto:${el.email}?subject=Orion%20Access%20Request">${el.email}</a></td>
             </tr>
           `
         })}
