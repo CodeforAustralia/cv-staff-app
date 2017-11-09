@@ -1,8 +1,6 @@
 // notes:
 // Help and Login divs don't do anything yet
 // Placeholder images
-// Administrator link doesn't do anything
-// Form validation - user already exists
 // Request access button doesn't do anything
 
 // require dependencies
@@ -140,7 +138,7 @@ module.exports = function (state, emit) {
               - a justice.vic.gov.au email address <br />
               we can set you up with an account.
             </p>
-            <p id="contact">You can also contact <a href="#">the administrator</a> for your office directly. They'll be the one who sets up your account.</p>
+            <p id="contact">You can also contact <a href="/administrators">the administrator</a> for your office directly. They'll be the one who sets up your account.</p>
           </div>
           <div id="content-right">
             <h2>Get started - Create an account</h2>
