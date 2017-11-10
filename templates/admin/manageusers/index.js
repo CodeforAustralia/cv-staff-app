@@ -87,7 +87,7 @@ module.exports = function (state, emit) {
   `
 
   return html`
-    <div class=${style}>
+    <div class=${style} onload=${state.ui.manageUsers.loaded ? null : emit('loadUsers')}>
       ${navbar(state.user.name, state.ui.manageUsers.newRequests.length)}
       <div id="content">
         <h1>Manage CCS staff accounts</h1>
@@ -109,6 +109,7 @@ module.exports = function (state, emit) {
       comparison = (a > b) - (a < b)
       return (state.ui.manageUsers.sort.direction === 'asc' ? comparison : (-comparison))
     })
+
     var sortedUsers = state.ui.manageUsers.users.sort(function (a, b) {
       a = a[category].toLowerCase()
       b = b[category].toLowerCase()

@@ -104,7 +104,10 @@ module.exports = function (state, emitter) {
     state.locations = null
 
     state.user = {
-      name: 'John Jansen'
+      name: 'Georgia Hansford',
+      email: 'Georgia.hansford@justice.vic.gov.au',
+      locationID: 4,
+      role: 'Admin'
     }
 
     state.ui = {
@@ -126,55 +129,14 @@ module.exports = function (state, emitter) {
         administrators: []
       },
       manageUsers: {
+        loaded: false,
         sort: {
           on: 'name',
           direction: 'asc'
         },
         tableFields: ['name', 'email', 'location', 'region', 'role', 'manage this account'],
-        newRequests: [{
-          name: 'Roffe Ventimiglia',
-          email: 'Roffe.Ventimiglia@justice.vic.gov.au',
-          location: 'Sunshine',
-          region: 'North West Metro',
-          role: ''
-        }, {
-          name: 'Sheamus Feldt',
-          email: 'Sheamus.Feldt@justice.vic.gov.au',
-          location: 'Sunshine',
-          region: 'North West Metro',
-          role: ''
-        }],
-        users: [{
-          name: 'Asklepios Marchegiano',
-          email: 'Asklepios.Marchegiano@justice.vic.gov.au',
-          location: 'Sunshine',
-          region: 'North West Metro',
-          role: 'User'
-        }, {
-          name: 'Caius Fairburn',
-          email: 'Caius.L.Fairburn@justice.vic.gov.au',
-          location: 'Sunshine',
-          region: 'North West Metro',
-          role: 'User'
-        }, {
-          name: 'Ljubica Ellery',
-          email: 'Ljubica.Ellery@justice.vic.gov.au',
-          location: 'Sunshine',
-          region: 'North West Metro',
-          role: 'Admin'
-        }, {
-          name: 'Sivan Puig',
-          email: 'Sivan.Puig@justice.vic.gov.au',
-          location: 'Sunshine',
-          region: 'North West Metro',
-          role: 'User'
-        }, {
-          name: 'Viola Boels',
-          email: 'Viola.Boels@justice.vic.gov.au',
-          location: 'Sunshine',
-          region: 'North West Metro',
-          role: 'User'
-        }]
+        newRequests: [],
+        users: []
       },
       addUser: {
         name: '',
@@ -270,6 +232,18 @@ module.exports = function (state, emitter) {
   emitter.on('updateInput', function (data) {
     state.ui[data.template][data.target] = data.text
     emitter.emit('render')
+  })
+
+  emitter.on('loadUsers', function () {
+    api.getStaff(function (data) {
+      state.ui.manageUsers.users = data
+      api.getNewRequests(function (data) {
+        state.ui.manageUsers.newRequests = data
+        state.ui.manageUsers.loaded = true
+
+        emitter.emit('render')
+      }, {location: state.user.locationID})
+    }, {location: state.user.locationID})
   })
 
   emitter.on('loadAdministrators', function (data) {
