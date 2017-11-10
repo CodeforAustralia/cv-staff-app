@@ -204,11 +204,24 @@ module.exports = function (state, emit) {
     }
   }
 
-  function validateUser (email) {
+  function validateUser () {
     api.findUser(function (data) {
       if (data !== null) {
-        console.log('here')
         emit('updateError', {template: 'home', error: 'Another user with this username already exists'})
+      } else {
+        api.newAccessRequest(function (data) {
+          if (data === 1) {
+            emit('updateError', {template: 'home', error: `We've sent a request to your local administrator. Keep an eye out for an email.`})
+          } else {
+            emit('updateError', {template: 'home', error: 'Whoops, looks like there was a problem!'})
+          }
+        }, {
+          email: email,
+          givenName: givenName,
+          lastName: lastName,
+          location: state.locations.filter(function (obj) {
+            return obj.SiteName === location})[0].LocationID
+        })
       }
     }, {email: email})
   }
@@ -220,7 +233,7 @@ module.exports = function (state, emit) {
           <option disabled ${state.ui.home.location ? null : 'selected'} value></option>
           ${state.locations.map(function (el) {
             return html`
-              <option value="${el}" ${state.ui.home.location === el ? 'selected' : null}>${el}</option>
+              <option value="${el.SiteName}" ${state.ui.home.location === el.SiteName ? 'selected' : null}>${el.SiteName}</option>
             `
           })}
         </select>
