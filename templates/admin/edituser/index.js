@@ -141,13 +141,13 @@ module.exports = function (state, emit) {
           <button class="white-button" onclick=${back}>Back to user list</button>
           <h1>Edit ${name}'s user account</h1>
           <p>Create an account for Case Managers, Justice Officers, Community Work Officers, and any other CCS staff who need to send SMS/web reminders to clients.</p>
-          <button style="align-self:flex-end" class="white-button" onclick=${toggleLightbox}>Delete this user</button>
+          <button style="align-self:flex-end" class="white-button" onclick=${toggleLightbox}>Disable this user</button>
           ${state.ui.editUser.lightbox ? html`<div class="lightbox">
                                                 <div id="delete-prompt">
                                                   Are you sure you want to remove this person's access from Orion?
                                                   <div>
                                                     <button class="white-button" onclick=${toggleLightbox}>Cancel</button>
-                                                    <button class="blue-button">Delete user</button>
+                                                    <button class="blue-button">Disable user</button>
                                                   </div>
                                                 </div>
                                               </div>` : null}

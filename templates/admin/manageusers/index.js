@@ -29,6 +29,8 @@ module.exports = function (state, emit) {
           border-collapse: collapse;
           border: 1px #e5e5e5 solid;
           font-size: 0.9rem;
+          margin: 2rem 0;
+          table-layout: fixed;
           width: 100%;
           img {
             height: 1rem;
@@ -54,6 +56,12 @@ module.exports = function (state, emit) {
               }
             }
           }
+          th:first-child { width: 150px; }
+          th:nth-child(2) { width: 250px; }
+          th:nth-child(3) { width: 225px; }
+          th:nth-child(4) { width: 200px; }
+          th:nth-child(5) { width: 75px; }
+          th:nth-child(6) { width: 200px; }
           #new {
             td {
               background-color: #f8f8f8;
@@ -93,28 +101,21 @@ module.exports = function (state, emit) {
         <h1>Manage CCS staff accounts</h1>
         <p>Case Managers, Justice Officers, Community Work Officers, and any other CCS staff who need to send SMS/web reminders to clients.</p>
         <button class="blue-button" style="align-self:flex-end" onclick=${addUser}>Add new user</button>
-        ${generateTable()}
+        ${state.ui.manageUsers.newRequests.length !== 0 ? generateNewRequestsTable() : null}
+        ${generateUsersTable()}
       </div>
     </div>
   `
 
-  function generateTable() {
-    var category = state.ui.manageUsers.sort.on
+  function generateNewRequestsTable () {
+    var category = state.ui.manageUsers.sort.newRequests.on
     var sortedNewRequests = state.ui.manageUsers.newRequests
-
     sortedNewRequests = sortedNewRequests.sort(function (a, b) {
       a = a[category].toLowerCase()
       b = b[category].toLowerCase()
 
       comparison = (a > b) - (a < b)
-      return (state.ui.manageUsers.sort.direction === 'asc' ? comparison : (-comparison))
-    })
-
-    var sortedUsers = state.ui.manageUsers.users.sort(function (a, b) {
-      a = a[category].toLowerCase()
-      b = b[category].toLowerCase()
-      comparison = (a > b) - (a < b)
-      return (state.ui.manageUsers.sort.direction === 'asc' ? comparison : (-comparison))
+      return (state.ui.manageUsers.sort.newRequests.direction === 'asc' ? comparison : (-comparison))
     })
 
     return html`
@@ -125,9 +126,9 @@ module.exports = function (state, emit) {
               if (index < (state.ui.manageUsers.tableFields.length - 1)) {
                 return html`
                   <th>
-                    <span id="${el}" onclick=${updateSortCategory}>
+                    <span id="newRequests-${el}" onclick=${updateSortCategory}>
                       ${el.charAt(0).toUpperCase() + el.slice(1)}
-                      ${category === el ? html`<img src="../../assets/sort-${state.ui.manageUsers.sort.direction}.png" />` :
+                      ${category === el ? html`<img src="../../assets/sort-${state.ui.manageUsers.sort.newRequests.direction}.png" />` :
                                         html`<img src="../../assets/sort-arrows.png" />`}
                     </span>
                   </th>
@@ -142,8 +143,46 @@ module.exports = function (state, emit) {
         </thead>
         <tbody>
           ${sortedNewRequests.map(function (el, index) {
-            return html`<tr id="new"><td><span>${index + 1}</span>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role}</td><td class="manage-cell"><button class="blue-button" id="newUser-${index}" onclick=${newUser}>Requested Access</button></td></tr>`
+            return html`<tr id="new"><td><span>!</span>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role}</td><td class="manage-cell"><button class="blue-button" id="newUser-${index}" onclick=${newUser}>Requested Access</button></td></tr>`
           })}
+        </tbody>
+      </table>
+    `
+  }
+
+  function generateUsersTable() {
+    var category = state.ui.manageUsers.sort.users.on
+    var sortedUsers = state.ui.manageUsers.users.sort(function (a, b) {
+      a = a[category].toLowerCase()
+      b = b[category].toLowerCase()
+      comparison = (a > b) - (a < b)
+      return (state.ui.manageUsers.sort.users.direction === 'asc' ? comparison : (-comparison))
+    })
+
+    return html`
+      <table>
+        <thead>
+          <tr>
+            ${state.ui.manageUsers.tableFields.map(function (el, index) {
+              if (index < (state.ui.manageUsers.tableFields.length - 1)) {
+                return html`
+                  <th>
+                    <span id="users-${el}" onclick=${updateSortCategory}>
+                      ${el.charAt(0).toUpperCase() + el.slice(1)}
+                      ${category === el ? html`<img src="../../assets/sort-${state.ui.manageUsers.sort.users.direction}.png" />` :
+                                        html`<img src="../../assets/sort-arrows.png" />`}
+                    </span>
+                  </th>
+                `
+              } else {
+                return html`
+                  <th>${el.charAt(0).toUpperCase() + el.slice(1)}</th>
+                `
+              }
+            })}
+          </tr>
+        </thead>
+        <tbody>
           ${sortedUsers.map(function (el, index) {
             return html`<tr><td>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role.charAt(0).toUpperCase() + el.role.slice(1)}</td><td class="manage-cell"><button class="white-button" id="user-${index}" onclick=${editUser}>Edit</button></td></tr>`
           })}
@@ -167,10 +206,13 @@ module.exports = function (state, emit) {
   }
 
   function updateSortCategory (e) {
-    if (e.target.id === state.ui.manageUsers.sort.on) {
-      emit('reverseSort', {template: 'manageUsers'})
+    var table = e.target.id.split('-')[0]
+    var id = e.target.id.split('-')[1]
+
+    if (id === state.ui.manageUsers.sort[table].on) {
+      emit('reverseSort', {template: 'manageUsers', table: table})
     } else {
-      emit('updateSort', {template: 'manageUsers', target: e.target.id})
+      emit('updateSort', {template: 'manageUsers', table: table, target: id})
     }
   }
 }

@@ -76,20 +76,20 @@ module.exports = function (state, emit) {
     if (e.target.id === state.ui.administrators.sort.on) {
       emit('reverseSort', {template: 'administrators'})
     } else {
-      emit('updateSort', {template: 'administrators', target: e.target.id})
+      emit('updateSort', {template: 'administrators', table: 'table', target: e.target.id})
     }
   }
 
   function displayTable() {
     var sortedArray = state.ui.administrators.administrators
-    var category = state.ui.administrators.sort.on
+    var category = state.ui.administrators.sort.table.on
     var comparison
 
     sortedArray.sort(function (a, b) {
       a = a[category].toLowerCase()
       b = b[category].toLowerCase()
       comparison = (a > b) - (a < b)
-      return (state.ui.administrators.sort.direction === 'asc' ? comparison : (-comparison))
+      return (state.ui.administrators.sort.table.direction === 'asc' ? comparison : (-comparison))
     })
 
     return html`

@@ -122,8 +122,10 @@ module.exports = function (state, emitter) {
       administrators: {
         loaded: false,
         sort: {
-          on: 'location',
-          direction: 'asc'
+          table: {
+            on: 'location',
+            direction: 'asc'
+          }
         },
         tableFields: ['administrator', 'location', 'region', 'email'],
         administrators: []
@@ -131,8 +133,14 @@ module.exports = function (state, emitter) {
       manageUsers: {
         loaded: false,
         sort: {
-          on: 'name',
-          direction: 'asc'
+          newRequests: {
+            on: 'name',
+            direction: 'asc'
+          },
+          users: {
+            on: 'name',
+            direction: 'asc'
+          }
         },
         tableFields: ['name', 'email', 'location', 'region', 'role', 'manage this account'],
         newRequests: [],
@@ -214,13 +222,13 @@ module.exports = function (state, emitter) {
   })
 
   emitter.on('reverseSort', function(data) {
-    state.ui[data.template].sort.direction = state.ui[data.template].sort.direction === 'asc' ? 'desc' : 'asc'
+    state.ui[data.template].sort[data.table].direction = state.ui[data.template].sort[data.table].direction === 'asc' ? 'desc' : 'asc'
     emitter.emit('render')
   })
 
   emitter.on('updateSort', function(data) {
-    state.ui[data.template].sort.on = data.target
-    state.ui[data.template].sort.direction = 'asc'
+    state.ui[data.template].sort[data.table].on = data.target
+    state.ui[data.template].sort[data.table].direction = 'asc'
     emitter.emit('render')
   })
 
@@ -240,7 +248,6 @@ module.exports = function (state, emitter) {
       api.getNewRequests(function (data) {
         state.ui.manageUsers.newRequests = data
         state.ui.manageUsers.loaded = true
-
         emitter.emit('render')
       }, {location: state.user.locationID})
     }, {location: state.user.locationID})
@@ -319,9 +326,6 @@ module.exports = function (state, emitter) {
       updateMessage(state.region.CWprograms.filter(function (obj) {
         return obj.name === data.value})[0])
     }
-
-    console.log(state.selected)
-    console.log(state.message)
 
     emitter.emit('render')
 
