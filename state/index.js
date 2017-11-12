@@ -132,6 +132,11 @@ module.exports = function (state, emitter) {
       },
       manageUsers: {
         loaded: false,
+        pagination: {
+          newRequests: 1,
+          users: 1,
+          pageLength: 10
+        },
         sort: {
           newRequests: {
             on: 'name',
@@ -165,6 +170,12 @@ module.exports = function (state, emitter) {
       }
     }
   }
+
+  emitter.on('increasePage', function (data) {
+    state.ui.manageUsers.pagination[data.target] = data.value
+
+    emitter.emit('render')
+  })
 
   emitter.on('grantAccess', function () {
     state.ui.manageUsers.users.push({

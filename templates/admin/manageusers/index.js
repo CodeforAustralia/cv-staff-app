@@ -24,14 +24,16 @@ module.exports = function (state, emit) {
         margin-top: 6rem;
         margin-bottom: 6rem;
         max-width: 1100px;
-        table {
-          align-self: center;
-          border-collapse: collapse;
-          border: 1px #e5e5e5 solid;
-          font-size: 0.9rem;
-          margin: 2rem 0;
-          table-layout: fixed;
-          width: 100%;
+        div {
+          table {
+            align-self: center;
+            border-collapse: collapse;
+            border: 1px #e5e5e5 solid;
+            font-size: 0.9rem;
+            margin: 2rem 0;
+            table-layout: fixed;
+            width: 100%;
+          }
           img {
             height: 1rem;
             margin: auto;
@@ -41,8 +43,9 @@ module.exports = function (state, emit) {
             background-color: #f8f8f8;
             border-top: 1px #e5e5e5 solid;
             border-bottom: 1px #e5e5e5 solid;
+            box-sizing: border-box;
             color: #616069;
-            padding: 0.25rem 1rem;
+            padding: 0.25rem 0.5rem;
             text-align: left;
             span {
               cursor: pointer;
@@ -58,10 +61,10 @@ module.exports = function (state, emit) {
           }
           th:first-child { width: 150px; }
           th:nth-child(2) { width: 250px; }
-          th:nth-child(3) { width: 225px; }
-          th:nth-child(4) { width: 200px; }
+          th:nth-child(3) { width: 215px; }
+          th:nth-child(4) { width: 190px; }
           th:nth-child(5) { width: 75px; }
-          th:nth-child(6) { width: 200px; }
+          th:nth-child(6) { width: 220px; }
           #new {
             td {
               background-color: #f8f8f8;
@@ -70,7 +73,7 @@ module.exports = function (state, emit) {
           }
           td {
             border-bottom: 1px #e5e5e5 solid;
-            padding: 0.25rem 1rem;
+            padding: 0.25rem 0.5rem;
             a, a:visited {
               color: #498fe1;
               text-decoration: none;
@@ -89,10 +92,19 @@ module.exports = function (state, emit) {
             flex-direction: row;
             justify-content: center;
           }
+          p {
+            text-align: center;
+            span {
+              cursor: pointer;
+              padding: 0 0.5rem;
+            }
+          }
         }
       }
     }
   `
+
+  var pageLength = state.ui.manageUsers.pagination.pageLength
 
   return html`
     <div class=${style} onload=${state.ui.manageUsers.loaded ? null : emit('loadUsers')}>
@@ -110,6 +122,8 @@ module.exports = function (state, emit) {
   function generateNewRequestsTable () {
     var category = state.ui.manageUsers.sort.newRequests.on
     var sortedNewRequests = state.ui.manageUsers.newRequests
+    var newRequestsPage = state.ui.manageUsers.pagination.newRequests
+
     sortedNewRequests = sortedNewRequests.sort(function (a, b) {
       a = a[category].toLowerCase()
       b = b[category].toLowerCase()
@@ -119,39 +133,53 @@ module.exports = function (state, emit) {
     })
 
     return html`
-      <table>
-        <thead>
-          <tr>
-            ${state.ui.manageUsers.tableFields.map(function (el, index) {
-              if (index < (state.ui.manageUsers.tableFields.length - 1)) {
-                return html`
-                  <th>
-                    <span id="newRequests-${el}" onclick=${updateSortCategory}>
-                      ${el.charAt(0).toUpperCase() + el.slice(1)}
-                      ${category === el ? html`<img src="../../assets/sort-${state.ui.manageUsers.sort.newRequests.direction}.png" />` :
-                                        html`<img src="../../assets/sort-arrows.png" />`}
-                    </span>
-                  </th>
-                `
-              } else {
-                return html`
-                  <th>${el.charAt(0).toUpperCase() + el.slice(1)}</th>
-                `
-              }
+      <div>
+        <table>
+          <thead>
+            <tr>
+              ${state.ui.manageUsers.tableFields.map(function (el, index) {
+                if (index < (state.ui.manageUsers.tableFields.length - 1)) {
+                  return html`
+                    <th>
+                      <span id="newRequests-${el}" onclick=${updateSortCategory}>
+                        ${el.charAt(0).toUpperCase() + el.slice(1)}
+                        ${category === el ? html`<img src="../../assets/sort-${state.ui.manageUsers.sort.newRequests.direction}.png" />` :
+                                          html`<img src="../../assets/sort-arrows.png" />`}
+                      </span>
+                    </th>
+                  `
+                } else {
+                  return html`
+                    <th>${el.charAt(0).toUpperCase() + el.slice(1)}</th>
+                  `
+                }
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            ${sortedNewRequests.slice((newRequestsPage - 1) * pageLength, newRequestsPage * pageLength).map(function (el, index) {
+              return html`
+                <tr id="new">
+                  <td><span>!</span>${el.name}</td>
+                  <td>${el.email}</td>
+                  <td>${el.location}</td>
+                  <td>${el.region}</td>
+                  <td>${el.role}</td>
+                  <td class="manage-cell"><button class="blue-button" id="newUser-${index}" onclick=${newUser}>Requested Access</button></td>
+                </tr>
+              `
             })}
-          </tr>
-        </thead>
-        <tbody>
-          ${sortedNewRequests.map(function (el, index) {
-            return html`<tr id="new"><td><span>!</span>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role}</td><td class="manage-cell"><button class="blue-button" id="newUser-${index}" onclick=${newUser}>Requested Access</button></td></tr>`
-          })}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+        ${paginate(sortedNewRequests, 'newRequests')}
+      </div>
     `
   }
 
   function generateUsersTable() {
     var category = state.ui.manageUsers.sort.users.on
+    var usersPage = state.ui.manageUsers.pagination.users
+
     var sortedUsers = state.ui.manageUsers.users.sort(function (a, b) {
       a = a[category].toLowerCase()
       b = b[category].toLowerCase()
@@ -160,35 +188,70 @@ module.exports = function (state, emit) {
     })
 
     return html`
-      <table>
-        <thead>
-          <tr>
-            ${state.ui.manageUsers.tableFields.map(function (el, index) {
-              if (index < (state.ui.manageUsers.tableFields.length - 1)) {
-                return html`
-                  <th>
-                    <span id="users-${el}" onclick=${updateSortCategory}>
-                      ${el.charAt(0).toUpperCase() + el.slice(1)}
-                      ${category === el ? html`<img src="../../assets/sort-${state.ui.manageUsers.sort.users.direction}.png" />` :
-                                        html`<img src="../../assets/sort-arrows.png" />`}
-                    </span>
-                  </th>
-                `
-              } else {
-                return html`
-                  <th>${el.charAt(0).toUpperCase() + el.slice(1)}</th>
-                `
-              }
+      <div>
+        <table>
+          <thead>
+            <tr>
+              ${state.ui.manageUsers.tableFields.map(function (el, index) {
+                if (index < (state.ui.manageUsers.tableFields.length - 1)) {
+                  return html`
+                    <th>
+                      <span id="users-${el}" onclick=${updateSortCategory}>
+                        ${el.charAt(0).toUpperCase() + el.slice(1)}
+                        ${category === el ? html`<img src="../../assets/sort-${state.ui.manageUsers.sort.users.direction}.png" />` :
+                                          html`<img src="../../assets/sort-arrows.png" />`}
+                      </span>
+                    </th>
+                  `
+                } else {
+                  return html`
+                    <th>${el.charAt(0).toUpperCase() + el.slice(1)}</th>
+                  `
+                }
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            ${sortedUsers.slice((usersPage - 1) * pageLength, usersPage * pageLength).map(function (el, index) {
+              return html`
+                <tr>
+                  <td>${el.name}</td>
+                  <td>${el.email}</td>
+                  <td>${el.location}</td>
+                  <td>${el.region}</td>
+                  <td>${el.role.charAt(0).toUpperCase() + el.role.slice(1)}</td>
+                  <td class="manage-cell"><button class="white-button" id="user-${index}" onclick=${editUser}>Edit</button></td>
+                </tr>
+              `
             })}
-          </tr>
-        </thead>
-        <tbody>
-          ${sortedUsers.map(function (el, index) {
-            return html`<tr><td>${el.name}</td><td>${el.email}</td><td>${el.location}</td><td>${el.region}</td><td>${el.role.charAt(0).toUpperCase() + el.role.slice(1)}</td><td class="manage-cell"><button class="white-button" id="user-${index}" onclick=${editUser}>Edit</button></td></tr>`
-          })}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+        ${paginate(state.ui.manageUsers.users, 'users')}
+      </div>
     `
+  }
+
+  function paginate (table, tableName) {
+    return html`<p>
+        ${table.map(function (el, index) {
+          if (index % state.ui.manageUsers.pagination.pageLength === 0) {
+            if ((index / state.ui.manageUsers.pagination.pageLength + 1) === state.ui.manageUsers.pagination[tableName]) {
+              return html`<span style="text-decoration:underline" id="increase-${tableName}-${index / state.ui.manageUsers.pagination.pageLength + 1}" onclick=${increasePage}>${index / state.ui.manageUsers.pagination.pageLength + 1}</span>`
+            } else {
+              return html`<span id="increase-${tableName}-${index / state.ui.manageUsers.pagination.pageLength + 1}" onclick=${increasePage}>${index / state.ui.manageUsers.pagination.pageLength + 1}</span>`
+            }
+          }
+        })}
+      </p>
+    `
+  }
+
+  function increasePage (e) {
+    if (e.target.id.includes('increase-user')) {
+      emit('increasePage', {target: 'users', value: parseInt(e.target.id.slice(15))})
+    } else if (e.target.id.includes('increase-newRequest')) {
+      emit('increasePage', {target: 'newRequests', value: parseInt(e.target.id.slice(21))})
+    }
   }
 
   function editUser (e) {
