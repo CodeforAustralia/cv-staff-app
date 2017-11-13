@@ -1,7 +1,5 @@
 // notes
-// what does the cancel button do?
 // what's displayed over the information hover?
-// need to add user to database
 
 // require dependencies
 var html = require('choo/html')
@@ -34,8 +32,10 @@ module.exports = function (state, emit) {
           flex-direction: row;
           justify-content: flex-start;
           width: 70%;
-          h3 {
-            color: #000;
+          h3 { color: #000; }
+          select {
+            margin-right: 0;
+            max-width: 100%;
           }
           #user-details {
             display: flex;
@@ -119,7 +119,7 @@ module.exports = function (state, emit) {
   `
 
   return html`
-    <div class=${style} onload=${state.ui.addUser.loaded ? null : loadRegions()}>
+    <div class=${style} onload=${state.ui.addUser.loaded ? null : loadRegionData()}>
       ${navbar(state.user.name, state.ui.manageUsers.newRequests.length)}
       <section id="content">
         <section id="content-top">
@@ -137,9 +137,8 @@ module.exports = function (state, emit) {
             <label>Email</label>
             <input type="text" value=${email} id="email" oninput=${updateInput} />
             <label>Region</label>
-            ${state.ui.addUser.loaded ? displayRegions() : null}
-            ${state.ui.addUser.locations !== '' ? displayLocations() : html`<div style="height: 9.4rem"></div>`}
-            ${!state.ui.addUser.locations && region ? emit('loadLocationsForRegion', region) : null}
+            <input disabled value=${state.ui.addUser.region} />
+            ${state.ui.addUser.locations !== '' ? displayLocations() : null}
           </div>
           <div id="account-settings">
             <div id="user-role">
@@ -181,19 +180,8 @@ module.exports = function (state, emit) {
       </div>` : null
   }
 
-  function displayRegions () {
-    return html`
-      <select id="region" onchange=${updateInput}>
-        <option disabled ${region ? null : 'selected'}></option>
-        ${state.ui.addUser.regions.map(function (el) {
-          return html`<option ${el.RegionName === region ? 'selected' : null}>${el.RegionName}</option>`
-        })}
-      </select>
-    `
-  }
-
-  function loadRegions () {
-    emit('loadRegions', 'addUser')
+  function loadRegionData () {
+    emit('loadRegionData', 'addUser')
   }
 
   function displayError() {

@@ -107,6 +107,7 @@ module.exports = function (state, emitter) {
       name: 'Georgia Hansford',
       email: 'Georgia.hansford@justice.vic.gov.au',
       locationID: 4,
+      regionID: 7,
       role: 'Admin'
     }
 
@@ -285,23 +286,18 @@ module.exports = function (state, emitter) {
     setTimeout(function () { emitter.emit('render') }, 0)
   })
 
-  emitter.on('loadLocationsForRegion', function (region) {
-    regionID = state.ui.addUser.regions.filter(function (el) {
-      return el.RegionName === region
-    })[0].RegionID
-    api.getLocations(function (data) {
-      state.ui.addUser.locations = data
-      emitter.emit('render')
-    }, regionID)
-  })
-
-  emitter.on('loadRegions', function (template) {
-    api.getRegions(function (data) {
-      state.ui[template].regions = data
+  emitter.on('loadRegionData', function (template) {
+    api.getRegionData(function (response) {
+      state.ui[template].region = response.RegionName
+      state.ui[template].locations = response.Locations
+      state.ui[template].locations.sort(function (a, b) {
+        return (a.SiteName > b.SiteName) - (a.SiteName < b.SiteName)
+      })
       state.ui[template].loaded = true
 
+
       emitter.emit('render')
-    })
+    }, state.user.regionID)
   })
 
   emitter.on('defaultSelected', function () {
