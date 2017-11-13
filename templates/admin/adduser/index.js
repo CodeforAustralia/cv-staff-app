@@ -25,7 +25,24 @@ module.exports = function (state, emit) {
         margin: auto;
         margin-top: 4rem;
         max-width: 1100px;
-        #content-top { width: 70%; }
+        #content-top {
+          width: 70%;
+          #delete-prompt {
+            align-items: center;
+            background: #f5f5f5;
+            border-radius: 2px;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+            font-size: 20px;
+            padding: 2rem;
+            div {
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+            }
+          }
+        }
         #add-user {
           border: 2px #e0e0e0 solid;
           display: flex;
@@ -126,6 +143,20 @@ module.exports = function (state, emit) {
           <button class="white-button" onclick=${back}>Back to user list</button>
           <h1>Add new user</h1>
           <p>Create an account for Case Managers, Justice Officers, Community Work Officers, and any other CCS staff who need to send SMS/web reminders to clients.</p>
+          ${state.ui.addUser.requested ? html`
+            <div>
+              <button style="float:right" class="white-button" onclick=${toggleLightbox}>Delete this request</button>
+              ${state.ui.editUser.lightbox ? html`
+                <div class="lightbox">
+                  <div id="delete-prompt">
+                    Are you sure you want to delete this access request?
+                    <div>
+                      <button class="white-button" onclick=${toggleLightbox}>Cancel</button>
+                      <button class="blue-button">Delete</button>
+                    </div>
+                  </div>
+                </div>` : null}
+            </div>` : null}
         </section>
         <section id="add-user">
           <div id="user-details">
@@ -251,5 +282,9 @@ module.exports = function (state, emit) {
   function back () {
     emit('clearState')
     emit('pushState', '/admin/manageusers')
+  }
+
+  function toggleLightbox () {
+    emit('toggleLightbox', 'editUser')
   }
 }
