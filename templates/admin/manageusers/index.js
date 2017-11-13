@@ -164,7 +164,7 @@ module.exports = function (state, emit) {
                   <td>${el.email}</td>
                   <td>${el.location}</td>
                   <td>${el.region}</td>
-                  <td>${el.role}</td>
+                  <td></td>
                   <td class="manage-cell"><button class="blue-button" id="newUser-${index}" onclick=${newUser}>Requested Access</button></td>
                 </tr>
               `
@@ -219,7 +219,7 @@ module.exports = function (state, emit) {
                   <td>${el.email}</td>
                   <td>${el.location}</td>
                   <td>${el.region}</td>
-                  <td>${el.role.charAt(0).toUpperCase() + el.role.slice(1)}</td>
+                  <td>${el.role === 'Staff' ? 'User' : el.role}</td>
                   <td class="manage-cell"><button class="white-button" id="user-${index}" onclick=${editUser}>Edit</button></td>
                 </tr>
               `
