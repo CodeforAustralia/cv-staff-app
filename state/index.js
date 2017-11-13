@@ -227,7 +227,8 @@ module.exports = function (state, emitter) {
 
   emitter.on('updateNewUser', function (data) {
     var user = state.ui.manageUsers.newRequests[data.index]
-    state.ui.addUser.name = user.name
+    state.ui.addUser.givenName = user.givenName
+    state.ui.addUser.lastName = user.lastName
     state.ui.addUser.email = user.email
     state.ui.addUser.region = user.region
     state.ui.addUser.location = user.location

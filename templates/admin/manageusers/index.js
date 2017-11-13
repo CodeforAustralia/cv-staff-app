@@ -215,7 +215,7 @@ module.exports = function (state, emit) {
             ${sortedUsers.slice((usersPage - 1) * pageLength, usersPage * pageLength).map(function (el, index) {
               return html`
                 <tr>
-                  <td>${el.name}</td>
+                  <td>${`${el.givenName} ${el.lastName}`}</td>
                   <td>${el.email}</td>
                   <td>${el.location}</td>
                   <td>${el.region}</td>
