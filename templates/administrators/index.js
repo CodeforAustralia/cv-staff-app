@@ -73,8 +73,8 @@ module.exports = function (state, emit) {
   `
 
   function updateSortCategory (e) {
-    if (e.target.id === state.ui.administrators.sort.on) {
-      emit('reverseSort', {template: 'administrators'})
+    if (e.target.id === state.ui.administrators.sort.table.on) {
+      emit('reverseSort', {template: 'administrators', table: 'table'})
     } else {
       emit('updateSort', {template: 'administrators', table: 'table', target: e.target.id})
     }
@@ -100,7 +100,7 @@ module.exports = function (state, emit) {
               <th>
                 <span id="${el}" onclick=${updateSortCategory}>
                   ${el.charAt(0).toUpperCase() + el.slice(1)}
-                  ${category === el ? html`<img src="../../assets/sort-${state.ui.administrators.sort.direction}.png" />` :
+                  ${category === el ? html`<img src="../../assets/sort-${state.ui.administrators.sort.table.direction}.png" />` :
                                       html`<img src="../../assets/sort-arrows.png" />`}
                 </span>
               </th>
