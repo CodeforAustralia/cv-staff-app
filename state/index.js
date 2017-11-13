@@ -153,7 +153,8 @@ module.exports = function (state, emitter) {
       },
       addUser: {
         loaded: false,
-        name: '',
+        givenName: '',
+        lastName: '',
         email: '',
         region: '',
         location: '',
@@ -161,7 +162,8 @@ module.exports = function (state, emitter) {
         error: '',
         requested: '',
         regions: '',
-        locations: ''
+        locations: '',
+        exists: false
       },
       editUser: {
         name: '',
@@ -180,37 +182,34 @@ module.exports = function (state, emitter) {
     emitter.emit('render')
   })
 
-  emitter.on('grantAccess', function () {
-    state.ui.manageUsers.users.push({
-      name: state.ui.addUser.name,
-      email: state.ui.addUser.email,
-      region: state.ui.addUser.region,
-      location: state.ui.addUser.location,
-      role: state.ui.addUser.role
-    })
-    if (state.ui.addUser.requested) {
-      state.ui.manageUsers.newRequests.splice(state.ui.addUser.requested, 1)
-    }
-    state.ui.addUser = {
-      name: '',
-      email: '',
-      region: '',
-      location: '',
-      role: 'User',
-      error: '',
-      requested: ''
-    }
+  emitter.on('grantAccess', function (data) {
+    api.newUser(function (res) {
+      if (state.ui.addUser.requested) {
+        state.ui.manageUsers.newRequests.splice(state.ui.addUser.requested, 1)
+      }
+    }, data)
+
+  })
+
+  emitter.on('checkUser', function (data) {
+    api.findUser(function (res) {
+      if (res !== null) { state.ui.addUser.exists = true }
+    }, data)
   })
 
   emitter.on('addNewUser', function () {
     state.ui.addUser = {
-      name: '',
+      loaded: false,
+      givenName: '',
+      lastName: '',
       email: '',
       region: '',
       location: '',
       role: 'User',
       error: '',
-      requested: false
+      requested: false,
+      regions: '',
+      locations: ''
     }
     emitter.emit('pushState', '/admin/adduser')
   })

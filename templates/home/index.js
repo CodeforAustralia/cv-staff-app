@@ -209,21 +209,23 @@ module.exports = function (state, emit) {
       if (data !== null) {
         emit('updateError', {template: 'home', error: 'Another user with this username already exists'})
       } else {
-        api.newAccessRequest(function (data) {
+        api.newUser(function (data) {
           if (data === 1) {
             emit('updateError', {template: 'home', error: `We've sent a request to your local administrator. Keep an eye out for an email.`})
           } else {
             emit('updateError', {template: 'home', error: 'Whoops, looks like there was a problem!'})
           }
         }, {
-          email: email,
-          givenName: givenName,
-          lastName: lastName,
-          location: state.locations.filter(function (obj) {
-            return obj.SiteName === location})[0].LocationID
+          UserName: email,
+          Password: 'initpasswd',
+          Role: 'Staff',
+          Location: state.locations.filter(function (obj) {
+            return obj.SiteName === location})[0].LocationID,
+          FirstName: givenName,
+          LastName: lastName,
+          Authentication: 0
         })
-      }
-    }, {email: email})
+      }}, {email: email})
   }
 
   function printLocations() {

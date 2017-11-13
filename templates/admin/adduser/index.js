@@ -1,6 +1,5 @@
 // notes
 // what does the cancel button do?
-// need to pull locations and regions
 // what's displayed over the information hover?
 // need to add user to database
 
@@ -10,10 +9,12 @@ var css = require('sheetify')
 
 // require modules
 var navbar = require('../../navbar/admin.js')
+var api = require('../../../lib/api.js')
 
 // export module
 module.exports = function (state, emit) {
-  var name = state.ui.addUser.name
+  var givenName = state.ui.addUser.givenName
+  var lastName = state.ui.addUser.lastName
   var email = state.ui.addUser.email
   var region = state.ui.addUser.region
   var location = state.ui.addUser.location
@@ -40,6 +41,7 @@ module.exports = function (state, emit) {
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
+            min-width: 50%;
             padding: 1.5rem;
             width: 50%;
             input, select {
@@ -56,6 +58,7 @@ module.exports = function (state, emit) {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            min-width: 50%;
             width: 50%;
             #user-role {
               display: flex;
@@ -84,8 +87,9 @@ module.exports = function (state, emit) {
               * {
                 margin: 0.5rem;
               }
-              a, a:visited {
+              span {
                 color: #498fe1;
+                cursor: pointer;
                 text-decoration: none;
               }
             }
@@ -126,13 +130,16 @@ module.exports = function (state, emit) {
         <section id="add-user">
           <div id="user-details">
             <h3>User's details</h3>
-            <label>Name</label>
-            <input type="text" value=${name} id="name" oninput=${updateInput} />
+            <label>Given Name</label>
+            <input type="text" value=${givenName} id="givenName" oninput=${updateInput} />
+            <label>Last Name</label>
+            <input type="text" value=${lastName} id="lastName" oninput=${updateInput} />
             <label>Email</label>
             <input type="text" value=${email} id="email" oninput=${updateInput} />
             <label>Region</label>
             ${state.ui.addUser.loaded ? displayRegions() : null}
-            ${region ? displayLocations() : null}
+            ${state.ui.addUser.locations !== '' ? displayLocations() : html`<div style="height: 9.4rem"></div>`}
+            ${!state.ui.addUser.locations && region ? emit('loadLocationsForRegion', region) : null}
           </div>
           <div id="account-settings">
             <div id="user-role">
@@ -146,11 +153,11 @@ module.exports = function (state, emit) {
             </div>
             ${error ? displayError() : null}
             <div id="submit">
-              <a href="#">Cancel</a>
+              <span onclick=${back}>Cancel</span>
               <button class="blue-button" style="align-self:flex-end" onclick=${validateInput}>Create account</button>
             </div>
             <div id="complete">
-              <h3>${name}'s access granted</h3>
+              <h3>${givenName}${lastName ? ` ${lastName}` : ''}'s access granted</h3>
               <img src="../../assets/tick.png" />
             </div>
           </div>
@@ -161,7 +168,6 @@ module.exports = function (state, emit) {
   `
 
   function displayLocations () {
-    emit('loadLocationsForRegion', region)
     return state.ui.addUser.locations ? html`
       <div>
         <label>Location</label>
@@ -173,7 +179,6 @@ module.exports = function (state, emit) {
         </select>
         <p>If the CCS staff member works at more than one office, just choose one.</p>
       </div>` : null
-
   }
 
   function displayRegions () {
@@ -201,8 +206,8 @@ module.exports = function (state, emit) {
 
   function validateInput () {
     var errorMessage = ''
-    if (!name) {
-      errorMessage = 'Please enter a name'
+    if (!givenName) {
+      errorMessage = 'Please enter a given name'
     } else if (!email.endsWith('@justice.vic.gov.au')) {
       errorMessage = 'Please use a @justice.vic.gov.au email address'
     } else if (!region) {
@@ -214,11 +219,27 @@ module.exports = function (state, emit) {
     if (errorMessage) {
       emit('updateError', {template: 'addUser', error: errorMessage})
     } else {
-      var submit = document.getElementById('submit')
-      var complete = document.getElementById('complete')
-      submit.style.display = 'none'
-      complete.style.display = 'flex'
-      emit('grantAccess')
+      emit('updateError', {template: 'addUser', error: ''})
+      api.findUser(function (data) {
+        if (data !== null) {
+          emit('updateError', {template: 'addUser', error: 'Another user with this username already exists'})
+        } else {
+          emit('grantAccess', {
+            UserName: email,
+            Password: 'initpasswd',
+            Role: role === 'User' ? 'Staff' : 'Admin',
+            Location: state.ui.addUser.locations.filter(function (obj) {
+              return obj.SiteName === location})[0].LocationID,
+            FirstName: givenName,
+            LastName: lastName,
+            Authentication: 1
+          })
+          var submit = document.getElementById('submit')
+          var complete = document.getElementById('complete')
+          submit.style.display = 'none'
+          complete.style.display = 'flex'
+        }
+      }, {email: email})
     }
   }
 
@@ -240,6 +261,7 @@ module.exports = function (state, emit) {
   }
 
   function back () {
+    emit('clearState')
     emit('pushState', '/admin/manageusers')
   }
 }
