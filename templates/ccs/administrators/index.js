@@ -7,6 +7,8 @@ var navbar = require('../navbar')
 
 // export module
 module.exports = function (state, emit) {
+  var administratorsState = state.ccs.ui.administrators
+
   var style = css`
     :host {
       #content {
@@ -58,7 +60,7 @@ module.exports = function (state, emit) {
   `
 
   return html`
-    <div class=${style} onload=${state.ui.administrators.loaded ? null : emit('loadAdministrators')}>
+    <div class=${style} onload=${administratorsState.loaded ? null : emit('loadAdministrators')}>
       ${navbar()}
       <div id="content">
         <div id="content-top">
@@ -73,7 +75,7 @@ module.exports = function (state, emit) {
   `
 
   function updateSortCategory (e) {
-    if (e.target.id === state.ui.administrators.sort.table.on) {
+    if (e.target.id === administratorsState.sort.table.on) {
       emit('reverseSort', {template: 'administrators', table: 'table'})
     } else {
       emit('updateSort', {template: 'administrators', table: 'table', target: e.target.id})
@@ -81,26 +83,26 @@ module.exports = function (state, emit) {
   }
 
   function displayTable() {
-    var sortedArray = state.ui.administrators.administrators
-    var category = state.ui.administrators.sort.table.on
+    var sortedArray = administratorsState.administrators
+    var category = administratorsState.sort.table.on
     var comparison
 
     sortedArray.sort(function (a, b) {
       a = a[category].toLowerCase()
       b = b[category].toLowerCase()
       comparison = (a > b) - (a < b)
-      return (state.ui.administrators.sort.table.direction === 'asc' ? comparison : (-comparison))
+      return (administratorsState.sort.table.direction === 'asc' ? comparison : (-comparison))
     })
 
     return html`
       <table>
         <tr id="headings">
-          ${state.ui.administrators.tableFields.map(function (el) {
+          ${administratorsState.tableFields.map(function (el) {
             return html`
               <th>
                 <span id="${el}" onclick=${updateSortCategory}>
                   ${el.charAt(0).toUpperCase() + el.slice(1)}
-                  ${category === el ? html`<img src="../../assets/sort-${state.ui.administrators.sort.table.direction}.png" />` :
+                  ${category === el ? html`<img src="../../assets/sort-${administratorsState.sort.table.direction}.png" />` :
                                       html`<img src="../../assets/sort-arrows.png" />`}
                 </span>
               </th>

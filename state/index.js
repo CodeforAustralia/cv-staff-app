@@ -5,6 +5,7 @@ module.exports = function (state, emitter) {
   initialise()
 
   function initialise () {
+    // these will be deleted when refactoring setreminder template
     state.static = {
       appointmentTypes: ['Community Work', 'Program'],
       messageTypes: ['Reminder', 'Cancellation'],
@@ -20,16 +21,13 @@ module.exports = function (state, emitter) {
       },
       rescheduleText: 'Please text N if you need to reschedule.'
     }
-
     state.lightbox = false
-
     state.newRecipient = {
       name: '',
       phone: '',
       location: '',
       programs: []
     }
-
     state.region = {
       name: 'Grampians',
       locations: [{
@@ -88,21 +86,16 @@ module.exports = function (state, emitter) {
         }
       ]
     }
-
     state.selected = {
       program: 'init',
       showRecipients: true
     }
-
     state.message = {
       address: '',
       additionalInfo: ''
     }
-
     state.loaded = false
-
     state.locations = null
-
     state.user = {
       name: 'Georgia Hansford',
       email: 'Georgia.hansford@justice.vic.gov.au',
@@ -111,98 +104,105 @@ module.exports = function (state, emitter) {
       role: 'Admin'
     }
 
-    state.ui = {
-      home: {
-        loaded: false,
-        givenName: '',
-        lastName: '',
-        email: '',
-        location: '',
-        error: ''
-      },
-      administrators: {
-        loaded: false,
-        sort: {
-          table: {
-            on: 'location',
-            direction: 'asc'
-          }
+    // This is where the real stuff starts
+    state.ccs = {
+      ui: {
+        home: {
+          loaded: false,
+          givenName: '',
+          lastName: '',
+          email: '',
+          location: '',
+          error: ''
         },
-        tableFields: ['administrator', 'location', 'region', 'email'],
-        administrators: []
-      },
-      manageUsers: {
-        loaded: false,
-        pagination: {
-          newRequests: 1,
-          users: 1,
-          pageLength: 10
-        },
-        sort: {
-          newRequests: {
-            on: 'name',
-            direction: 'asc'
+        administrators: {
+          loaded: false,
+          sort: {
+            table: {
+              on: 'location',
+              direction: 'asc'
+            }
           },
-          users: {
-            on: 'name',
-            direction: 'asc'
-          }
+          tableFields: ['administrator', 'location', 'region', 'email'],
+          administrators: []
         },
-        tableFields: ['name', 'email', 'location', 'region', 'role', 'manage this account'],
-        newRequests: [],
-        users: []
-      },
-      addUser: {
-        loaded: false,
-        givenName: '',
-        lastName: '',
-        email: '',
-        region: '',
-        location: '',
-        role: 'User',
-        error: '',
-        requested: '',
-        regions: '',
-        locations: '',
-        exists: false
-      },
-      editUser: {
-        givenName: '',
-        lastName: '',
-        name: '',
-        email: '',
-        region: '',
-        location: '',
-        role: '',
-        lightbox: false
+        manageUsers: {
+          loaded: false,
+          pagination: {
+            newRequests: 1,
+            users: 1,
+            pageLength: 10
+          },
+          sort: {
+            newRequests: {
+              on: 'name',
+              direction: 'asc'
+            },
+            users: {
+              on: 'name',
+              direction: 'asc'
+            }
+          },
+          tableFields: ['name', 'email', 'location', 'region', 'role', 'manage this account'],
+          newRequests: [],
+          users: []
+        },
+        addUser: {
+          loaded: false,
+          lightbox: false,
+          givenName: '',
+          lastName: '',
+          email: '',
+          region: '',
+          location: '',
+          role: 'User',
+          error: '',
+          requested: '',
+          regions: '',
+          locations: '',
+          exists: false
+        },
+        editUser: {
+          givenName: '',
+          lastName: '',
+          name: '',
+          email: '',
+          region: '',
+          location: '',
+          role: '',
+          lightbox: false
+        }
       }
     }
   }
 
-  emitter.on('increasePage', function (data) {
-    state.ui.manageUsers.pagination[data.target] = data.value
-
+// changes the page of a paginated table
+  emitter.on('updatePage', function (data) {
+    state.ccs.ui.manageUsers.pagination[data.target] = data.value
     emitter.emit('render')
   })
 
+// adds a new user and authenticates them
   emitter.on('grantAccess', function (data) {
     api.newUser(function (res) {
-      if (state.ui.addUser.requested) {
-        state.ui.manageUsers.newRequests.splice(state.ui.addUser.requested, 1)
+      if (state.ccs.ui.addUser.requested) {
+        state.ccs.ui.manageUsers.newRequests.splice(state.ccs.ui.addUser.requested, 1)
       }
     }, data)
-
   })
 
+// checks if a user exists
   emitter.on('checkUser', function (data) {
     api.findUser(function (res) {
-      if (res !== null) { state.ui.addUser.exists = true }
+      if (res !== null) { state.ccs.ui.addUser.exists = true }
     }, data)
   })
 
-  emitter.on('addNewUser', function () {
-    state.ui.addUser = {
+// loads the adduser page for a new user
+  emitter.on('loadAddNewUser', function () {
+    state.ccs.ui.addUser = {
       loaded: false,
+      lightbox: false,
       givenName: '',
       lastName: '',
       email: '',
@@ -217,94 +217,102 @@ module.exports = function (state, emitter) {
     emitter.emit('pushState', '/ccs/admin/adduser')
   })
 
-  emitter.on('editUser', function (data) {
-    var user = state.ui.manageUsers.users[data.index]
-    state.ui.editUser.name = user.name
-    state.ui.editUser.givenName = user.givenName
-    state.ui.editUser.lastName = user.lastName
-    state.ui.editUser.email = user.email
-    state.ui.editUser.region = user.region
-    state.ui.editUser.location = user.location
-    state.ui.editUser.role = user.role
+// loads the edituser page for an existing user
+  emitter.on('loadEditUser', function (data) {
+    var user = state.ccs.ui.manageUsers.users[data.index]
+    state.ccs.ui.editUser.name = user.name
+    state.ccs.ui.editUser.givenName = user.givenName
+    state.ccs.ui.editUser.lastName = user.lastName
+    state.ccs.ui.editUser.email = user.email
+    state.ccs.ui.editUser.region = user.region
+    state.ccs.ui.editUser.location = user.location
+    state.ccs.ui.editUser.role = user.role
     emitter.emit('pushState', '/ccs/admin/edituser')
   })
 
+// loads the adduser page for an existing request
   emitter.on('updateNewUser', function (data) {
-    var user = state.ui.manageUsers.newRequests[data.index]
-    state.ui.addUser.givenName = user.givenName
-    state.ui.addUser.lastName = user.lastName
-    state.ui.addUser.email = user.email
-    state.ui.addUser.region = user.region
-    state.ui.addUser.location = user.location
-    state.ui.addUser.requested = data.index
+    var user = state.ccs.ui.manageUsers.newRequests[data.index]
+    state.ccs.ui.addUser.givenName = user.givenName
+    state.ccs.ui.addUser.lastName = user.lastName
+    state.ccs.ui.addUser.email = user.email
+    state.ccs.ui.addUser.region = user.region
+    state.ccs.ui.addUser.location = user.location
+    state.ccs.ui.addUser.requested = data.index
     emitter.emit('pushState', '/ccs/admin/adduser')
   })
 
+// changes the sort direction of a column in a table
   emitter.on('reverseSort', function(data) {
-    state.ui[data.template].sort[data.table].direction = state.ui[data.template].sort[data.table].direction === 'asc' ? 'desc' : 'asc'
+    state.ccs.ui[data.template].sort[data.table].direction = state.ccs.ui[data.template].sort[data.table].direction === 'asc' ? 'desc' : 'asc'
     emitter.emit('render')
   })
 
+// changes the sort column in a table
   emitter.on('updateSort', function(data) {
-    state.ui[data.template].sort[data.table].on = data.target
-    state.ui[data.template].sort[data.table].direction = 'asc'
+    state.ccs.ui[data.template].sort[data.table].on = data.target
+    state.ccs.ui[data.template].sort[data.table].direction = 'asc'
     emitter.emit('render')
   })
 
+// updates the error assocatied with a template
   emitter.on('updateError', function (data) {
-    state.ui[data.template].error = data.error;
+    state.ccs.ui[data.template].error = data.error;
     emitter.emit('render')
   })
 
+// updates the value of a template's state from an input
   emitter.on('updateInput', function (data) {
-    state.ui[data.template][data.target] = data.text
+    state.ccs.ui[data.template][data.target] = data.text
     emitter.emit('render')
   })
 
+// loads the existing users and new requests for the manageusers template
   emitter.on('loadUsers', function () {
     api.getStaff(function (data) {
-      state.ui.manageUsers.users = data
+      state.ccs.ui.manageUsers.users = data
       api.getNewRequests(function (data) {
-        state.ui.manageUsers.newRequests = data
-        state.ui.manageUsers.loaded = true
+        state.ccs.ui.manageUsers.newRequests = data
+        state.ccs.ui.manageUsers.loaded = true
         emitter.emit('render')
       }, {location: state.user.locationID})
     }, {location: state.user.locationID})
   })
 
+// loads all the administrators
   emitter.on('loadAdministrators', function (data) {
     api.getAdministrators(function (data) {
-      state.ui.administrators.administrators = data
-      state.ui.administrators.loaded = true
+      state.ccs.ui.administrators.administrators = data
+      state.ccs.ui.administrators.loaded = true
 
       emitter.emit('render')
     })
   })
 
+// loads all the locations
   emitter.on('loadLocations', function () {
     api.getLocations(function (data) {
       state.locations = data
-      state.ui.home.loaded = true
+      state.ccs.ui.home.loaded = true
+      emitter.emit('render')
     })
-
-    // RACE CONDITION - without timeout, document renders before data is loaded. If having 403 errors, try increasing timeout time
-    setTimeout(function () { emitter.emit('render') }, 0)
   })
 
+// loads the data for a user's region
   emitter.on('loadRegionData', function (template) {
     api.getRegionData(function (response) {
-      state.ui[template].region = response.RegionName
-      state.ui[template].locations = response.Locations
-      state.ui[template].locations.sort(function (a, b) {
+      state.ccs.ui[template].region = response.RegionName
+      state.ccs.ui[template].locations = response.Locations
+      state.ccs.ui[template].locations.sort(function (a, b) {
         return (a.SiteName > b.SiteName) - (a.SiteName < b.SiteName)
       })
-      state.ui[template].loaded = true
-
+      state.ccs.ui[template].loaded = true
 
       emitter.emit('render')
     }, state.user.regionID)
   })
 
+// not used
   emitter.on('defaultSelected', function () {
     state.selected = {
      appointmentType: state.static.appointmentTypes[0],
@@ -322,6 +330,7 @@ module.exports = function (state, emitter) {
     setTimeout(function () { emitter.emit('render') }, 10)
   })
 
+// not used
   emitter.on('updateSelected', function (data) {
     state.selected[data.id] = data.value
 
@@ -371,18 +380,19 @@ module.exports = function (state, emitter) {
     }
   })
 
-
   emitter.on('toggleLightbox', function (template) {
     state.lightbox = !state.lightbox
-    state.ui[template].lightbox = !state.ui[template].lightbox
+    state.ccs.ui[template].lightbox = !state.ccs.ui[template].lightbox
     emitter.emit('render')
   })
 
+// not used
   emitter.on('toggleRecipientListDisplay', function () {
     state.selected.showRecipients = !state.selected.showRecipients
     emitter.emit('render')
   })
 
+// not used
   emitter.on('updateMessage', function (data) {
     state.message[data.id] = data.text
   })
@@ -392,6 +402,7 @@ module.exports = function (state, emitter) {
   //   emitter.emit('render')
   // })
 
+// not used
   emitter.on('submitNewRecipient', function (data) {
     state.newRecipient.location = state.selected.location
     state.newRecipient.programs = [state.selected.program]

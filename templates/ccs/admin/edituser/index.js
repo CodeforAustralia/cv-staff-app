@@ -15,12 +15,13 @@ var navbar = require('../../navbar/admin.js')
 
 // export module
 module.exports = function (state, emit) {
-  var givenName = state.ui.editUser.givenName
-  var lastName = state.ui.editUser.lastName
-  var email = state.ui.editUser.email
-  var region = state.ui.editUser.region
-  var location = state.ui.editUser.location
-  var role = state.ui.editUser.role
+  var editUserState = state.ccs.ui.editUser
+  var givenName = editUserState.givenName
+  var lastName = editUserState.lastName
+  var email = editUserState.email
+  var region = editUserState.region
+  var location = editUserState.location
+  var role = editUserState.role
 
   var style = css`
     :host {
@@ -140,14 +141,14 @@ module.exports = function (state, emit) {
 
   return html`
     <div class=${style}>
-      ${navbar(state.user.name, state.ui.manageUsers.newRequests.length)}
+      ${navbar(state.user.name, state.ccs.ui.manageUsers.newRequests.length)}
       <section id="content">
         <section id="content-top">
           <button class="white-button" onclick=${back}>Back to user list</button>
           <h1>Edit ${name}'s user account</h1>
           <p>Create an account for Case Managers, Justice Officers, Community Work Officers, and any other CCS staff who need to send SMS/web reminders to clients.</p>
           <button style="align-self:flex-end" class="white-button" onclick=${toggleLightbox}>Disable this user</button>
-          ${state.ui.editUser.lightbox ? html`<div class="lightbox">
+          ${editUserState.lightbox ? html`<div class="lightbox">
                                                 <div id="delete-prompt">
                                                   Are you sure you want to remove this person's access from Orion?
                                                   <div>

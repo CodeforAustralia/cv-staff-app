@@ -11,13 +11,14 @@ var api = require('../../../../lib/api.js')
 
 // export module
 module.exports = function (state, emit) {
-  var givenName = state.ui.addUser.givenName
-  var lastName = state.ui.addUser.lastName
-  var email = state.ui.addUser.email
-  var region = state.ui.addUser.region
-  var location = state.ui.addUser.location
-  var role = state.ui.addUser.role
-  var error = state.ui.addUser.error
+  var addUserState = state.ccs.ui.addUser
+  var givenName = addUserState.givenName
+  var lastName = addUserState.lastName
+  var email = addUserState.email
+  var region = addUserState.region
+  var location = addUserState.location
+  var role = addUserState.role
+  var error = addUserState.error
 
   var style = css`
     :host {
@@ -139,17 +140,17 @@ module.exports = function (state, emit) {
   `
 
   return html`
-    <div class=${style} onload=${state.ui.addUser.loaded ? null : loadRegionData()}>
-      ${navbar(state.user.name, state.ui.manageUsers.newRequests.length)}
+    <div class=${style} onload=${addUserState.loaded ? null : loadRegionData()}>
+      ${navbar(state.user.name, state.ccs.ui.manageUsers.newRequests.length)}
       <section id="content">
         <section id="content-top">
           <button class="white-button" onclick=${back}>Back to user list</button>
           <h1>Add new user</h1>
           <p>Create an account for Case Managers, Justice Officers, Community Work Officers, and any other CCS staff who need to send SMS/web reminders to clients.</p>
-          ${state.ui.addUser.requested ? html`
+          ${addUserState.requested ? html`
             <div>
               <button style="float:right" class="white-button" onclick=${toggleLightbox}>Delete this request</button>
-              ${state.ui.editUser.lightbox ? html`
+              ${addUserState.lightbox ? html`
                 <div class="lightbox">
                   <div id="delete-prompt">
                     Are you sure you want to delete this access request?
@@ -171,8 +172,8 @@ module.exports = function (state, emit) {
             <label>Email</label>
             <input type="text" value=${email} id="email" oninput=${updateInput} />
             <label>Region</label>
-            <input disabled value=${state.ui.addUser.region} />
-            ${state.ui.addUser.locations !== '' ? displayLocations() : null}
+            <input disabled value=${state.ccs.ui.addUser.region} />
+            ${state.ccs.ui.addUser.locations !== '' ? displayLocations() : null}
           </div>
           <div id="account-settings">
             <div id="user-role">
@@ -201,12 +202,12 @@ module.exports = function (state, emit) {
   `
 
   function displayLocations () {
-    return state.ui.addUser.locations ? html`
+    return addUserState.locations ? html`
       <div>
         <label>Location</label>
         <select id="location" onchange=${updateInput}>
           <option disabled ${location ? null : 'selected'}></option>
-          ${state.ui.addUser.locations.map(function (el) {
+          ${addUserState.locations.map(function (el) {
             return html`<option ${el.SiteName === location ? 'selected' : null}>${el.SiteName}</option>`
           })}
         </select>
@@ -250,7 +251,7 @@ module.exports = function (state, emit) {
             UserName: email,
             Password: 'initpasswd',
             Role: role === 'User' ? 'Staff' : 'Admin',
-            Location: state.ui.addUser.locations.filter(function (obj) {
+            Location: addUserState.locations.filter(function (obj) {
               return obj.SiteName === location})[0].LocationID,
             FirstName: givenName,
             LastName: lastName,
@@ -288,6 +289,6 @@ module.exports = function (state, emit) {
   }
 
   function toggleLightbox () {
-    emit('toggleLightbox', 'editUser')
+    emit('toggleLightbox', 'addUser')
   }
 }

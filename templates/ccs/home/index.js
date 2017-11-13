@@ -102,17 +102,17 @@ module.exports = function (state, emit) {
       }
     }
   `
-
-  var givenName = state.ui.home.givenName
-  var lastName = state.ui.home.lastName
-  var email = state.ui.home.email
-  var location = state.ui.home.location
-  var error = state.ui.home.error
+  var homeState = state.ccs.ui.home
+  var givenName = homeState.givenName
+  var lastName = homeState.lastName
+  var email = homeState.email
+  var location = homeState.location
+  var error = homeState.error
 
   return html`
-    <div class=${style} onload=${state.ui.home.loaded ? null : emit('loadLocations')}>
+    <div class=${style} onload=${homeState.loaded ? null : emit('loadLocations')}>
       ${navbar()}
-      ${state.ui.home.loaded ? html`
+      ${homeState.loaded ? html`
         <div id="content">
           <div id="content-left">
             <h1>Communicate with your clients</h1>
@@ -229,13 +229,13 @@ module.exports = function (state, emit) {
   }
 
   function printLocations() {
-    if (state.ui.home.loaded) {
+    if (homeState.loaded) {
       return html`
         <select name="location" id="location" onchange=${updateInput} required>
-          <option disabled ${state.ui.home.location ? null : 'selected'} value></option>
+          <option disabled ${homeState.location ? null : 'selected'} value></option>
           ${state.locations.map(function (el) {
             return html`
-              <option value="${el.SiteName}" ${state.ui.home.location === el.SiteName ? 'selected' : null}>${el.SiteName}</option>
+              <option value="${el.SiteName}" ${state.ccs.ui.home.location === el.SiteName ? 'selected' : null}>${el.SiteName}</option>
             `
           })}
         </select>
