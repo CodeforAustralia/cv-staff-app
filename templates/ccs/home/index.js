@@ -9,7 +9,7 @@ var css = require('sheetify')
 
 // require modules
 var navbar = require('../navbar')
-var api = require('../../lib/api')
+var api = require('../../../lib/api')
 
 // export module
 module.exports = function (state, emit) {
@@ -138,7 +138,7 @@ module.exports = function (state, emit) {
               - a justice.vic.gov.au email address <br />
               we can set you up with an account.
             </p>
-            <p id="contact">You can also contact <a href="/administrators">the administrator</a> for your office directly. They'll be the one who sets up your account.</p>
+            <p id="contact">You can also contact <a href="/ccs/administrators">the administrator</a> for your office directly. They'll be the one who sets up your account.</p>
           </div>
           <div id="content-right">
             <h2>Get started - Create an account</h2>

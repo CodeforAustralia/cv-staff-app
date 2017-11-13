@@ -15,13 +15,13 @@ css('./assets/normalize.css')
 css('./assets/style.css')
 
 // declare routes
-app.route('/', require('./templates/home'))
-app.route('/administrators', require('./templates/administrators'))
-app.route('/admin/manageusers', require('./templates/admin/manageusers'))
-app.route('/admin/adduser', require('./templates/admin/adduser'))
-app.route('/admin/edituser', require('./templates/admin/edituser'))
-app.route('/setreminder', require('./templates/setreminder'))
-app.route('/offendersearch', require('./templates/offendersearch'))
+app.route('/ccs', require('./templates/ccs/home'))
+app.route('/ccs/administrators', require('./templates/ccs/administrators'))
+app.route('/ccs/admin/manageusers', require('./templates/ccs/admin/manageusers'))
+app.route('/ccs/admin/adduser', require('./templates/ccs/admin/adduser'))
+app.route('/ccs/admin/edituser', require('./templates/ccs/admin/edituser'))
+app.route('/ccs/setreminder', require('./templates/setreminder'))
+app.route('/ccs/offendersearch', require('./templates/offendersearch'))
 
 // start app
 if (typeof window !== 'undefined') {

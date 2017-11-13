@@ -15,7 +15,8 @@ var navbar = require('../../navbar/admin.js')
 
 // export module
 module.exports = function (state, emit) {
-  var name = state.ui.editUser.name
+  var givenName = state.ui.editUser.givenName
+  var lastName = state.ui.editUser.lastName
   var email = state.ui.editUser.email
   var region = state.ui.editUser.region
   var location = state.ui.editUser.location
@@ -38,6 +39,7 @@ module.exports = function (state, emit) {
           display: flex;
           flex-direction: row;
           justify-content: flex-start;
+          margin-bottom: 2rem;
           width: 70%;
           h3 {
             color: #000;
@@ -47,6 +49,7 @@ module.exports = function (state, emit) {
             max-width: 100%;
           }
           #user-details {
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -58,6 +61,7 @@ module.exports = function (state, emit) {
           }
           #account-settings {
             background-color: #f2f2f2;
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -126,8 +130,9 @@ module.exports = function (state, emit) {
           justify-content: center;
         }
       }
-      a, a:visited {
+      span {
         color: #498fe1;
+        cursor: pointer;
         text-decoration: none;
       }
     }
@@ -155,8 +160,10 @@ module.exports = function (state, emit) {
         <section id="add-user">
           <div id="user-details">
             <h3>User's details</h3>
-            <label>Name</label>
-            <input type="text" value=${name} id="name" oninput=${updateInput} />
+            <label>Given Name</label>
+            <input type="text" value=${givenName} id="givenName" oninput=${updateInput} />
+            <label>Last Name</label>
+            <input type="text" value=${lastName} id="lastName" oninput=${updateInput} />
             <label>Email</label>
             <input type="text" value=${email} id="email" oninput=${updateInput} />
             <label>Region</label>
@@ -186,7 +193,7 @@ module.exports = function (state, emit) {
               </button>
             </div>
             <div id="submit">
-              <a href="#">Cancel</a>
+              <span onclick=${back}>Cancel</span>
               <button class="blue-button">Create account</button>
             </div>
             <div id="complete">
@@ -222,6 +229,6 @@ module.exports = function (state, emit) {
   }
 
   function back () {
-    emit('pushState', '/admin/manageusers')
+    emit('pushState', '/ccs/admin/manageusers')
   }
 }

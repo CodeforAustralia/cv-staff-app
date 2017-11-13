@@ -7,7 +7,7 @@ var css = require('sheetify')
 
 // require modules
 var navbar = require('../../navbar/admin.js')
-var api = require('../../../lib/api.js')
+var api = require('../../../../lib/api.js')
 
 // export module
 module.exports = function (state, emit) {
@@ -48,6 +48,7 @@ module.exports = function (state, emit) {
           display: flex;
           flex-direction: row;
           justify-content: flex-start;
+          margin-bottom: 2rem;
           width: 70%;
           h3 { color: #000; }
           select {
@@ -55,6 +56,7 @@ module.exports = function (state, emit) {
             max-width: 100%;
           }
           #user-details {
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -72,6 +74,7 @@ module.exports = function (state, emit) {
           }
           #account-settings {
             background-color: #f2f2f2;
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -281,7 +284,7 @@ module.exports = function (state, emit) {
 
   function back () {
     emit('clearState')
-    emit('pushState', '/admin/manageusers')
+    emit('pushState', '/ccs/admin/manageusers')
   }
 
   function toggleLightbox () {

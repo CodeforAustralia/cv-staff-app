@@ -1,4 +1,4 @@
-var api = require('../lib/api')
+var api = require('../lib/ccsapi')
 
 module.exports = function (state, emitter) {
   // run on app start
@@ -167,6 +167,8 @@ module.exports = function (state, emitter) {
         exists: false
       },
       editUser: {
+        givenName: '',
+        lastName: '',
         name: '',
         email: '',
         region: '',
@@ -212,17 +214,19 @@ module.exports = function (state, emitter) {
       regions: '',
       locations: ''
     }
-    emitter.emit('pushState', '/admin/adduser')
+    emitter.emit('pushState', '/ccs/admin/adduser')
   })
 
   emitter.on('editUser', function (data) {
     var user = state.ui.manageUsers.users[data.index]
     state.ui.editUser.name = user.name
+    state.ui.editUser.givenName = user.givenName
+    state.ui.editUser.lastName = user.lastName
     state.ui.editUser.email = user.email
     state.ui.editUser.region = user.region
     state.ui.editUser.location = user.location
     state.ui.editUser.role = user.role
-    emitter.emit('pushState', '/admin/edituser')
+    emitter.emit('pushState', '/ccs/admin/edituser')
   })
 
   emitter.on('updateNewUser', function (data) {
@@ -233,7 +237,7 @@ module.exports = function (state, emitter) {
     state.ui.addUser.region = user.region
     state.ui.addUser.location = user.location
     state.ui.addUser.requested = data.index
-    emitter.emit('pushState', '/admin/adduser')
+    emitter.emit('pushState', '/ccs/admin/adduser')
   })
 
   emitter.on('reverseSort', function(data) {
