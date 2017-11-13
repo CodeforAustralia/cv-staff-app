@@ -152,13 +152,16 @@ module.exports = function (state, emitter) {
         users: []
       },
       addUser: {
+        loaded: false,
         name: '',
         email: '',
         region: '',
         location: '',
         role: 'User',
         error: '',
-        requested: ''
+        requested: '',
+        regions: '',
+        locations: ''
       },
       editUser: {
         name: '',
@@ -281,6 +284,25 @@ module.exports = function (state, emitter) {
 
     // RACE CONDITION - without timeout, document renders before data is loaded. If having 403 errors, try increasing timeout time
     setTimeout(function () { emitter.emit('render') }, 0)
+  })
+
+  emitter.on('loadLocationsForRegion', function (region) {
+    regionID = state.ui.addUser.regions.filter(function (el) {
+      return el.RegionName === region
+    })[0].RegionID
+    api.getLocations(function (data) {
+      state.ui.addUser.locations = data
+      emitter.emit('render')
+    }, regionID)
+  })
+
+  emitter.on('loadRegions', function (template) {
+    api.getRegions(function (data) {
+      state.ui[template].regions = data
+      state.ui[template].loaded = true
+
+      emitter.emit('render')
+    })
   })
 
   emitter.on('defaultSelected', function () {

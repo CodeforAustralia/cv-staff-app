@@ -45,6 +45,11 @@ module.exports = function (state, emit) {
             input, select {
               margin-bottom: 1rem;
             }
+            div {
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+            }
           }
           #account-settings {
             background-color: #f2f2f2;
@@ -110,7 +115,7 @@ module.exports = function (state, emit) {
   `
 
   return html`
-    <div class=${style}>
+    <div class=${style} onload=${state.ui.addUser.loaded ? null : loadRegions()}>
       ${navbar(state.user.name, state.ui.manageUsers.newRequests.length)}
       <section id="content">
         <section id="content-top">
@@ -126,16 +131,8 @@ module.exports = function (state, emit) {
             <label>Email</label>
             <input type="text" value=${email} id="email" oninput=${updateInput} />
             <label>Region</label>
-            <select id="region" onchange=${updateInput}>
-              <option disabled ${region ? null : 'selected'}></option>
-              <option ${region ? 'selected' : null}>North West Metro</option>
-            </select>
-            <label>Location</label>
-            <select id="location" onchange=${updateInput}>
-              <option disabled ${location ? null : 'selected'}></option>
-              <option ${location ? 'selected' : null}>Sunshine</option>
-            </select>
-            <p>If the CCS staff member works at more than one office, just choose one.</p>
+            ${state.ui.addUser.loaded ? displayRegions() : null}
+            ${region ? displayLocations() : null}
           </div>
           <div id="account-settings">
             <div id="user-role">
@@ -162,6 +159,37 @@ module.exports = function (state, emit) {
       <div id="info">Insert actual copy here</div>
     </div>
   `
+
+  function displayLocations () {
+    emit('loadLocationsForRegion', region)
+    return state.ui.addUser.locations ? html`
+      <div>
+        <label>Location</label>
+        <select id="location" onchange=${updateInput}>
+          <option disabled ${location ? null : 'selected'}></option>
+          ${state.ui.addUser.locations.map(function (el) {
+            return html`<option ${el.SiteName === location ? 'selected' : null}>${el.SiteName}</option>`
+          })}
+        </select>
+        <p>If the CCS staff member works at more than one office, just choose one.</p>
+      </div>` : null
+
+  }
+
+  function displayRegions () {
+    return html`
+      <select id="region" onchange=${updateInput}>
+        <option disabled ${region ? null : 'selected'}></option>
+        ${state.ui.addUser.regions.map(function (el) {
+          return html`<option ${el.RegionName === region ? 'selected' : null}>${el.RegionName}</option>`
+        })}
+      </select>
+    `
+  }
+
+  function loadRegions () {
+    emit('loadRegions', 'addUser')
+  }
 
   function displayError() {
     return html`
