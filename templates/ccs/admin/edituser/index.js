@@ -141,7 +141,7 @@ module.exports = function (state, emit) {
 
   return html`
     <div class=${style}>
-      ${navbar(state.user.name, state.ccs.ui.manageUsers.newRequests.length)}
+      ${navbar(state.ccs.user.name, state.ccs.ui.manageUsers.newRequests.length)}
       <section id="content">
         <section id="content-top">
           <button class="white-button" onclick=${back}>Back to user list</button>

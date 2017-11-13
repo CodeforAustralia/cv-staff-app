@@ -24,6 +24,7 @@
     "bankai": "^8.1.1",
     "choo": "^6.4.2",
     "choo-reload": "^1.1.1",
+    "moment": "^2.19.2",
     "sheetify": "^6.2.0",
     "sheetify-nested": "^1.0.2",
     "xmlhttprequest": "^1.8.0"

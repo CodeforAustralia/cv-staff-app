@@ -96,16 +96,16 @@ module.exports = function (state, emitter) {
     }
     state.loaded = false
     state.locations = null
-    state.user = {
-      name: 'Georgia Hansford',
-      email: 'Georgia.hansford@justice.vic.gov.au',
-      locationID: 4,
-      regionID: 7,
-      role: 'Admin'
-    }
 
     // This is where the real stuff starts
     state.ccs = {
+      user: {
+        name: 'Georgia Hansford',
+        email: 'Georgia.hansford@justice.vic.gov.au',
+        locationID: 4,
+        regionID: 7,
+        role: 'Admin'
+      },
       ui: {
         home: {
           loaded: false,
@@ -173,6 +173,22 @@ module.exports = function (state, emitter) {
           lightbox: false
         }
       }
+    }
+
+    state.client = {
+      user: {
+        phone: '',
+        JAID: 111,
+        locationNumber: '61400868219'
+      },
+      messages: [],
+      newMessage: '',
+      state: false,
+      content: 'Hiya',
+      to: '',
+      from: '',
+      testMessage: '',
+      sent: false
     }
   }
 
@@ -275,8 +291,8 @@ module.exports = function (state, emitter) {
         state.ccs.ui.manageUsers.newRequests = data
         state.ccs.ui.manageUsers.loaded = true
         emitter.emit('render')
-      }, {location: state.user.locationID})
-    }, {location: state.user.locationID})
+      }, {location: state.ccs.user.locationID})
+    }, {location: state.ccs.user.locationID})
   })
 
 // loads all the administrators
@@ -309,7 +325,7 @@ module.exports = function (state, emitter) {
       state.ccs.ui[template].loaded = true
 
       emitter.emit('render')
-    }, state.user.regionID)
+    }, state.ccs.user.regionID)
   })
 
 // not used
@@ -416,5 +432,45 @@ module.exports = function (state, emitter) {
     }
 
     emitter.emit('toggleLightbox')
+  })
+
+// declare bus handlers for app
+  emitter.on('updateContent', function (data) {
+    state.client.user.phone = data['Phones'][0]['PhoneNumber'].substr(1)
+
+    state.client.messages = []
+
+    var message
+    for (message of data['Messages']) {
+      var newMessage = {
+        content: message['MessageContents'],
+        receivedOrSentDate: message['DateDelivered'],
+        messageType: message['MessageType'],
+        direction: message[`Outbound`] === '1' ? 'outbound' : 'inbound',
+        response: message[`ResponseRequired`] === '1'
+      }
+
+      state.client.messages.push(newMessage)
+    }
+
+    state.client.status = true
+    emitter.emit('render')
+  })
+
+  emitter.on('clearNewMessage', function () {
+    state.client.newMessage = ''
+  })
+
+  emitter.on('updateNewMessage', function (data) {
+    state.client.newMessage = data.text
+  })
+
+  emitter.on('sendSMS', function () {
+    state.client.sent = true
+    emitter.emit('render')
+  })
+
+  emitter.on('updateNewSMS', function (data) {
+    state.client[data.id] = data.text
   })
 }

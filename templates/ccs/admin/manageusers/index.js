@@ -101,7 +101,7 @@ module.exports = function (state, emit) {
 
   return html`
     <div class=${style} onload=${manageUsersState.loaded ? null : emit('loadUsers')}>
-      ${navbar(state.user.name, manageUsersState.newRequests.length)}
+      ${navbar(state.ccs.user.name, manageUsersState.newRequests.length)}
       <div id="content">
         <h1>Manage CCS staff accounts</h1>
         <p>Case Managers, Justice Officers, Community Work Officers, and any other CCS staff who need to send SMS/web reminders to clients.</p>
