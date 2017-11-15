@@ -4,6 +4,8 @@ content {
   font-family: Helvetica;
   flex-direction: column;
   justify-content: center;
+  margin: auto;
+  max-width: 700px;
   min-height: 100%;
 }
 
@@ -37,7 +39,7 @@ content {
 .message {
   border-radius: 5px;
   margin: 0.2rem 0.5rem 0.5rem 0.5rem;
-  max-width: 60vw;
+  max-width: 60%;
   padding: 0.5rem 0.75rem;
 }
 
@@ -82,9 +84,10 @@ content {
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   height: 2.5rem;
   width: 100%;
+  input { width: 95%; }
 }
 
 .input > div {

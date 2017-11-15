@@ -4,7 +4,7 @@ var css = require('sheetify')
 var progressBar = require('progressbar.js')
 
 // export module
-module.exports = function () {
+module.exports = function (state, emit) {
   var style = css`
     :host {
       display: flex;
@@ -32,11 +32,11 @@ module.exports = function () {
   `
 
   return html`
-    <div class=${style}>
+    <container class=${style}>
         <h2>Community Work Hours Remaining</h2>
         <div id="container"></div>
         ${runAnimate()}
-    </div>
+    </container>
   `
 
   function runAnimate() {

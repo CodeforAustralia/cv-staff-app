@@ -6,10 +6,11 @@ var css = require('sheetify')
 module.exports = function () {
   var style = css`
     :host {
-      display: flex-box;
+      display: flex;
       flex-direction: column;
-      font-family: Helvetica;
       justify-content: flex-start;
+      margin: auto;
+      max-width: 700px;
     }
 
     :host > div {
@@ -31,6 +32,9 @@ module.exports = function () {
     <container class=${style}>
       <div>
         <a href="/reminders">Reminders</a>
+      </div>
+      <div>
+        <a href="/cwhours">Community Work Hours Countdown</a>
       </div>
       <div>
         <a href="/test">Test an SMS</a>
