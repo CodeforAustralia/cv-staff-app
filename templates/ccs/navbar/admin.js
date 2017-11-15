@@ -15,8 +15,8 @@ module.exports = function (username, numRequests) {
             <img src="../../assets/logo.png" />
             <p>for CCS staff</p>
           </div>
-          <div class="nav-path">Dashboard</div>
-          <div class="nav-path">Reminders</div>
+          <div class="nav-path"><a href="/ccs/dashboard">Dashboard</a></div>
+          <div class="nav-path"><a href="#">Reminders</a></div>
           <div class="nav-path">Clients</div>
         </div>
         <div id="navbar-right" onclick=${update}>
@@ -34,7 +34,7 @@ module.exports = function (username, numRequests) {
       <ul onmouseleave=${update}>
         <li><a href="#">Your profile</a></li>
         <li>
-          <a href="/admin/manageusers">Manage users
+          <a href="/ccs/admin/manageusers">Manage users
             ${numRequests === 0 ? null : html`<span id="newRequests">${numRequests}</span>`}
           </a>
         </li>

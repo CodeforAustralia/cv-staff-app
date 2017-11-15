@@ -7,6 +7,7 @@ var css = require('sheetify')
 
 // require modules
 var navbar = require('../../navbar/admin.js')
+var hoverInfo = require('../../hoverInfo')
 var api = require('../../../../lib/api.js')
 
 // export module
@@ -86,12 +87,12 @@ module.exports = function (state, emit) {
               flex-direction: column;
               justify-content: flex-start;
               padding: 1.5rem;
-              img {
-                height: 1rem;
+              label {
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
               }
-              select {
-                background-color: #fff;
-              }
+              select { background-color: #fff; }
             }
             #error {
               background-color: #d7d7d7;
@@ -127,14 +128,6 @@ module.exports = function (state, emit) {
             }
           }
         }
-      }
-      #info {
-        background-color: #fff;
-        border: 2px #e0e0e0 solid;
-        display: none;
-        height: 20px;
-        position: absolute;
-        width: 200px;
       }
     }
   `
@@ -178,7 +171,7 @@ module.exports = function (state, emit) {
           <div id="account-settings">
             <div id="user-role">
               <h3>Manage account settings</h3>
-              <label>User role <img id="info-icon" src="../../assets/information.png" onmouseover=${toggleDisplayInfo} onmouseout=${toggleDisplayInfo} /></label>
+              <label>User role ${hoverInfo('Actual copy here')}</label>
               <select id="role" onchange=${updateInput}>
                 <option ${role === 'User' ? 'selected' : null}>User</option>
                 <option ${role === 'Admin' ? 'selected' : null}>Admin</option>
@@ -197,7 +190,6 @@ module.exports = function (state, emit) {
           </div>
         </section>
       </section>
-      <div id="info">Insert actual copy here</div>
     </div>
   `
 
@@ -268,19 +260,6 @@ module.exports = function (state, emit) {
 
   function updateInput (e) {
     emit('updateInput', {template: 'addUser', target: e.target.id, text: e.target.value})
-  }
-
-  function toggleDisplayInfo (e) {
-    var el = document.getElementById('info')
-
-
-    if (el.style.display === 'flex') {
-      el.style.display = 'none'
-    } else {
-      el.style.display = 'flex'
-      el.style.top = e.clientY - 25 + 'px'
-      el.style.left = e.clientX + 'px'
-    }
   }
 
   function back () {

@@ -12,6 +12,7 @@ var css = require('sheetify')
 
 // require modules
 var navbar = require('../../navbar/admin.js')
+var hoverInfo = require('../../hoverInfo')
 
 // export module
 module.exports = function (state, emit) {
@@ -72,6 +73,11 @@ module.exports = function (state, emit) {
               display: flex;
               flex-direction: column;
               justify-content: flex-start;
+              label {
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+              }
               input, select {
                 background-color: #fff;
                 margin-bottom: 1rem;
@@ -104,14 +110,6 @@ module.exports = function (state, emit) {
             }
           }
         }
-      }
-      #info {
-        background-color: #fff;
-        border: 2px #e0e0e0 solid;
-        display: none;
-        height: 20px;
-        position: absolute;
-        width: 200px;
       }
       img {
         height: 1rem;
@@ -181,7 +179,7 @@ module.exports = function (state, emit) {
           <div id="account-settings">
             <div id="user-role">
               <h3>Manage account settings</h3>
-              <label>User role <img id="info-icon" src="../../assets/information.png" onmouseover=${toggleDisplayInfo} onmouseout=${toggleDisplayInfo} /></label>
+              <label>User role ${hoverInfo('Actual copy here')}</label>
               <select id="role" onchange=${updateInput}>
                 <option ${role === 'User' ? 'selected' : null}>User</option>
                 <option ${role === 'Admin' ? 'selected' : null}>Admin</option>
@@ -204,7 +202,6 @@ module.exports = function (state, emit) {
           </div>
         </section>
       </section>
-      <div id="info">Insert actual copy here</div>
     </div>
   `
 

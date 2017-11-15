@@ -12,6 +12,10 @@
       cursor: pointer;
       margin: auto;
       margin-left: 3rem;
+      a, a:visited {
+        color: #fff;
+        text-decoration: none;
+      }
     }
   }
   #navbar-right {
