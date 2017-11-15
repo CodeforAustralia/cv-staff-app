@@ -188,9 +188,20 @@ module.exports = function (state, emitter) {
       to: '',
       from: '',
       testMessage: '',
-      sent: false
+      sent: false,
+      ui: {
+        cwhours: {
+          active: 'countdown'
+        }
+      }
     }
   }
+
+// changes the selected tab on a page
+  emitter.on('updateActiveTab', function (data) {
+    state.client.ui[data.template].active = data.value
+    emitter.emit('render')
+  })
 
 // changes the page of a paginated table
   emitter.on('updatePage', function (data) {
