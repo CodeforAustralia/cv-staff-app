@@ -5,6 +5,7 @@ var moment = require('moment')
 
 // require modules
 var navbar = require('../navbar/admin.js')
+var hoverInfo = require('../hoverInfo')
 
 // export module
 module.exports = function (state, emit) {
@@ -19,7 +20,7 @@ module.exports = function (state, emit) {
         margin-top: 6rem;
         max-width: 1100px;
         #content-left {
-          width: 60%;
+          width: 55%;
           .action {
             h2 { margin: 0.5rem }
             p { margin: 0 0.5rem; }
@@ -27,8 +28,30 @@ module.exports = function (state, emit) {
         }
         #content-right {
           margin-top: 5rem;
-          width: 40%;
+          width: 45%;
           h3 { color: #000; }
+          span {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+          }
+          table {
+            border: 1px #e5e5e5 solid;
+            border-collapse: collapse;
+            td {
+              border-bottom: 1px #e5e5e5 solid;
+              padding: 1rem;
+              div {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                a, a:visited {
+                  color: #498fe1;
+                  text-decoration: none;
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -52,6 +75,20 @@ module.exports = function (state, emit) {
     button: 'Check CW hours'
   }]
 
+  var list = [{
+    name: 'Blake Hemmings',
+    phone: '0411 123 333',
+    JAID: '12345678'
+  }, {
+    name: 'Vanessa Marshall',
+    phone: '0411 123 333',
+    JAID: '12345678'
+  }, {
+    name: 'Julian Forsyth',
+    phone: '0411 123 333',
+    JAID: '12345678'
+  }]
+
   return html`
     <div class=${style}>
       ${navbar(state.ccs.user.name, state.ccs.ui.manageUsers.newRequests.length)}
@@ -64,11 +101,41 @@ module.exports = function (state, emit) {
         </div>
         <div id="content-right">
           <h3>Your client list</h3>
-          <p>These are the clients you are currently assigned to in eJustice.</p>
+          <span>
+            These are the clients you are currently assigned to in eJustice.
+            ${hoverInfo('Does this list seem incomplete? Please update your client list in eJustice')}
+          </span>
+          ${printClientList()}
         </div>
       </div>
     </div>
   `
+
+  function printClientList () {
+    return html`
+      <table>
+        ${list.map(function (el) {
+          return html`
+            <tr>
+              <td><img src="../../../assets/blank-avatar.png" /></td>
+              <td>
+                <div>
+                  <span>${el.name}</span>
+                  <span><a href="#">View client's profile</a></span>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <span>${el.phone}</span>
+                  <span>JAID${el.JAID}</span>
+                </div>
+              </td>
+            </tr>
+          `
+        })}
+      </table>
+    `
+  }
 
   function printAction (data) {
     return html`
