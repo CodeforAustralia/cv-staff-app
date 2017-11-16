@@ -195,6 +195,8 @@ module.exports = function (state, emitter) {
         }
       }
     }
+
+    state.authenticated = false
   }
 
 // changes the selected tab on a page
