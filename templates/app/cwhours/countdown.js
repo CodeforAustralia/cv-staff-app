@@ -44,14 +44,14 @@ module.exports = function (percentage) {
         text: {
           value: html`
             <span>
-              <span id="complete">75</span>
+              <span id="complete">${Math.ceil(percentage*100)}</span>
               <span>hours complete</span>
-              <span id="remaining">25 hours to go</span>
+              <span id="remaining">${Math.ceil(100*(1-percentage))} hours to go</span>
             </span>
           `
         }
       })
-      bar.animate(.75)
+      bar.animate(percentage)
     }, 100)
   }
 }

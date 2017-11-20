@@ -1,4 +1,5 @@
 var api = require('../lib/ccsapi')
+var crypto = require('crypto')
 
 module.exports = function (state, emitter) {
   // run on app start
@@ -171,6 +172,11 @@ module.exports = function (state, emitter) {
           location: '',
           role: '',
           lightbox: false
+        },
+        logIn: {
+          username: '',
+          password: '',
+          error: ''
         }
       }
     }
@@ -198,6 +204,35 @@ module.exports = function (state, emitter) {
 
     state.authenticated = false
   }
+
+// validates the user and logs in
+  emitter.on('logIn', function () {
+    // check user exists
+    api.findUser(function (res) {
+      if (res !== null && res[0].UserRole !== 'Offender') {
+        api.findSalt(function (salt) {
+          var passwordData = sha512(state.ccs.ui.logIn.password, salt)
+          api.login(function (res) {
+            if (res === '1') {
+              state.authenticated = true
+              window.localStorage.setItem('auth', new Date().getTime())
+              emitter.emit('pushState', '/ccs/dashboard')
+            } else {
+              state.ccs.ui.logIn.error = 'That looks like it was the wrong password.'
+              emitter.emit('render')
+            }
+          }, {Username: state.ccs.ui.logIn.username, Password: passwordData.passwordHash})
+        }, {Username: state.ccs.ui.logIn.username})
+        // compare hashes
+        // log in or error
+      } else {
+        state.ccs.ui.logIn.error = `We couldn't find an account with this username.`
+        emitter.emit('render')
+      }
+    }, state.ccs.ui.logIn.username)
+
+
+  })
 
 // changes the selected tab on a page
   emitter.on('updateActiveTab', function (data) {
@@ -486,4 +521,14 @@ module.exports = function (state, emitter) {
   emitter.on('updateNewSMS', function (data) {
     state.client[data.id] = data.text
   })
+}
+
+var sha512 = function(password, salt) {
+  var hash = crypto.createHmac('sha512', salt)
+  hash.update(password)
+  var value = hash.digest('hex')
+  return {
+    salt: salt,
+    passwordHash: value
+  }
 }

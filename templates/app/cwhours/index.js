@@ -50,7 +50,7 @@ module.exports = function (state, emit) {
           <button onclick=${toggleTab} id="countdown" class="tab ${active === 'countdown' ? '' : 'inactive'}">Countdown</button>
           <button onclick=${toggleTab} id="sessions" class="tab ${active === 'sessions' ? '': 'inactive'}">Sessions Completed</button>
         </div>
-        ${active === 'countdown' ? countdown() : null}
+        ${active === 'countdown' ? countdown(.43) : null}
     </container>
   `
 

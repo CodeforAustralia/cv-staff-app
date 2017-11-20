@@ -158,6 +158,6 @@ module.exports = function (state, emit) {
       greeting = 'Good evening'
     }
 
-    return html`<h1>${`${greeting} ${state.ccs.user.name}`}</h1>`
+    return html`<h1>${`${greeting} <Insert actual username here>`}</h1>`
   }
 }

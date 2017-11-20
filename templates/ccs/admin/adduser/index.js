@@ -8,7 +8,7 @@ var css = require('sheetify')
 // require modules
 var navbar = require('../../navbar/admin.js')
 var hoverInfo = require('../../hoverInfo')
-var api = require('../../../../lib/api.js')
+var api = require('../../../../lib/ccsapi.js')
 
 // export module
 module.exports = function (state, emit) {
@@ -240,7 +240,7 @@ module.exports = function (state, emit) {
           emit('updateError', {template: 'addUser', error: 'Another user with this username already exists'})
         } else {
           emit('grantAccess', {
-            UserName: email,
+            Username: email,
             Password: 'initpasswd',
             Role: role === 'User' ? 'Staff' : 'Admin',
             Location: addUserState.locations.filter(function (obj) {
