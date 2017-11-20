@@ -177,6 +177,9 @@ module.exports = function (state, emitter) {
           username: '',
           password: '',
           error: ''
+        },
+        clientList: {
+          displayMessages: false
         }
       }
     }
@@ -204,6 +207,12 @@ module.exports = function (state, emitter) {
 
     state.authenticated = false
   }
+
+// toggles messages display
+  emitter.on('toggleMessageDisplay', function () {
+    state.ccs.ui.clientList.displayMessages = true
+    emitter.emit('render')
+  })
 
 // validates the user and logs in
   emitter.on('logIn', function () {
