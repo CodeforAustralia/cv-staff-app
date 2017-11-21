@@ -106,7 +106,7 @@ module.exports = function (state, emitter) {
         email: 'Georgia.hansford@justice.vic.gov.au',
         locationID: 4,
         regionID: 7,
-        dedicatedNumber: '0400868219',
+        dedicatedNumber: '61400868219',
         role: 'Admin'
       },
       ui: {
@@ -183,27 +183,27 @@ module.exports = function (state, emitter) {
         clientList: {
           clients: [{
             name: 'Johnny Test',
-            phone: '0411123333',
+            phone: '61411123333',
             JAID: 111
           }, {
             name: 'Jake Black',
-            phone: '0411123333',
+            phone: '61411123333',
             JAID: 222
           }, {
             name: 'Sam Iam',
-            phone: '0411123333',
+            phone: '61411123333',
             JAID: 333
           }],
           displayMessages: null,
           messages: [],
-          message: ''
+          newMessage: ''
         }
       }
     }
 
     state.client = {
       user: {
-        phone: '',
+        phone: '61412757232',
         JAID: 111,
         locationNumber: '61400868219'
       },
@@ -218,6 +218,11 @@ module.exports = function (state, emitter) {
       ui: {
         cwhours: {
           active: 'countdown'
+        },
+        reminders: {
+          messages: [],
+          newMessage: '',
+          loaded: false
         }
       }
     }
@@ -228,8 +233,16 @@ module.exports = function (state, emitter) {
 // sends a new message
   emitter.on('sendSMS', function (data) {
     api.sendMessage(data.messageData, function (res) {
-      state.ccs.ui[data.template].message = ''
-      emitter.emit('getMessages', state.ccs.ui.clientList.displayMessages)
+      if (data.user === 'client') {
+        state.client.ui.reminders.newMessage = ''
+        state.client.ui.reminders.loaded = false
+        console.log(state.client.ui.reminders)
+        emitter.emit('render')
+      }
+      else {
+        state.ccs.ui[data.template].message = ''
+        emitter.emit('getMessages', state.ccs.ui.clientList.displayMessages)
+      }
     })
   })
 
@@ -243,7 +256,7 @@ module.exports = function (state, emitter) {
           content: message['MessageContents'],
           receivedOrSentDate: message['DateDelivered'],
           messageType: message['MessageType'],
-          direction: message[`Outbound`] === '1' ? 'outbound' : 'inbound',
+          direction: message[`Outbound`] === '1' ? 'inbound' : 'outbound',
           response: message[`ResponseRequired`] === '1'
         }
 
@@ -376,7 +389,7 @@ module.exports = function (state, emitter) {
 
 // updates the value of a template's state from an input
   emitter.on('updateInput', function (data) {
-    state.ccs.ui[data.template][data.target] = data.text
+    state[data.user].ui[data.template][data.target] = data.text
     emitter.emit('render')
   })
 
@@ -535,7 +548,7 @@ module.exports = function (state, emitter) {
   emitter.on('updateContent', function (data) {
     state.client.user.phone = data['Phones'][0]['PhoneNumber'].substr(1)
 
-    state.client.messages = []
+    state.client.ui.reminders.messages = []
 
     var message
     for (message of data['Messages']) {
@@ -547,10 +560,10 @@ module.exports = function (state, emitter) {
         response: message[`ResponseRequired`] === '1'
       }
 
-      state.client.messages.push(newMessage)
+      state.client.ui.reminders.messages.push(newMessage)
     }
 
-    state.client.status = true
+    state.client.ui.reminders.loaded = true
     emitter.emit('render')
   })
 
@@ -562,10 +575,10 @@ module.exports = function (state, emitter) {
     state.client.newMessage = data.text
   })
 
-  emitter.on('sendSMS', function () {
-    state.client.sent = true
-    emitter.emit('render')
-  })
+  // emitter.on('sendSMS', function () {
+  //   state.client.sent = true
+  //   emitter.emit('render')
+  // })
 
   emitter.on('updateNewSMS', function (data) {
     state.client[data.id] = data.text

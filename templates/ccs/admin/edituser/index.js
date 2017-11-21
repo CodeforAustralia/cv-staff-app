@@ -210,7 +210,7 @@ module.exports = function (state, emit) {
   }
 
   function updateInput (e) {
-    emit('updateInput', {template: 'editUser', target: e.target.id, text: e.target.value})
+    emit('updateInput', {user: 'ccs', template: 'editUser', target: e.target.id, text: e.target.value})
   }
 
   function toggleDisplayInfo (e) {
