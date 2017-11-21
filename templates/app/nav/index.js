@@ -8,7 +8,6 @@ module.exports = function (title) {
     :host {
       display: flex;
       flex-direction: row;
-      font-family: Helvetica;
       justify-content: space-between;
       margin: 1rem 0;
     }

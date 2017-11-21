@@ -46,32 +46,18 @@ module.exports = function (state, emit) {
             }
           }
         }
-        #content-right {
-          margin-top: 3rem;
-          width: 45%;
-          #messages {
-            background-color: #e5e5e5;
-          }
+        #content-right { width: 45%; }
+        #messageContainer {
+          background-color: #f8f8f8;
+          max-height: 35rem;
+          overflow: auto;
         }
       }
     }
   `
 
-  var list = [{
-    name: 'Johnny Test',
-    phone: '0411 123 333',
-    JAID: 111
-  }, {
-    name: 'Jake Black',
-    phone: '0411 123 333',
-    JAID: 222
-  }, {
-    name: 'Sam Iam',
-    phone: '0411 123 333',
-    JAID: 333
-  }]
-
   var displayMessages = state.ccs.ui.clientList.displayMessages
+  var message = state.ccs.ui.clientList.message
 
   return html`
     <div class=${style}>
@@ -86,29 +72,58 @@ module.exports = function (state, emit) {
           ${printClientList()}
         </div>
         <div id="content-right">
-          ${displayMessages ? showMessages() : null}
+          ${displayMessages !== null ? showMessages() : null}
         </div>
       </div>
     </div>
   `
 
   function getMessages (e) {
-    emit('getMessages', e.target.id)
+    emit('getMessages', e.target.id.slice(7))
+    setTimeout(function () {
+      myDiv = document.getElementById('messageContainer')
+      if (myDiv !== null) {
+        myDiv.scrollTop = 99999999999
+        emit('render')
+      }
+    }, 300)
   }
 
   function showMessages () {
-    return state.ccs.ui.clientList.messages.map(function (message, index) {
-      return html`
+    return html`
       <div>
-        <div class="${message.direction}">
-          ${displayTime(message, index)}
-          <div class="message">
-            ${message.content}
-            ${message.response ? displayResponse() : null}
-          </div>
+        <div id="messageContainer">
+          ${state.ccs.ui.clientList.messages.map(function (message, index) {
+            return html`
+            <div>
+              <div class="${message.direction}">
+                ${displayTime(message, index)}
+                <div class="message">
+                  ${message.content}
+                  ${message.response ? displayResponse() : null}
+                </div>
+              </div>
+            </div>`
+          })}
         </div>
-      </div>`
-    })
+        <input placeholder="Message ... " type="text" id="message" value=${message} oninput=${update} />
+        <button class="white-button" onclick=${sendMessage}>Send</button>
+      </div>
+    `
+  }
+
+  function sendMessage () {
+    var client = state.ccs.ui.clientList.clients[displayMessages]
+    emit('sendSMS', {messageData: {
+      JAID: client.JAID,
+      to: client.phone,
+      from: state.ccs.user.dedicatedNumber,
+      content: message
+    }, template: 'clientList'})
+  }
+
+  function update (e) {
+    emit('updateInput', {template: 'clientList', target: 'message', text: e.target.value})
   }
 
   // display possible responses to inbound message
@@ -121,25 +136,17 @@ module.exports = function (state, emit) {
     `
   }
 
-  function fetchMessages () {
-    return html`
-      <div id="messages">
-        <h3>Message History</h3>
-      </div>
-    `
-  }
-
   function printClientList () {
     return html`
       <table>
-        ${list.map(function (el) {
+        ${state.ccs.ui.clientList.clients.map(function (el, index) {
           return html`
             <tr>
               <td><img src="../../../assets/blank-avatar.png" /></td>
               <td>
                 <div>
                   <span>${el.name}</span>
-                  <span class="loadMessages" id="${el.JAID}" onclick=${getMessages}>View message history</span>
+                  <span class="loadMessages" id="client-${index}" onclick=${getMessages}>View message history</span>
                 </div>
               </td>
               <td>

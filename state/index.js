@@ -1,4 +1,5 @@
-var api = require('../lib/ccsapi')
+var ccsapi = require('../lib/ccsapi')
+var api = require('../lib/api')
 var crypto = require('crypto')
 
 module.exports = function (state, emitter) {
@@ -105,6 +106,7 @@ module.exports = function (state, emitter) {
         email: 'Georgia.hansford@justice.vic.gov.au',
         locationID: 4,
         regionID: 7,
+        dedicatedNumber: '0400868219',
         role: 'Admin'
       },
       ui: {
@@ -179,9 +181,22 @@ module.exports = function (state, emitter) {
           error: ''
         },
         clientList: {
-          displayMessages: false,
-          currJAID: null,
-          messages: []
+          clients: [{
+            name: 'Johnny Test',
+            phone: '0411123333',
+            JAID: 111
+          }, {
+            name: 'Jake Black',
+            phone: '0411123333',
+            JAID: 222
+          }, {
+            name: 'Sam Iam',
+            phone: '0411123333',
+            JAID: 333
+          }],
+          displayMessages: null,
+          messages: [],
+          message: ''
         }
       }
     }
@@ -210,16 +225,20 @@ module.exports = function (state, emitter) {
     state.authenticated = false
   }
 
+// sends a new message
+  emitter.on('sendSMS', function (data) {
+    api.sendMessage(data.messageData, function (res) {
+      state.ccs.ui[data.template].message = ''
+      emitter.emit('getMessages', state.ccs.ui.clientList.displayMessages)
+    })
+  })
+
 // retrieves message history
   emitter.on('getMessages', function (data) {
-    api.getMessages(function (res) {
+    ccsapi.getMessages(function (res) {
       state.ccs.ui.clientList.messages = []
-
       var message
       for (message of res) {
-        if (message['DateDelivered'] === null) {
-          console.log('null')
-        }
         var newMessage = {
           content: message['MessageContents'],
           receivedOrSentDate: message['DateDelivered'],
@@ -230,20 +249,19 @@ module.exports = function (state, emitter) {
 
         state.ccs.ui.clientList.messages.push(newMessage)
       }
-      console.log(state.ccs.ui.clientList.messages)
-      state.ccs.ui.clientList.displayMessages = true
+      state.ccs.ui.clientList.displayMessages = parseInt(data)
       emitter.emit('render')
-    }, data)
+    }, state.ccs.ui.clientList.clients[parseInt(data)].JAID)
   })
 
 // validates the user and logs in
   emitter.on('logIn', function () {
     // check user exists
-    api.findUser(function (res) {
+    ccsapi.findUser(function (res) {
       if (res !== null && res[0].UserRole !== 'Offender') {
-        api.findSalt(function (salt) {
+        ccsapi.findSalt(function (salt) {
           var passwordData = sha512(state.ccs.ui.logIn.password, salt)
-          api.login(function (res) {
+          ccsapi.login(function (res) {
             if (res === '1') {
               state.authenticated = true
               window.localStorage.setItem('auth', new Date().getTime())
@@ -279,7 +297,7 @@ module.exports = function (state, emitter) {
 
 // adds a new user and authenticates them
   emitter.on('grantAccess', function (data) {
-    api.newUser(function (res) {
+    ccsapi.newUser(function (res) {
       if (state.ccs.ui.addUser.requested) {
         state.ccs.ui.manageUsers.newRequests.splice(state.ccs.ui.addUser.requested, 1)
       }
@@ -288,7 +306,7 @@ module.exports = function (state, emitter) {
 
 // checks if a user exists
   emitter.on('checkUser', function (data) {
-    api.findUser(function (res) {
+    ccsapi.findUser(function (res) {
       if (res !== null) { state.ccs.ui.addUser.exists = true }
     }, data)
   })
@@ -364,9 +382,9 @@ module.exports = function (state, emitter) {
 
 // loads the existing users and new requests for the manageusers template
   emitter.on('loadUsers', function () {
-    api.getStaff(function (data) {
+    ccsapi.getStaff(function (data) {
       state.ccs.ui.manageUsers.users = data
-      api.getNewRequests(function (data) {
+      ccsapi.getNewRequests(function (data) {
         state.ccs.ui.manageUsers.newRequests = data
         state.ccs.ui.manageUsers.loaded = true
         emitter.emit('render')
@@ -376,7 +394,7 @@ module.exports = function (state, emitter) {
 
 // loads all the administrators
   emitter.on('loadAdministrators', function (data) {
-    api.getAdministrators(function (data) {
+    ccsapi.getAdministrators(function (data) {
       state.ccs.ui.administrators.administrators = data
       state.ccs.ui.administrators.loaded = true
 
@@ -386,7 +404,7 @@ module.exports = function (state, emitter) {
 
 // loads all the locations
   emitter.on('loadLocations', function () {
-    api.getLocations(function (data) {
+    ccsapi.getLocations(function (data) {
       state.locations = data
       state.ccs.ui.home.loaded = true
       emitter.emit('render')
@@ -395,7 +413,7 @@ module.exports = function (state, emitter) {
 
 // loads the data for a user's region
   emitter.on('loadRegionData', function (template) {
-    api.getRegionData(function (response) {
+    ccsapi.getRegionData(function (response) {
       state.ccs.ui[template].region = response.RegionName
       state.ccs.ui[template].locations = response.Locations
       state.ccs.ui[template].locations.sort(function (a, b) {
