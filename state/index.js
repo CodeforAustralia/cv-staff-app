@@ -179,7 +179,9 @@ module.exports = function (state, emitter) {
           error: ''
         },
         clientList: {
-          displayMessages: false
+          displayMessages: false,
+          currJAID: null,
+          messages: []
         }
       }
     }
@@ -208,10 +210,30 @@ module.exports = function (state, emitter) {
     state.authenticated = false
   }
 
-// toggles messages display
-  emitter.on('toggleMessageDisplay', function () {
-    state.ccs.ui.clientList.displayMessages = true
-    emitter.emit('render')
+// retrieves message history
+  emitter.on('getMessages', function (data) {
+    api.getMessages(function (res) {
+      state.ccs.ui.clientList.messages = []
+
+      var message
+      for (message of res) {
+        if (message['DateDelivered'] === null) {
+          console.log('null')
+        }
+        var newMessage = {
+          content: message['MessageContents'],
+          receivedOrSentDate: message['DateDelivered'],
+          messageType: message['MessageType'],
+          direction: message[`Outbound`] === '1' ? 'outbound' : 'inbound',
+          response: message[`ResponseRequired`] === '1'
+        }
+
+        state.ccs.ui.clientList.messages.push(newMessage)
+      }
+      console.log(state.ccs.ui.clientList.messages)
+      state.ccs.ui.clientList.displayMessages = true
+      emitter.emit('render')
+    }, data)
   })
 
 // validates the user and logs in

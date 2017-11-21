@@ -1,10 +1,12 @@
 // require dependencies
 var html = require('choo/html')
 var css = require('sheetify')
+var moment = require('moment')
 
 // require modules
 var navbar = require('../navbar/admin.js')
 var hoverInfo = require('../hoverInfo')
+var messageStyle = css('./messageStyle')
 
 // export module
 module.exports = function (state, emit) {
@@ -36,7 +38,7 @@ module.exports = function (state, emit) {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
-                #loadMessages {
+                .loadMessages {
                   color: #498fe1;
                   cursor: pointer;
                 }
@@ -56,17 +58,17 @@ module.exports = function (state, emit) {
   `
 
   var list = [{
-    name: 'Blake Hemmings',
+    name: 'Johnny Test',
     phone: '0411 123 333',
-    JAID: '12345678'
+    JAID: 111
   }, {
-    name: 'Vanessa Marshall',
+    name: 'Jake Black',
     phone: '0411 123 333',
-    JAID: '12345678'
+    JAID: 222
   }, {
-    name: 'Julian Forsyth',
+    name: 'Sam Iam',
     phone: '0411 123 333',
-    JAID: '12345678'
+    JAID: 333
   }]
 
   var displayMessages = state.ccs.ui.clientList.displayMessages
@@ -90,11 +92,36 @@ module.exports = function (state, emit) {
     </div>
   `
 
-  function toggleMessageDisplay () {
-    emit('toggleMessageDisplay')
+  function getMessages (e) {
+    emit('getMessages', e.target.id)
   }
 
   function showMessages () {
+    return state.ccs.ui.clientList.messages.map(function (message, index) {
+      return html`
+      <div>
+        <div class="${message.direction}">
+          ${displayTime(message, index)}
+          <div class="message">
+            ${message.content}
+            ${message.response ? displayResponse() : null}
+          </div>
+        </div>
+      </div>`
+    })
+  }
+
+  // display possible responses to inbound message
+  function displayResponse () {
+    return html`
+      <div>
+        <button id="OK">OK</button>
+        <button id="Reschedule">Reschedule</button>
+      </div>
+    `
+  }
+
+  function fetchMessages () {
     return html`
       <div id="messages">
         <h3>Message History</h3>
@@ -112,7 +139,7 @@ module.exports = function (state, emit) {
               <td>
                 <div>
                   <span>${el.name}</span>
-                  <span id="loadMessages" onclick=${toggleMessageDisplay}>View message history</span>
+                  <span class="loadMessages" id="${el.JAID}" onclick=${getMessages}>View message history</span>
                 </div>
               </td>
               <td>
@@ -126,5 +153,42 @@ module.exports = function (state, emit) {
         })}
       </table>
     `
+  }
+
+  function displayTime (message, index) {
+    var myDate = moment(message.receivedOrSentDate)
+    var today = moment()
+
+    var newDayDisplay = true
+
+    var timeToDisplay = ''
+    var timeDisplayString = 'h:mm a'
+
+    if (index !== 0) {
+      var prevMsgDate = moment(state.ccs.ui.clientList.messages[index - 1].receivedOrSentDate)
+
+      if (prevMsgDate.format() === myDate.format()) {
+        newDayDisplay = false
+      }
+    }
+
+    // if message was sent on a different day, display date in full
+    if (newDayDisplay) {
+      if (myDate.format() === today.format()) {
+        timeToDisplay = 'Today, '
+      } else {
+        timeDisplayString = 'ddd D MMM, h:mm a'
+      }
+
+      return html`<p class="newDate">${timeToDisplay} ${moment(myDate).format(timeDisplayString)}</p>`
+    } else {
+      timeToDisplay = 'Sent '
+
+      if (message.messageType === 'SMS') {
+        timeToDisplay += 'via SMS at '
+      }
+
+      return html`<p>${timeToDisplay} ${moment(myDate).format(timeDisplayString)}</p>`
+    }
   }
 }

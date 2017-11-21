@@ -17,7 +17,7 @@ module.exports = function (username, numRequests) {
           </div>
           <div class="nav-path"><a href="/ccs/dashboard">Dashboard</a></div>
           <div class="nav-path"><a href="#">Reminders</a></div>
-          <div class="nav-path">Clients</div>
+          <div class="nav-path"><a href="/ccs/clientlist">Clients</a></div>
         </div>
         <div id="navbar-right" onclick=${update}>
           <div id="dropdown">
