@@ -69,6 +69,7 @@ module.exports = function (state, emit) {
             ${hoverInfo('Does this list seem incomplete? Please update your client list in eJustice')}
           </span>
           ${printClientList()}
+          <button class="blue-button" onclick=${search}>Add a client</button>
         </div>
         <div id="content-right">
           ${displayMessages !== null ? messageHistory('ccs', state, emit) : null}
@@ -76,6 +77,11 @@ module.exports = function (state, emit) {
       </div>
     </div>
   `
+
+  function search () {
+    emit('clearState')
+    emit('pushState', '/ccs/search')
+  }
 
   function getMessages (e) {
     emit('getMessages', e.target.id.slice(7))

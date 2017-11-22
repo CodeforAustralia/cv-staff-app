@@ -184,19 +184,37 @@ module.exports = function (state, emitter) {
           clients: [{
             name: 'Johnny Test',
             phone: '61411123333',
-            JAID: 111
+            JAID: 111,
+            location: 'Derrimut Community Work and Reparation Orders',
+            region: 'North West Metro'
           }, {
             name: 'Jake Black',
             phone: '61411123333',
-            JAID: 222
+            JAID: 222,
+            location: 'South Morang Justice Service Centre',
+            region: 'North West Metro'
           }, {
             name: 'Sam Iam',
             phone: '61411123333',
-            JAID: 333
+            JAID: 333,
+            location: 'Derrimut Community Work and Reparation Orders',
+            region: 'North West Metro'
           }],
           displayMessages: null,
           messages: [],
           newMessage: ''
+        },
+        search: {
+          name: '',
+          JAID: '',
+          region: '',
+          regions: [],
+          loaded: false,
+          location: '',
+          locations: [],
+          searchRegion: '',
+          searchLocation: '',
+          results: []
         }
       }
     }
@@ -230,13 +248,35 @@ module.exports = function (state, emitter) {
     state.authenticated = false
   }
 
+// loads locations within a region
+  emitter.on('loadLocationsForRegion', function (data) {
+    ccsapi.getRegionData(function (res) {
+      state.ccs.ui[data.template][data.target] = res.Locations
+      state.ccs.ui[data.template][data.target].sort(function (a, b) {
+        return (a.SiteName > b.SiteName) - (a.SiteName < b.SiteName)
+      })
+      emitter.emit('render')
+    }, data.regionID)
+  })
+
+// loads region data
+  emitter.on('loadRegions', function (data) {
+    ccsapi.getRegions(function (res) {
+      state.ccs.ui[data.template][data.target] = res
+      state.ccs.ui[data.template][data.target].sort(function (a, b) {
+        return (a.RegionName > b.RegionName) - (a.RegionName < b.RegionName)
+      })
+      state.ccs.ui[data.template].loaded = true
+      emitter.emit('render')
+    })
+  })
+
 // sends a new message
   emitter.on('sendSMS', function (data) {
     api.sendMessage(data.messageData, function (res) {
       if (data.user === 'client') {
         state.client.ui.reminders.newMessage = ''
         state.client.ui.reminders.loaded = false
-        console.log(state.client.ui.reminders)
         emitter.emit('render')
       }
       else {

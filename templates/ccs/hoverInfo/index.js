@@ -10,6 +10,7 @@ module.exports = function (hoverText) {
       #info {
         background-color: #fff;
         border: 2px #e0e0e0 solid;
+        color: #000;
         display: none;
         max-width: 300px;
         position: absolute;
