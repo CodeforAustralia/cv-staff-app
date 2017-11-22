@@ -110,42 +110,59 @@ module.exports = function (state, emit) {
       phone: '61411123333',
       JAID: 111,
       location: 'Derrimut Community Work and Reparation Orders',
-      region: 'North West Metro'
+      region: 'North West Metropolitan'
+    }, {
+      name: 'Jake Black',
+      phone: '61411123333',
+      JAID: 222,
+      location: 'South Morang Justice Service Centre',
+      region: 'South East Metropolitan'
     }, {
       name: 'Sam Iam',
       phone: '61411123333',
       JAID: 333,
       location: 'Derrimut Community Work and Reparation Orders',
-      region: 'North West Metro'
+      region: 'North West Metropolitan'
+    }, {
+      name: 'Dana Bo-bana',
+      phone: '61422777000',
+      JAID: 444,
+      location: 'Ravenhall Prison',
+      region: 'North West Metropolitan'
     }]
     emit('render')
   }
 
   function printResults () {
-    if (results.length !== 0) {
-      var regionID = parseInt(regions.filter(function (el) {
-        return el.RegionName === searchRegion
-      })[0].RegionID)
-    }
     return html`
       <table>
-        ${results.map(function (el) {
+        ${results.map(function (el, index) {
           return html`
             <tr>
               <td>${el.name}</td>
               <td>${el.JAID}</td>
               <td>${el.region}</td>
               <td>${el.location}</td>
-              <td>${state.ccs.user.regionID !== regionID ?
+              <td>${state.ccs.user.regionID !== parseInt(regions.filter(function (element) {
+                return element.RegionName === el.region
+              })[0].RegionID) ?
                 html`
                   <button class="grey-button">
                     Add to my client list
                     ${hoverInfo(`You can't add someone in a different region`)}
                   </button>
                 ` :
+                state.ccs.ui.clientList.clients.filter(function (element) {
+                  return element.JAID === el.JAID
+                }).length === 0 ?
                 html`
-                  <button class="blue-button">
+                  <button class="blue-button" onclick=${addToClientList} id="client-${index}">
                     Add to my client list
+                  </button>
+                ` :
+                html`
+                  <button class="white-button">
+                    Remove from my client list
                   </button>
                 `}
               </td>
@@ -154,6 +171,10 @@ module.exports = function (state, emit) {
         })}
       </table>
     `
+  }
+
+  function addToClientList (e) {
+    emit('addToClientList', results[parseInt(e.target.id.slice(7))])
   }
 
   function updateInput (e) {

@@ -248,6 +248,12 @@ module.exports = function (state, emitter) {
     state.authenticated = false
   }
 
+// add to client list
+  emitter.on('addToClientList', function (data) {
+    state.ccs.ui.clientList.clients.push(data)
+    emitter.emit('render')
+  })
+
 // loads locations within a region
   emitter.on('loadLocationsForRegion', function (data) {
     ccsapi.getRegionData(function (res) {
