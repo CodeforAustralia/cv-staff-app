@@ -13,6 +13,7 @@ var api = require('../../../../lib/ccsapi.js')
 // export module
 module.exports = function (state, emit) {
   var addUserState = state.ccs.ui.addUser
+  var username = addUserState.username
   var givenName = addUserState.givenName
   var lastName = addUserState.lastName
   var email = addUserState.email
@@ -158,6 +159,8 @@ module.exports = function (state, emit) {
         <section id="add-user">
           <div id="user-details">
             <h3>User's details</h3>
+            <label>eJustice username</label>
+            <input type="text" value=${username} id="username" oninput=${updateInput} />
             <label>Given Name</label>
             <input type="text" value=${givenName} id="givenName" oninput=${updateInput} />
             <label>Last Name</label>
@@ -240,8 +243,9 @@ module.exports = function (state, emit) {
           emit('updateError', {template: 'addUser', error: 'Another user with this username already exists'})
         } else {
           emit('grantAccess', {
-            Username: email,
+            Username: username,
             Password: 'initpasswd',
+            Email: email,
             Role: role === 'User' ? 'Staff' : 'Admin',
             Location: addUserState.locations.filter(function (obj) {
               return obj.SiteName === location})[0].LocationID,

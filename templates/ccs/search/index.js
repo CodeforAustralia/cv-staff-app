@@ -5,6 +5,7 @@ var css = require('sheetify')
 // require modules
 var navbar = require('../navbar/admin.js')
 var hoverInfo = require('../hoverInfo')
+var addUser = require('./addUser.js')
 
 // export module
 module.exports = function (state, emit) {
@@ -20,9 +21,6 @@ module.exports = function (state, emit) {
         max-width: 1100px;
         #searchBar {
           align-self: center;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
           width: 100%;
           input {
             height: 1.5rem;
@@ -34,6 +32,11 @@ module.exports = function (state, emit) {
             width: 15rem;
           }
         }
+      }
+      #content > div {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
       }
     }
   `
@@ -47,14 +50,18 @@ module.exports = function (state, emit) {
   var results = state.ccs.ui.search.results
   var loaded = state.ccs.ui.search.loaded
   var searchRegion = state.ccs.ui.search.searchRegion
+  var modal = state.ccs.ui.search.modal
 
   return html`
     <div class=${style}>
       ${navbar(state.ccs.user.name, state.ccs.ui.manageUsers.newRequests.length)}
       <div id="content">
         ${loaded ? null : loadRegions()}
-        <button class="white-button" onclick=${back}>Back</button>
-        <h3>Search clients</h3>
+        <div>
+          <button class="white-button" onclick=${back}>Back</button>
+          <button class="blue-button" onclick=${toggleModal}>Enter a new client</button>
+        </div>
+        <h3>Search existing clients</h3>
         <div id="searchBar">
           <input type="text" placeholder="Name" value=${name} id="name" oninput=${updateInput} />
           <input type="text" placeholder="JAID" value=${JAID} id="JAID" oninput=${updateInput} />
@@ -64,8 +71,16 @@ module.exports = function (state, emit) {
         </div>
         ${results !== [] ? printResults() : null}
       </div>
+      ${modal ? html`
+        <div class="modal-background">
+          ${addUser(state, emit)}
+      </div>` : null}
     </div>
   `
+
+  function toggleModal () {
+    emit('toggleModal', {template: 'search'})
+  }
 
   function back () {
     emit('clearState')

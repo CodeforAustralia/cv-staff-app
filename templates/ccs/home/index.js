@@ -9,7 +9,7 @@ var css = require('sheetify')
 
 // require modules
 var navbar = require('../navbar')
-var api = require('../../../lib/api')
+var api = require('../../../lib/ccsapi')
 
 // export module
 module.exports = function (state, emit) {
@@ -103,6 +103,7 @@ module.exports = function (state, emit) {
     }
   `
   var homeState = state.ccs.ui.home
+  var username = homeState.username
   var givenName = homeState.givenName
   var lastName = homeState.lastName
   var email = homeState.email
@@ -143,6 +144,8 @@ module.exports = function (state, emit) {
           <div id="content-right">
             <h2>Get started - Create an account</h2>
             <div id="create-account">
+              <p>Your eJustice username</p>
+              <input type="text" id="username" value=${username} oninput=${updateInput} required />
               <div id="name-input">
                 <div>
                   <p>Your given name</p>
@@ -216,8 +219,9 @@ module.exports = function (state, emit) {
             emit('updateError', {template: 'home', error: 'Whoops, looks like there was a problem!'})
           }
         }, {
-          UserName: email,
+          Username: username,
           Password: 'initpasswd',
+          Email: email,
           Role: 'Staff',
           Location: state.locations.filter(function (obj) {
             return obj.SiteName === location})[0].LocationID,
@@ -225,7 +229,7 @@ module.exports = function (state, emit) {
           LastName: lastName,
           Authentication: 0
         })
-      }}, {email: email})
+      }}, {username: username})
   }
 
   function printLocations() {

@@ -112,6 +112,7 @@ module.exports = function (state, emitter) {
       ui: {
         home: {
           loaded: false,
+          username: '',
           givenName: '',
           lastName: '',
           email: '',
@@ -153,6 +154,7 @@ module.exports = function (state, emitter) {
         addUser: {
           loaded: false,
           lightbox: false,
+          username: '',
           givenName: '',
           lastName: '',
           email: '',
@@ -166,6 +168,7 @@ module.exports = function (state, emitter) {
           exists: false
         },
         editUser: {
+          username: '',
           givenName: '',
           lastName: '',
           name: '',
@@ -214,7 +217,8 @@ module.exports = function (state, emitter) {
           locations: [],
           searchRegion: '',
           searchLocation: '',
-          results: []
+          results: [],
+          modal: false
         }
       }
     }
@@ -247,6 +251,12 @@ module.exports = function (state, emitter) {
 
     state.authenticated = false
   }
+
+// toggle modal
+  emitter.on('toggleModal', function (data) {
+    state.ccs.ui[data.template].modal = !state.ccs.ui[data.template].modal
+    emitter.emit('render')
+  })
 
 // add to client list
   emitter.on('addToClientList', function (data) {
@@ -375,6 +385,7 @@ module.exports = function (state, emitter) {
     state.ccs.ui.addUser = {
       loaded: false,
       lightbox: false,
+      username: '',
       givenName: '',
       lastName: '',
       email: '',
@@ -392,6 +403,7 @@ module.exports = function (state, emitter) {
 // loads the edituser page for an existing user
   emitter.on('loadEditUser', function (data) {
     var user = state.ccs.ui.manageUsers.users[data.index]
+    state.ccs.ui.editUser.username = user.username
     state.ccs.ui.editUser.name = user.name
     state.ccs.ui.editUser.givenName = user.givenName
     state.ccs.ui.editUser.lastName = user.lastName
@@ -405,6 +417,7 @@ module.exports = function (state, emitter) {
 // loads the adduser page for an existing request
   emitter.on('updateNewUser', function (data) {
     var user = state.ccs.ui.manageUsers.newRequests[data.index]
+    state.ccs.ui.addUser.username = user.username
     state.ccs.ui.addUser.givenName = user.givenName
     state.ccs.ui.addUser.lastName = user.lastName
     state.ccs.ui.addUser.email = user.email

@@ -17,6 +17,7 @@ var hoverInfo = require('../../hoverInfo')
 // export module
 module.exports = function (state, emit) {
   var editUserState = state.ccs.ui.editUser
+  var username = editUserState.username
   var givenName = editUserState.givenName
   var lastName = editUserState.lastName
   var email = editUserState.email
@@ -159,6 +160,8 @@ module.exports = function (state, emit) {
         <section id="add-user">
           <div id="user-details">
             <h3>User's details</h3>
+            <label>eJustice username</label>
+            <input type="text" value=${username} id="username" oninput=${updateInput} />
             <label>Given Name</label>
             <input type="text" value=${givenName} id="givenName" oninput=${updateInput} />
             <label>Last Name</label>
