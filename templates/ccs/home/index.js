@@ -221,7 +221,7 @@ module.exports = function (state, emit) {
         }, {
           Username: username,
           Password: 'initpasswd',
-          Email: email,
+          email: email,
           Role: 'Staff',
           Location: state.locations.filter(function (obj) {
             return obj.SiteName === location})[0].LocationID,

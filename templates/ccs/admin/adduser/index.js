@@ -21,6 +21,7 @@ module.exports = function (state, emit) {
   var location = addUserState.location
   var role = addUserState.role
   var error = addUserState.error
+  var submit = addUserState.submit
 
   var style = css`
     :host {
@@ -117,7 +118,6 @@ module.exports = function (state, emit) {
               }
             }
             #complete {
-              display: none;
               flex-direction: row;
               justify-content: center;
               margin: 1.5rem;
@@ -150,7 +150,7 @@ module.exports = function (state, emit) {
                     Are you sure you want to delete this access request?
                     <div>
                       <button class="white-button" onclick=${toggleLightbox}>Cancel</button>
-                      <button class="blue-button">Delete</button>
+                      <button class="blue-button" onclick=${deleteAccessRequest}>Delete</button>
                     </div>
                   </div>
                 </div>` : null}
@@ -182,27 +182,37 @@ module.exports = function (state, emit) {
               <p>Most CCS staff who use Orion will be Users.</p>
             </div>
             ${error ? displayError() : null}
-            <div id="submit">
-              <span onclick=${back}>Cancel</span>
-              <button class="blue-button" style="align-self:flex-end" onclick=${validateInput}>Create account</button>
-            </div>
-            <div id="complete">
-              <h3>${givenName}${lastName ? ` ${lastName}` : ''}'s access granted</h3>
-              <img src="../../assets/tick.png" />
-            </div>
+            ${submit ? displaySuccess() : html`
+              <div id="submit">
+                <span onclick=${back}>Cancel</span>
+                <button class="blue-button" style="align-self:flex-end" onclick=${validateInput}>Create account</button>
+              </div>`}
           </div>
         </section>
       </section>
     </div>
   `
 
+  function displaySuccess () {
+    return html`
+      <div id="complete">
+        <h3>${givenName}${lastName ? ` ${lastName}` : ''}'s access granted</h3>
+        <img src="../../assets/tick.png" />
+      </div>
+    `
+  }
+
+  function deleteAccessRequest () {
+    emit('deleteAccessRequest')
+  }
+
   function displayLocations () {
-    return addUserState.locations ? html`
+    return locations ? html`
       <div>
         <label>Location</label>
         <select id="location" onchange=${updateInput}>
           <option disabled ${location ? null : 'selected'}></option>
-          ${addUserState.locations.map(function (el) {
+          ${locations.map(function (el) {
             return html`<option ${el.SiteName === location ? 'selected' : null}>${el.SiteName}</option>`
           })}
         </select>
@@ -238,27 +248,28 @@ module.exports = function (state, emit) {
       emit('updateError', {template: 'addUser', error: errorMessage})
     } else {
       emit('updateError', {template: 'addUser', error: ''})
-      api.findUser(function (data) {
-        if (data !== null) {
-          emit('updateError', {template: 'addUser', error: 'Another user with this username already exists'})
-        } else {
-          emit('grantAccess', {
-            Username: username,
-            Password: 'initpasswd',
-            Email: email,
-            Role: role === 'User' ? 'Staff' : 'Admin',
-            Location: addUserState.locations.filter(function (obj) {
-              return obj.SiteName === location})[0].LocationID,
-            FirstName: givenName,
-            LastName: lastName,
-            Authentication: 1
-          })
-          var submit = document.getElementById('submit')
-          var complete = document.getElementById('complete')
-          submit.style.display = 'none'
-          complete.style.display = 'flex'
-        }
-      }, {email: email})
+      emit('createAccount')
+      // api.findUser(function (data) {
+      //   if (data !== null) {
+      //     emit('updateError', {template: 'addUser', error: 'Another user with this username already exists'})
+      //   } else {
+      //     emit('grantAccess', {
+      //       Username: username,
+      //       Password: 'initpasswd',
+      //       Email: email,
+      //       Role: role === 'User' ? 'Staff' : 'Admin',
+      //       Location: addUserState.locations.filter(function (obj) {
+      //         return obj.SiteName === location})[0].LocationID,
+      //       FirstName: givenName,
+      //       LastName: lastName,
+      //       Authentication: 1
+      //     })
+      //     var submit = document.getElementById('submit')
+      //     var complete = document.getElementById('complete')
+      //     submit.style.display = 'none'
+      //     complete.style.display = 'flex'
+      //   }
+      // }, {Username: username})
     }
   }
 

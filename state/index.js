@@ -102,6 +102,7 @@ module.exports = function (state, emitter) {
     // This is where the real stuff starts
     state.ccs = {
       user: {
+        username: 'GeorgiaCFA',
         name: 'Georgia Hansford',
         email: 'Georgia.hansford@justice.vic.gov.au',
         locationID: 4,
@@ -154,6 +155,7 @@ module.exports = function (state, emitter) {
         addUser: {
           loaded: false,
           lightbox: false,
+          submit: false,
           username: '',
           givenName: '',
           lastName: '',
@@ -175,6 +177,7 @@ module.exports = function (state, emitter) {
           email: '',
           region: '',
           location: '',
+          locations: '',
           role: '',
           lightbox: false
         },
@@ -251,6 +254,99 @@ module.exports = function (state, emitter) {
 
     state.authenticated = false
   }
+
+// disable a user account
+  emitter.on('disableAccount', function () {
+    ccsapi.disableAccount(function () {
+      emitter.emit('loadUsers')
+      emitter.emit('pushState', '/ccs/admin/manageusers')
+    }, {
+      Username: state.ccs.ui.editUser.username,
+      LocationID: state.ccs.ui.editUser.locations.filter(function (el) {
+        return el.SiteName === state.ccs.ui.editUser.location
+      })[0].LocationID,
+      Admin: state.ccs.user.username,
+      Status: 2
+    })
+  })
+
+// create a user account
+  emitter.on('createAccount', function () {
+    if (state.ccs.ui.addUser.requested) {
+      ccsapi.grantAccess(function () {
+        state.ccs.ui.addUser.error = ''
+        state.ccs.ui.addUser.submit = true
+        emitter.emit('loadUsers')
+        emitter.emit('render')
+      }, {
+        Username: state.ccs.ui.addUser.username,
+        LocationID: state.ccs.ui.addUser.locations.filter(function (el) {
+          return el.SiteName === state.ccs.ui.addUser.location
+        })[0].LocationID,
+        Admin: state.ccs.user.username,
+        Status: 1
+      })
+    } else {
+      ccsapi.findUser(function (res) {
+        if (res !== null) {
+          emitter.emit('updateError', {template: 'addUser', error: 'Another user with this username already exists'})
+        } else {
+          ccsapi.newUser(function () {
+            state.ccs.ui.addUser.error = ''
+            state.ccs.ui.addUser.submit = true
+            emitter.emit('loadUsers')
+            emitter.emit('render')
+          }, {
+            Username: state.ccs.ui.addUser.username,
+            Password: 'initpasswd',
+            email: state.ccs.ui.addUser.email,
+            Role: state.ccs.ui.addUser.role === 'User' ? 'Staff' : 'Admin',
+            Location: state.ccs.ui.addUser.locations.filter(function (el) {
+              return el.SiteName === state.ccs.ui.addUser.location
+            })[0].LocationID,
+            FirstName: state.ccs.ui.addUser.givenName,
+            LastName: state.ccs.ui.addUser.lastName,
+            Authentication: 1
+          })
+        }
+      }, {Username: state.ccs.ui.addUser.username})
+    }
+    // ccsapi.findUser(function (data) {
+    //   if (data !== null) {
+    //     emit('updateError', {template: 'addUser', error: 'Another user with this username already exists'})
+    //   } else {
+    //     emit('grantAccess', {
+    //       Username: username,
+    //       Password: 'initpasswd',
+    //       Email: email,
+    //       Role: role === 'User' ? 'Staff' : 'Admin',
+    //       Location: addUserState.locations.filter(function (obj) {
+    //         return obj.SiteName === location})[0].LocationID,
+    //       FirstName: givenName,
+    //       LastName: lastName,
+    //       Authentication: 1
+    //     })
+    //     var submit = document.getElementById('submit')
+    //     var complete = document.getElementById('complete')
+    //     submit.style.display = 'none'
+    //     complete.style.display = 'flex'
+    //   }
+    // }, {Username: username})
+  })
+
+// delete a user's access request
+  emitter.on('deleteAccessRequest', function () {
+    ccsapi.deleteAccessRequest(function () {
+      emitter.emit('clearState')
+      emitter.emit('loadUsers')
+      emitter.emit('pushState', '/ccs/admin/manageusers')
+    }, {
+      Username: state.ccs.ui.addUser.username,
+      LocationID: state.ccs.ui.addUser.locations.filter(function (el) {
+        return el.SiteName === state.ccs.ui.addUser.location
+      })[0].LocationID
+    })
+  })
 
 // toggle modal
   emitter.on('toggleModal', function (data) {
@@ -347,7 +443,7 @@ module.exports = function (state, emitter) {
         state.ccs.ui.logIn.error = `We couldn't find an account with this username.`
         emitter.emit('render')
       }
-    }, state.ccs.ui.logIn.username)
+    }, {Username: state.ccs.ui.logIn.username})
 
 
   })
@@ -385,6 +481,7 @@ module.exports = function (state, emitter) {
     state.ccs.ui.addUser = {
       loaded: false,
       lightbox: false,
+      submit: false,
       username: '',
       givenName: '',
       lastName: '',

@@ -23,6 +23,7 @@ module.exports = function (state, emit) {
   var email = editUserState.email
   var region = editUserState.region
   var location = editUserState.location
+  var locations = editUserState.locations
   var role = editUserState.role
 
   var style = css`
@@ -139,7 +140,7 @@ module.exports = function (state, emit) {
   `
 
   return html`
-    <div class=${style}>
+    <div class=${style} onload=${editUserState.loaded ? null : loadRegionData()}>
       ${navbar(state.ccs.user.name, state.ccs.ui.manageUsers.newRequests.length)}
       <section id="content">
         <section id="content-top">
@@ -152,7 +153,7 @@ module.exports = function (state, emit) {
                                                   Are you sure you want to remove this person's access from Orion?
                                                   <div>
                                                     <button class="white-button" onclick=${toggleLightbox}>Cancel</button>
-                                                    <button class="blue-button">Disable user</button>
+                                                    <button class="blue-button" onclick=${disableAccount}>Disable user</button>
                                                   </div>
                                                 </div>
                                               </div>` : null}
@@ -169,15 +170,8 @@ module.exports = function (state, emit) {
             <label>Email</label>
             <input type="text" value=${email} id="email" oninput=${updateInput} />
             <label>Region</label>
-            <select id="region" onchange=${updateInput}>
-              <option disabled ${region ? null : 'selected'}></option>
-              <option ${region ? 'selected' : null}>North West Metro</option>
-            </select>
-            <label>Location</label>
-            <select id="location" onchange=${updateInput}>
-              <option disabled ${location ? null : 'selected'}></option>
-              <option ${location ? 'selected' : null}>Sunshine</option>
-            </select>
+            <input id="region" disabled value="${region}">
+            ${state.ccs.ui.editUser.locations !== '' ? displayLocations() : null}
           </div>
           <div id="account-settings">
             <div id="user-role">
@@ -196,7 +190,7 @@ module.exports = function (state, emit) {
             </div>
             <div id="submit">
               <span onclick=${back}>Cancel</span>
-              <button class="blue-button">Create account</button>
+              <button class="blue-button">Save changes</button>
             </div>
             <div id="complete">
               <h3>${name}'s access granted</h3>
@@ -208,6 +202,28 @@ module.exports = function (state, emit) {
     </div>
   `
 
+  function loadRegionData () {
+    emit('loadRegionData', 'editUser')
+  }
+
+  function displayLocations () {
+    return locations ? html`
+      <div>
+        <label>Location</label>
+        <select id="location" onchange=${updateInput}>
+          <option disabled ${location ? null : 'selected'}></option>
+          ${locations.map(function (el) {
+            return html`<option ${el.SiteName === location ? 'selected' : null}>${el.SiteName}</option>`
+          })}
+        </select>
+        <p>If the CCS staff member works at more than one office, just choose one.</p>
+      </div>` : null
+  }
+
+  function disableAccount () {
+    emit('disableAccount')
+  }
+
   function toggleLightbox () {
     emit('toggleLightbox', 'editUser')
   }
@@ -218,7 +234,6 @@ module.exports = function (state, emit) {
 
   function toggleDisplayInfo (e) {
     var el = document.getElementById('info')
-
 
     if (el.style.display === 'flex') {
       el.style.display = 'none'
