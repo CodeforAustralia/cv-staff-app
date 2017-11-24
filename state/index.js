@@ -186,6 +186,11 @@ module.exports = function (state, emitter) {
           password: '',
           error: ''
         },
+        setPassword: {
+          password1: '',
+          password2: '',
+          error: ''
+        },
         clientList: {
           clients: [{
             name: 'Johnny Test',
@@ -258,6 +263,7 @@ module.exports = function (state, emitter) {
 // disable a user account
   emitter.on('disableAccount', function () {
     ccsapi.disableAccount(function () {
+      state.ccs.ui.editUser.lightbox = false
       emitter.emit('loadUsers')
       emitter.emit('pushState', '/ccs/admin/manageusers')
     }, {
