@@ -19,6 +19,7 @@ module.exports = function (state, emit) {
   var email = addUserState.email
   var region = addUserState.region
   var location = addUserState.location
+  var locations = addUserState.locations
   var role = addUserState.role
   var error = addUserState.error
   var submit = addUserState.submit
@@ -221,7 +222,7 @@ module.exports = function (state, emit) {
   }
 
   function loadRegionData () {
-    emit('loadRegionData', 'addUser')
+    emit('loadRegionData', {template: 'addUser'})
   }
 
   function displayError() {
@@ -249,27 +250,6 @@ module.exports = function (state, emit) {
     } else {
       emit('updateError', {template: 'addUser', error: ''})
       emit('createAccount')
-      // api.findUser(function (data) {
-      //   if (data !== null) {
-      //     emit('updateError', {template: 'addUser', error: 'Another user with this username already exists'})
-      //   } else {
-      //     emit('grantAccess', {
-      //       Username: username,
-      //       Password: 'initpasswd',
-      //       Email: email,
-      //       Role: role === 'User' ? 'Staff' : 'Admin',
-      //       Location: addUserState.locations.filter(function (obj) {
-      //         return obj.SiteName === location})[0].LocationID,
-      //       FirstName: givenName,
-      //       LastName: lastName,
-      //       Authentication: 1
-      //     })
-      //     var submit = document.getElementById('submit')
-      //     var complete = document.getElementById('complete')
-      //     submit.style.display = 'none'
-      //     complete.style.display = 'flex'
-      //   }
-      // }, {Username: username})
     }
   }
 

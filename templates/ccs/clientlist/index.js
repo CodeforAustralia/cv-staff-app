@@ -84,7 +84,7 @@ module.exports = function (state, emit) {
   }
 
   function getMessages (e) {
-    emit('getMessages', e.target.id.slice(7))
+    emit('getMessages', {client: e.target.id.slice(7)})
     setTimeout(function () {
       myDiv = document.getElementById('messageContainer')
       if (myDiv !== null) {

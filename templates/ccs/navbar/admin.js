@@ -11,10 +11,10 @@ module.exports = function (username, numRequests) {
     <div class=${style}>
       <div id="navbar">
         <div id="navbar-left">
-          <div id="logo">
+          <a href="/ccs" id="logo">
             <img src="../../assets/logo.png" />
             <p>for CCS staff</p>
-          </div>
+          </a>
           <div class="nav-path"><a href="/ccs/dashboard">Dashboard</a></div>
           <div class="nav-path"><a href="#">Reminders</a></div>
           <div class="nav-path"><a href="/ccs/clientlist">Clients</a></div>

@@ -45,10 +45,12 @@ module.exports = function (state, emit) {
         <input type="text" id="username" value=${username} placeholder="username" oninput=${updateInput} required />
         <input type="password" id="password" value=${password} placeholder="password" oninput=${updateInput} required />
         <button class="blue-button" onclick=${logIn}>Submit</button>
+        <button class="white-button">I forgot my password</button>
         ${error ? displayError() : null}
       </div>
     </div>
   `
+
   function displayError() {
     return html`
       <div id="error">

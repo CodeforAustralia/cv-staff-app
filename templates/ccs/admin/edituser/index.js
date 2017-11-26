@@ -25,6 +25,8 @@ module.exports = function (state, emit) {
   var location = editUserState.location
   var locations = editUserState.locations
   var role = editUserState.role
+  var submit = editUserState.submit
+  var error = editUserState.error
 
   var style = css`
     :host {
@@ -188,22 +190,57 @@ module.exports = function (state, emit) {
                 Reset password
               </button>
             </div>
-            <div id="submit">
-              <span onclick=${back}>Cancel</span>
-              <button class="blue-button">Save changes</button>
-            </div>
-            <div id="complete">
-              <h3>${name}'s access granted</h3>
-              <img src="../../assets/tick.png" />
-            </div>
+            ${error ? displayError() : null}
+            ${submit ? displaySuccess() : html`
+              <div id="submit">
+                <span onclick=${back}>Cancel</span>
+                <button class="blue-button" onclick=${validateInput}>Save changes</button>
+              </div>`}
           </div>
         </section>
       </section>
     </div>
   `
 
+  function displayError() {
+    return html`
+      <div id="error">
+        ${error}
+      </div>
+    `
+  }
+
+  function displaySuccess () {
+    return html`
+      <div id="complete">
+        <h3>Changes saved</h3>
+        <img src="../../assets/tick.png" />
+      </div>
+    `
+  }
+
+  function validateInput () {
+    var errorMessage = ''
+    if (!givenName) {
+      errorMessage = 'Please enter a given name'
+    } else if (!email.endsWith('@justice.vic.gov.au')) {
+      errorMessage = 'Please use a @justice.vic.gov.au email address'
+    } else if (!region) {
+      errorMessage = 'Please select a region'
+    } else if (!location) {
+      errorMessage = 'Please select a location'
+    }
+
+    if (errorMessage) {
+      emit('updateError', {template: 'editUser', error: errorMessage})
+    } else {
+      emit('updateError', {template: 'editUser', error: ''})
+      // emit changes here
+    }
+  }
+
   function loadRegionData () {
-    emit('loadRegionData', 'editUser')
+    emit('loadRegionData', {template: 'editUser'})
   }
 
   function displayLocations () {

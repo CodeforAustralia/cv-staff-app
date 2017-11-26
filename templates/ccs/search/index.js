@@ -124,26 +124,26 @@ module.exports = function (state, emit) {
       name: 'Johnny Test',
       phone: '61411123333',
       JAID: 111,
-      location: 'Derrimut Community Work and Reparation Orders',
-      region: 'North West Metropolitan'
+      location: 'Colac CCS',
+      region: 'Barwon South West'
     }, {
       name: 'Jake Black',
       phone: '61411123333',
       JAID: 222,
-      location: 'South Morang Justice Service Centre',
-      region: 'South East Metropolitan'
+      location: 'Ravenhall Prison',
+      region: 'North West Metropolitan'
     }, {
       name: 'Sam Iam',
       phone: '61411123333',
       JAID: 333,
-      location: 'Derrimut Community Work and Reparation Orders',
-      region: 'North West Metropolitan'
+      location: 'Colac CCS',
+      region: 'Barwon South West'
     }, {
       name: 'Dana Bo-bana',
       phone: '61422777000',
       JAID: 444,
-      location: 'Ravenhall Prison',
-      region: 'North West Metropolitan'
+      location: 'Hamilton',
+      region: 'Barwon South West'
     }]
     emit('render')
   }
@@ -189,7 +189,7 @@ module.exports = function (state, emit) {
   }
 
   function addToClientList (e) {
-    emit('addToClientList', results[parseInt(e.target.id.slice(7))])
+    emit('addToClientList', {client: results[parseInt(e.target.id.slice(7))]})
   }
 
   function updateInput (e) {

@@ -109,11 +109,12 @@ module.exports = function (state, emit) {
   var email = homeState.email
   var location = homeState.location
   var error = homeState.error
+  var loaded = state.ccs.static.locations.length ? true : false
 
   return html`
-    <div class=${style} onload=${homeState.loaded ? null : emit('loadLocations')}>
+    <div class=${style} onload=${emit('loadStatic')}>
       ${navbar()}
-      ${homeState.loaded ? html`
+      ${loaded ? html`
         <div id="content">
           <div id="content-left">
             <h1>Communicate with your clients</h1>
@@ -223,27 +224,25 @@ module.exports = function (state, emit) {
           Password: 'initpasswd',
           email: email,
           Role: 'Staff',
-          Location: state.locations.filter(function (obj) {
+          Location: state.ccs.static.locations.filter(function (obj) {
             return obj.SiteName === location})[0].LocationID,
           FirstName: givenName,
           LastName: lastName,
           Authentication: 0
         })
-      }}, {username: username})
+      }}, {Username: username})
   }
 
   function printLocations() {
-    if (homeState.loaded) {
-      return html`
-        <select name="location" id="location" onchange=${updateInput} required>
-          <option disabled ${homeState.location ? null : 'selected'} value></option>
-          ${state.locations.map(function (el) {
-            return html`
-              <option value="${el.SiteName}" ${state.ccs.ui.home.location === el.SiteName ? 'selected' : null}>${el.SiteName}</option>
-            `
-          })}
-        </select>
-      `
-    }
+    return html`
+      <select name="location" id="location" onchange=${updateInput} required>
+        <option disabled ${homeState.location ? null : 'selected'} value></option>
+        ${state.ccs.static.locations.map(function (el) {
+          return html`
+            <option value="${el.SiteName}" ${state.ccs.ui.home.location === el.SiteName ? 'selected' : null}>${el.SiteName}</option>
+          `
+        })}
+      </select>
+    `
   }
 }

@@ -4,6 +4,10 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  a, a:visited {
+    color: #fff;
+    text-decoration: none;
+  }
   #navbar-left {
     display: flex;
     flex-direction: row;

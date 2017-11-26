@@ -109,7 +109,7 @@ module.exports = function (state, emitter) {
         username: 'GeorgiaCFA',
         name: 'Georgia Hansford',
         email: 'Georgia.hansford@justice.vic.gov.au',
-        locationID: 4,
+        locationID: 658,
         regionID: 4,
         dedicatedNumber: '61400868219',
         role: 'Admin'
@@ -336,27 +336,6 @@ module.exports = function (state, emitter) {
         }
       }, {Username: state.ccs.ui.addUser.username})
     }
-    // ccsapi.findUser(function (data) {
-    //   if (data !== null) {
-    //     emit('updateError', {template: 'addUser', error: 'Another user with this username already exists'})
-    //   } else {
-    //     emit('grantAccess', {
-    //       Username: username,
-    //       Password: 'initpasswd',
-    //       Email: email,
-    //       Role: role === 'User' ? 'Staff' : 'Admin',
-    //       Location: addUserState.locations.filter(function (obj) {
-    //         return obj.SiteName === location})[0].LocationID,
-    //       FirstName: givenName,
-    //       LastName: lastName,
-    //       Authentication: 1
-    //     })
-    //     var submit = document.getElementById('submit')
-    //     var complete = document.getElementById('complete')
-    //     submit.style.display = 'none'
-    //     complete.style.display = 'flex'
-    //   }
-    // }, {Username: username})
   })
 
 // delete a user's access request
@@ -381,7 +360,7 @@ module.exports = function (state, emitter) {
 
 // add to client list
   emitter.on('addToClientList', function (data) {
-    state.ccs.ui.clientList.clients.push(data)
+    state.ccs.ui.clientList.clients.push(data.client)
     emitter.emit('render')
   })
 
@@ -393,7 +372,7 @@ module.exports = function (state, emitter) {
         return (a.SiteName > b.SiteName) - (a.SiteName < b.SiteName)
       })
       emitter.emit('render')
-    }, data.regionID)
+    }, {regionID: data.regionID})
   })
 
 // loads region data
@@ -425,7 +404,7 @@ module.exports = function (state, emitter) {
 
 // retrieves message history
   emitter.on('getMessages', function (data) {
-    ccsapi.getMessages(function (res) {
+    mmapi.getMessages(function (res) {
       state.ccs.ui.clientList.messages = []
       var message
       for (message of res) {
@@ -439,9 +418,9 @@ module.exports = function (state, emitter) {
 
         state.ccs.ui.clientList.messages.push(newMessage)
       }
-      state.ccs.ui.clientList.displayMessages = parseInt(data)
+      state.ccs.ui.clientList.displayMessages = parseInt(data.client)
       emitter.emit('render')
-    }, state.ccs.ui.clientList.clients[parseInt(data)].JAID)
+    }, {JAID: state.ccs.ui.clientList.clients[parseInt(data.client)].JAID})
   })
 
 // validates the user and logs in
@@ -483,22 +462,6 @@ module.exports = function (state, emitter) {
   emitter.on('updatePage', function (data) {
     state.ccs.ui.manageUsers.pagination[data.target] = data.value
     emitter.emit('render')
-  })
-
-// adds a new user and authenticates them
-  emitter.on('grantAccess', function (data) {
-    ccsapi.newUser(function (res) {
-      if (state.ccs.ui.addUser.requested) {
-        state.ccs.ui.manageUsers.newRequests.splice(state.ccs.ui.addUser.requested, 1)
-      }
-    }, data)
-  })
-
-// checks if a user exists
-  emitter.on('checkUser', function (data) {
-    ccsapi.findUser(function (res) {
-      if (res !== null) { state.ccs.ui.addUser.exists = true }
-    }, data)
   })
 
 // loads the adduser page for a new user
@@ -576,10 +539,10 @@ module.exports = function (state, emitter) {
 
 // loads the existing users and new requests for the manageusers template
   emitter.on('loadUsers', function () {
-    ccsapi.getStaff(function (data) {
-      state.ccs.ui.manageUsers.users = data
-      ccsapi.getNewRequests(function (data) {
-        state.ccs.ui.manageUsers.newRequests = data
+    ccsapi.getStaff(function (res) {
+      state.ccs.ui.manageUsers.users = res
+      ccsapi.getNewRequests(function (resp) {
+        state.ccs.ui.manageUsers.newRequests = resp
         state.ccs.ui.manageUsers.loaded = true
         emitter.emit('render')
       }, {location: state.ccs.user.locationID})
@@ -588,8 +551,8 @@ module.exports = function (state, emitter) {
 
 // loads all the administrators
   emitter.on('loadAdministrators', function (data) {
-    ccsapi.getAdministrators(function (data) {
-      state.ccs.ui.administrators.administrators = data
+    ccsapi.getAdministrators(function (res) {
+      state.ccs.ui.administrators.administrators = res
       state.ccs.ui.administrators.loaded = true
 
       emitter.emit('render')
@@ -598,25 +561,25 @@ module.exports = function (state, emitter) {
 
 // loads all the locations
   emitter.on('loadLocations', function () {
-    ccsapi.getLocations(function (data) {
-      state.locations = data
+    ccsapi.getLocations(function (res) {
+      state.locations = res
       state.ccs.ui.home.loaded = true
       emitter.emit('render')
     })
   })
 
 // loads the data for a user's region
-  emitter.on('loadRegionData', function (template) {
-    ccsapi.getRegionData(function (response) {
-      state.ccs.ui[template].region = response.RegionName
-      state.ccs.ui[template].locations = response.Locations
-      state.ccs.ui[template].locations.sort(function (a, b) {
+  emitter.on('loadRegionData', function (data) {
+    ccsapi.getRegionData(function (res) {
+      state.ccs.ui[data.template].region = res.RegionName
+      state.ccs.ui[data.template].locations = res.Locations
+      state.ccs.ui[data.template].locations.sort(function (a, b) {
         return (a.SiteName > b.SiteName) - (a.SiteName < b.SiteName)
       })
-      state.ccs.ui[template].loaded = true
+      state.ccs.ui[data.template].loaded = true
 
       emitter.emit('render')
-    }, state.ccs.user.regionID)
+    }, {regionID: state.ccs.user.regionID})
   })
 
 // not used
