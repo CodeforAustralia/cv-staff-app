@@ -3,7 +3,7 @@ var html = require('choo/html')
 var css = require('sheetify')
 
 // import templates
-var api = require('../../../lib/api')
+var mmapi = require('../../../lib/mmapi')
 var base = require('../base')
 var messageHistory = require('../../messageHistory')
 
@@ -35,7 +35,7 @@ module.exports = function (state, emit) {
 
   // pull message data from the API
   function queryAPI () {
-    api.getMessages({JAID: state.client.user.JAID}, function (data) {
+    mmapi.getMessages({JAID: state.client.user.JAID}, function (data) {
       emit('updateContent', data)
     })
   }

@@ -1,5 +1,5 @@
 var ccsapi = require('../lib/ccsapi')
-var api = require('../lib/api')
+var mmapi = require('../lib/mmapi')
 var crypto = require('crypto')
 
 module.exports = function (state, emitter) {
@@ -101,12 +101,16 @@ module.exports = function (state, emitter) {
 
     // This is where the real stuff starts
     state.ccs = {
+      static: {
+        locations: [],
+        regions: []
+      },
       user: {
         username: 'GeorgiaCFA',
         name: 'Georgia Hansford',
         email: 'Georgia.hansford@justice.vic.gov.au',
         locationID: 4,
-        regionID: 7,
+        regionID: 4,
         dedicatedNumber: '61400868219',
         role: 'Admin'
       },
@@ -179,7 +183,9 @@ module.exports = function (state, emitter) {
           location: '',
           locations: '',
           role: '',
-          lightbox: false
+          lightbox: false,
+          submit: false,
+          error: ''
         },
         logIn: {
           username: '',
@@ -259,6 +265,19 @@ module.exports = function (state, emitter) {
 
     state.authenticated = false
   }
+
+// check and load static information
+  emitter.on('loadStatic', function () {
+    if (state.ccs.static.locations.length === 0) {
+      ccsapi.getLocations(function (res) {
+        state.ccs.static.locations = res
+        ccsapi.getRegions(function (resp) {
+          state.ccs.static.regions = resp
+          emitter.emit('render')
+        })
+      })
+    }
+  })
 
 // disable a user account
   emitter.on('disableAccount', function () {
@@ -391,7 +410,7 @@ module.exports = function (state, emitter) {
 
 // sends a new message
   emitter.on('sendSMS', function (data) {
-    api.sendMessage(data.messageData, function (res) {
+    mmapi.sendMessage(data.messageData, function (res) {
       if (data.user === 'client') {
         state.client.ui.reminders.newMessage = ''
         state.client.ui.reminders.loaded = false
