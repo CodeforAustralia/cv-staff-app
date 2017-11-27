@@ -110,7 +110,10 @@ module.exports = function (state, emitter) {
         name: 'Georgia Hansford',
         email: 'Georgia.hansford@justice.vic.gov.au',
         locationID: 658,
-        regionID: 4,
+        region: {
+          RegionID: 4,
+          RegionName: 'Barwon South West'
+        },
         dedicatedNumber: '61400868219',
         role: 'Admin'
       },
@@ -233,14 +236,54 @@ module.exports = function (state, emitter) {
           searchLocation: '',
           results: [],
           modal: false
+        },
+        groups : {
+          region: 'Barwon South West',
+          regions: [],
+          location: 'Colac CCS',
+          locations: [],
+          loaded: false,
+          groups: [{
+            name: 'St Vincent De Paul Friday Stitchpicking Group',
+            createdDate: '1 December 2017',
+            createdBy: 'John Jones',
+            region: 'North West Metropolitan',
+            location: 'Sunshine CCS',
+            type: 'Community work',
+            clients: [111, 222, 333]
+          }, {
+            name: 'St Vincent De Paul Monday Stitchpicking Group',
+            createdDate: '5 December 2017',
+            createdBy: 'John Jones',
+            region: 'North West Metropolitan',
+            location: 'Sunshine CCS',
+            type: 'Community Work',
+            clients: []
+          }, {
+            name: 'Womens Knitting Group',
+            createdDate: '25 September 2016',
+            createdBy: 'Prunella Moto',
+            region: 'North West Metropolitan',
+            location: 'Melton CCS',
+            type: 'Community Work',
+            clients: [222, 333]
+          }, {
+            name: 'Woodwork',
+            createdDate: '5 January 2015',
+            createdBy: 'Prunella Moto',
+            region: 'Barwon South West',
+            location: 'Colac CCS',
+            type: 'Community Work',
+            clients: []
+          }]
         }
       }
     }
 
     state.client = {
       user: {
-        phone: '61412757232',
-        JAID: 111,
+        phone: '61481712864',
+        JAID: 333,
         locationNumber: '61400868219'
       },
       messages: [],
@@ -265,6 +308,13 @@ module.exports = function (state, emitter) {
 
     state.authenticated = false
   }
+
+// clear locations
+  emitter.on('clearLocations', function (data) {
+    state.ccs.ui[data.template].locations = []
+    state.ccs.ui[data.template].location = ''
+    emitter.emit('render')
+  })
 
 // check and load static information
   emitter.on('loadStatic', function () {
@@ -383,7 +433,14 @@ module.exports = function (state, emitter) {
         return (a.RegionName > b.RegionName) - (a.RegionName < b.RegionName)
       })
       state.ccs.ui[data.template].loaded = true
-      emitter.emit('render')
+      //emitter.emit('render')
+      emitter.emit('loadLocationsForRegion', {
+        template: data.template,
+        target: 'locations',
+        regionID: state.ccs.ui[data.template][data.target].filter(function (el) {
+          return el.RegionName === state.ccs.ui[data.template].region
+        })[0].RegionID
+      })
     })
   })
 

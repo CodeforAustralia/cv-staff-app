@@ -158,7 +158,7 @@ module.exports = function (state, emit) {
               <td>${el.JAID}</td>
               <td>${el.region}</td>
               <td>${el.location}</td>
-              <td>${state.ccs.user.regionID !== parseInt(regions.filter(function (element) {
+              <td>${state.ccs.user.region.RegionID !== parseInt(regions.filter(function (element) {
                 return element.RegionName === el.region
               })[0].RegionID) ?
                 html`
