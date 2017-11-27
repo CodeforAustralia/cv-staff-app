@@ -238,6 +238,12 @@ module.exports = function (state, emitter) {
           modal: false
         },
         groups : {
+          sort: {
+            table: {
+              on: 'name',
+              direction: 'asc'
+            }
+          },
           region: 'Barwon South West',
           regions: [],
           location: 'Colac CCS',

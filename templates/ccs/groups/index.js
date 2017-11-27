@@ -51,6 +51,20 @@ module.exports = function (state, emit) {
             border: none;
             border-collapse: collapse;
             width: 100%;
+            th {
+              text-align: left;
+              span {
+                cursor: pointer;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                img {
+                  height: 1rem;
+                  margin: auto;
+                  margin-left: 1rem;
+                }
+              }
+            }
             td {
               border-top: 2px #e0e0e0 solid;
               padding: 0.5rem;
@@ -128,8 +142,19 @@ module.exports = function (state, emit) {
     </div>
   `
 
+  function updateSortCategory (e) {
+    if (e.target.id === state.ccs.ui.groups.sort.table.on) {
+      emit('reverseSort', {template: 'groups', table: 'table'})
+    } else {
+      emit('updateSort', {template: 'groups', table: 'table', target: e.target.id})
+    }
+  }
+
   function displayResults () {
     var filteredGroups = groups
+    var category = state.ccs.ui.groups.sort.table.on
+    var direction = state.ccs.ui.groups.sort.table.direction
+
     if (region) {
       filteredGroups = groups.filter(function (el) {
         return el.region === region
@@ -141,42 +166,66 @@ module.exports = function (state, emit) {
       }
     }
 
-    return html`<table>
-      ${filteredGroups.map(function (el) {
-        return html`
-          <tr class=${el.clients.length ? '' : "disabled"}>
-            <td>
-              <h3>${el.name}</h3>
-              <p>Created ${el.createdDate}</p>
-              <p>Created by ${el.createdBy}</p>
-            </td>
-            <td>
-              <p>${el.location}</p>
-              <p>${el.type}</p>
-            </td>
-            <td>
-              <div class="num-clients">
-                <h3>${el.clients.length}</h3>
-                <p>Clients</p>
-              </div>
-            </td>
-            <td>
-              <button class="grey-button">Add client</button>
-            </td>
-            <td>
-              <button class="green-button">View messages</button>
-              <div class="scheduled">
-                <h6>Message scheduled</h6>
-                <img src="../../../assets/reload.png" />
-              </div>
-            </td>
-            <td>
-              <a href="#">Edit this group</a>
-            </td>
-          </tr>
-        `
-      })}
-    </table>
+    filteredGroups.sort(function (a, b) {
+      a = a[category].toLowerCase()
+      b = b[category].toLowerCase()
+      comparison = (a > b) - (a < b)
+      return (direction === 'asc' ? comparison : (-comparison))
+    })
+
+    return html`
+      <table>
+        <tr>
+          <th>
+            <span id="name" onclick=${updateSortCategory}>
+              Name
+              ${category === 'name' ? html`<img src="../../assets/sort-${state.ccs.ui.groups.sort.table.direction}.png" />` :
+                                      html`<img src="../../assets/sort-arrows.png" />`}
+            </span>
+          </th>
+          <th>
+            <span id="location" onclick=${updateSortCategory}>
+              Location
+              ${category === 'location' ? html`<img src="../../assets/sort-${state.ccs.ui.groups.sort.table.direction}.png" />` :
+                                          html`<img src="../../assets/sort-arrows.png" />`}
+            </span>
+          </th>
+        </tr>
+        ${filteredGroups.map(function (el) {
+          return html`
+            <tr class=${el.clients.length ? '' : "disabled"}>
+              <td>
+                <h3>${el.name}</h3>
+                <p>Created ${el.createdDate}</p>
+                <p>Created by ${el.createdBy}</p>
+              </td>
+              <td>
+                <p>${el.location}</p>
+                <p>${el.type}</p>
+              </td>
+              <td>
+                <div class="num-clients">
+                  <h3>${el.clients.length}</h3>
+                  <p>Clients</p>
+                </div>
+              </td>
+              <td>
+                <button class="grey-button">Add client</button>
+              </td>
+              <td>
+                <button class="green-button">View messages</button>
+                <div class="scheduled">
+                  <h6>Message scheduled</h6>
+                  <img src="../../../assets/reload.png" />
+                </div>
+              </td>
+              <td>
+                <a href="#">Edit this group</a>
+              </td>
+            </tr>
+          `
+        })}
+      </table>
     `
   }
 
