@@ -288,7 +288,15 @@ module.exports = function (state, emitter) {
           }]
         },
         addGroup: {
-          displayPrompt: false
+          loaded: false,
+          displayPrompt: false,
+          name: '',
+          region: 'Barwon South West',
+          regions: [],
+          location: 'Colac CCS',
+          locations: [],
+          type: 'communityWork',
+          error: ''
         }
       }
     }
