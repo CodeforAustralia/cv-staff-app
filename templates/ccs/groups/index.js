@@ -52,6 +52,7 @@ module.exports = function (state, emit) {
             border-collapse: collapse;
             width: 100%;
             th {
+              padding: 0.5rem;
               text-align: left;
               span {
                 cursor: pointer;
@@ -133,7 +134,7 @@ module.exports = function (state, emit) {
               </div>
             </div>
             <div id="filter-bar-right">
-              <button class="blue-button">Create group</button>
+              <button class="blue-button" onclick=${addGroup}>Create group</button>
             </div>
           </div>
           ${displayResults()}
@@ -141,6 +142,10 @@ module.exports = function (state, emit) {
       </div>
     </div>
   `
+
+  function addGroup () {
+    emit('pushState', '/ccs/groups/addgroup')
+  }
 
   function updateSortCategory (e) {
     if (e.target.id === state.ccs.ui.groups.sort.table.on) {

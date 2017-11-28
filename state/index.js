@@ -1,3 +1,7 @@
+//TODO
+// pull groups from DB
+// filtering via CW/Other
+
 var ccsapi = require('../lib/ccsapi')
 var mmapi = require('../lib/mmapi')
 var crypto = require('crypto')
@@ -255,7 +259,7 @@ module.exports = function (state, emitter) {
             createdBy: 'John Jones',
             region: 'North West Metropolitan',
             location: 'Sunshine CCS',
-            type: 'Community work',
+            type: 'Community Work',
             clients: [111, 222, 333]
           }, {
             name: 'St Vincent De Paul Monday Stitchpicking Group',
@@ -282,6 +286,9 @@ module.exports = function (state, emitter) {
             type: 'Community Work',
             clients: []
           }]
+        },
+        addGroup: {
+          displayPrompt: false
         }
       }
     }
@@ -314,6 +321,11 @@ module.exports = function (state, emitter) {
 
     state.authenticated = false
   }
+
+  emitter.on('toggleDisplayPrompt', function (data) {
+    state.ccs.ui[data.template].displayPrompt = !state.ccs.ui[data.template].displayPrompt
+    emitter.emit('render')
+  })
 
 // clear locations
   emitter.on('clearLocations', function (data) {
