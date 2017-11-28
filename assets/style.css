@@ -64,3 +64,8 @@ button {
   margin-left: 0;
   padding: 0.5rem;
 }
+
+.disabled {
+  cursor: default;
+  opacity: 0.5;
+}

@@ -17,6 +17,8 @@ module.exports = function (state, emit) {
         margin: auto;
         margin-top: 2rem;
         #content-top {
+          border-bottom: 2px #e0e0e0 solid;
+          padding-bottom: 0.25rem;
           div {
             display: flex;
             flex-direction: row;
@@ -44,6 +46,25 @@ module.exports = function (state, emit) {
               }
             }
           }
+        }
+        #content-middle {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          margin: auto;
+          padding: 2rem;
+          width: 80%;
+          #client-list {
+            border: 2px #e0e0e0 solid;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 8rem;
+            margin: auto;
+            width: 100%;
+            span { align-self: center; }
+          }
+          button { align-self: flex-end; }
         }
       }
     }
@@ -106,6 +127,14 @@ module.exports = function (state, emit) {
               <span>${lastUpdatedDate}</span>
             </div>
           </div>
+        </div>
+        <div id="content-middle">
+          <label>Clients in this group</label>
+          <div id="client-list">
+            <span>There's no one in your group yet.</span>
+            <span>Select some clients from the list below.</span>
+          </div>
+          <button class="blue-button disabled" disabled>Save changes</button>
         </div>
       </div>
     </div>
