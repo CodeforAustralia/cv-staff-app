@@ -257,6 +257,8 @@ module.exports = function (state, emitter) {
             name: 'St Vincent De Paul Friday Stitchpicking Group',
             createdDate: '1 December 2017',
             createdBy: 'John Jones',
+            lastUpdatedDate: '1 December 2017',
+            lastUpdatedBy: 'John Jones',
             region: 'North West Metropolitan',
             location: 'Sunshine CCS',
             type: 'Community Work',
@@ -265,6 +267,8 @@ module.exports = function (state, emitter) {
             name: 'St Vincent De Paul Monday Stitchpicking Group',
             createdDate: '5 December 2017',
             createdBy: 'John Jones',
+            lastUpdatedDate: '6 December 2017',
+            lastUpdatedBy: 'Prunella Moto',
             region: 'North West Metropolitan',
             location: 'Sunshine CCS',
             type: 'Community Work',
@@ -273,6 +277,8 @@ module.exports = function (state, emitter) {
             name: 'Womens Knitting Group',
             createdDate: '25 September 2016',
             createdBy: 'Prunella Moto',
+            lastUpdatedDate: '27 September 2016',
+            lastUpdatedBy: 'Blagoy Bogdanov',
             region: 'North West Metropolitan',
             location: 'Melton CCS',
             type: 'Community Work',
@@ -281,6 +287,8 @@ module.exports = function (state, emitter) {
             name: 'Woodwork',
             createdDate: '5 January 2015',
             createdBy: 'Prunella Moto',
+            lastUpdatedDate: '5 January 2015',
+            lastUpdatedBy: 'Prunella Moto',
             region: 'Barwon South West',
             location: 'Colac CCS',
             type: 'Community Work',
@@ -297,6 +305,17 @@ module.exports = function (state, emitter) {
           locations: [],
           type: 'communityWork',
           error: ''
+        },
+        editGroup: {
+          name: 'St Vincent De Paul Monday Stitchpicking Group',
+          createdDate: '5 December 2017',
+          createdBy: 'John Jones',
+          lastUpdatedDate: '6 December 2017',
+          lastUpdatedBy: 'Prunella Moto',
+          region: 'North West Metropolitan',
+          location: 'Sunshine CCS',
+          type: 'Community Work',
+          clients: []
         }
       }
     }
