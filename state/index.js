@@ -313,9 +313,62 @@ module.exports = function (state, emitter) {
           lastUpdatedDate: '6 December 2017',
           lastUpdatedBy: 'Prunella Moto',
           region: 'North West Metropolitan',
+          regions: [],
           location: 'Sunshine CCS',
+          locations: [],
           type: 'Community Work',
-          clients: []
+          clientList: [],
+          clients: [{
+            givenName: 'Oscar',
+            lastName: 'Allison',
+            JAID: 988899889,
+            phone: '0400 000 003',
+            location: 'Warrnambool',
+            region: 'Barwon South West',
+            caseManager: ''
+          }, {
+            givenName: 'Matthew',
+            lastName: 'Hicks',
+            JAID: 222222222,
+            phone:'0400 000 002',
+            location: 'Portland',
+            region: 'Barwon South West',
+            caseManager: 'John Jones'
+          }, {
+            givenName: 'William',
+            lastName: 'Hogan',
+            JAID: 983838383838,
+            phone: '0400 000 000',
+            location: 'Colac CCS',
+            region: 'Barwon South West',
+            caseManager: ''
+          }, {
+            givenName: 'Spencer',
+            lastName: 'Padilla',
+            JAID: 987654321,
+            phone: '0400 000 005',
+            location: 'Sunshine CCS',
+            region: 'North West Metropolitan',
+            caseManager: ''
+          }, {
+            givenName: 'Raquel',
+            lastName: 'Stewart',
+            JAID: 77765432,
+            phone: '0400 000 004',
+            location: 'Sunshine CCS',
+            region: 'North West Metropolitan',
+            caseManager: '',
+          }, {
+            givenName: 'Roman',
+            lastName: 'Vargas',
+            JAID: 7777888888,
+            phone: '0400 000 001',
+            location: 'Colac CCS',
+            region: 'Barwon South West',
+            caseManager: ''
+          }],
+          loaded: false,
+          editInfo: false
         }
       }
     }
@@ -348,6 +401,11 @@ module.exports = function (state, emitter) {
 
     state.authenticated = false
   }
+
+  emitter.on('toggleEditing', function (data) {
+    state.ccs.ui[data.template].edit = !state.ccs.ui[data.template].edit
+    emitter.emit('render')
+  })
 
   emitter.on('toggleDisplayPrompt', function (data) {
     state.ccs.ui[data.template].displayPrompt = !state.ccs.ui[data.template].displayPrompt

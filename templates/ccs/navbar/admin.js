@@ -16,7 +16,7 @@ module.exports = function (username, numRequests) {
             <p>for CCS staff</p>
           </a>
           <div class="nav-path"><a href="/ccs/dashboard">Dashboard</a></div>
-          <div class="nav-path"><a href="#">Reminders</a></div>
+          <div class="nav-path"><a href="/ccs/groups">Groups</a></div>
           <div class="nav-path"><a href="/ccs/clientlist">Clients</a></div>
         </div>
         <div id="navbar-right" onclick=${update}>

@@ -65,7 +65,7 @@ button {
   padding: 0.5rem;
 }
 
-.disabled {
+.disabled-button {
   cursor: default;
   opacity: 0.5;
 }
